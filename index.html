@@ -627,7 +627,7 @@ async function loginWithGoogle(){
   if(error)showToast('Error: '+error.message,'error');
 }
 
-function doLogin(){
+async function doLogin(){
   const email=document.getElementById('login-email').value.trim();
   const pass=document.getElementById('login-pass').value;
   const errEl=document.getElementById('login-err');
