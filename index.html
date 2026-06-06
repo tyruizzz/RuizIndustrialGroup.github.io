@@ -1014,7 +1014,31 @@ function openCart(){
       ?`<div class="checkout-form">
           <div class="checkout-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Datos del pedido</div>
           <div class="fg"><label>Tu nombre</label><input type="text" id="c-nombre" placeholder="Nombre completo" value="${currentUser.user_metadata?.nombre||''}"></div>
-          <div class="fg"><label>Tu teléfono</label><input type="tel" id="c-tel" placeholder="+1 o +593..."></div>
+          <div class="fg"><label>Tu teléfono</label>
+            <div class="phone-wrap">
+              <select class="phone-code" id="c-codigo">
+                <option value="+1">+1</option>
+                <option value="+593" selected>+593</option>
+                <option value="+52">+52</option>
+                <option value="+57">+57</option>
+                <option value="+51">+51</option>
+                <option value="+56">+56</option>
+                <option value="+54">+54</option>
+                <option value="+55">+55</option>
+                <option value="+58">+58</option>
+                <option value="+44">+44</option>
+                <option value="+34">+34</option>
+                <option value="+33">+33</option>
+                <option value="+49">+49</option>
+                <option value="+39">+39</option>
+                <option value="+81">+81</option>
+                <option value="+86">+86</option>
+                <option value="+91">+91</option>
+                <option value="+61">+61</option>
+              </select>
+              <input class="phone-num" type="tel" id="c-tel" placeholder="Número de teléfono">
+            </div>
+          </div>
         </div>
         <div class="m-actions">
           <button class="m-close" onclick="closeCart()">Cancelar</button>
@@ -1066,8 +1090,10 @@ function cotizarCarritoWA(){
 
 async function confirmarPedido(){
   const nombre=document.getElementById('c-nombre').value.trim();
-  const tel=document.getElementById('c-tel').value.trim();
-  if(!nombre||!tel){showToast('Ingresa tu nombre y teléfono','error');return;}
+  const codigo=document.getElementById('c-codigo')?document.getElementById('c-codigo').value:'';
+  const telNum=document.getElementById('c-tel').value.trim();
+  const tel=codigo&&telNum?codigo+' '+telNum:telNum;
+  if(!nombre||!telNum){showToast('Ingresa tu nombre y teléfono','error');return;}
   const items=Object.entries(cart).filter(([,q])=>q>0);if(!items.length)return;
   const btn=document.querySelector('.m-confirm');
   btn.innerHTML='Procesando...';btn.disabled=true;
