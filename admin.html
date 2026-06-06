@@ -664,7 +664,7 @@ function renderProductsTable(){
   document.getElementById('prods-tbody').innerHTML=allProducts.map(p=>{
     const imgUrl=p.imagen?`${SUPABASE_URL}/storage/v1/object/public/productos/${p.imagen}`:'';
     const sc=p.stock===0?'stock-out':p.stock<=5?'stock-low':'stock-ok';
-    return `<tr><td>${imgUrl?`<img src="${imgUrl}" class="prod-thumb" onerror="this.style.display='none'">`:`<div class="prod-thumb-ph">🔩</div>`}</td><td><div style="font-weight:500;color:var(--white)">${p.nombre}</div><div style="font-size:10px;color:var(--muted);font-family:monospace">${p.referencia||''}</div></td><td style="color:var(--muted);font-size:12px;text-transform:uppercase">${p.categoria||''}</td><td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.precio).toFixed(2)}</td><td><span class="stock-badge ${sc}">${p.stock===0?'Sin stock':p.stock<=5?p.stock+' ⚠️':p.stock+' uds'}</span></td><td style="color:${p.destacado?'var(--gold)':'var(--muted)'}">${p.destacado?'⭐':'No'}</td><td><div class="actions-wrap"><button class="btn-sm" onclick="editProduct('${p.id}')">✏️</button><button class="btn-red" onclick="deleteProduct('${p.id}','${p.nombre}')">🗑️</button></div></td></tr>`;
+    return `<tr><td>${imgUrl?`<img src="${imgUrl}" class="prod-thumb" onerror="this.style.display='none'">`:`<div class="prod-thumb-ph">🔩</div>`}</td><td><div style="font-weight:500;color:var(--white)">${p.nombre}</div><div style="font-size:10px;color:var(--muted);font-family:monospace">${p.referencia||''}</div></td><td style="color:var(--muted);font-size:12px;text-transform:uppercase">${p.categoria||''}</td><td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.precio).toFixed(2)}</td><td><span class="stock-badge ${sc}">${p.stock===0?'Sin stock':p.stock<=5?p.stock+' ⚠️':p.stock+' uds'}</span></td><td style="color:${p.destacado?'var(--gold)':'var(--muted)'}">${p.destacado?'⭐':'No'}</td><td><div class="actions-wrap"><button class="btn-sm" onclick="editProduct('${p.id}')">✏️</button><button class="btn-green" onclick="agregarStock('${p.id}','${p.nombre}',${p.stock})" style="font-size:10px;padding:5px 8px">+ Stock</button><button class="btn-red" onclick="deleteProduct('${p.id}','${p.nombre}')">🗑️</button></div></td></tr>`;
   }).join('');
 }
 
@@ -673,7 +673,9 @@ function renderPedidos(){
   const filtered=filtro?allPedidos.filter(p=>p.estado===filtro):allPedidos;
   if(!filtered.length){document.getElementById('pedidos-tbody').innerHTML='<tr><td colspan="9" class="empty-state">No hay pedidos</td></tr>';return;}
   document.getElementById('pedidos-tbody').innerHTML=filtered.map(p=>{
-    const fecha=new Date(p.created_at).toLocaleDateString('es-EC',{day:'2-digit',month:'2-digit',year:'numeric'});
+    const dt=new Date(p.created_at);
+    const fecha=dt.toLocaleDateString('es-EC',{day:'2-digit',month:'2-digit',year:'numeric'});
+    const hora=dt.toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit'});
     const prods=(p.productos||[]).map(i=>`${i.nombre} x${i.cantidad}`).join(', ');
     return `<tr>
       <td><input type="checkbox" class="pedido-check" value="${p.id}" style="cursor:pointer"></td>
@@ -683,7 +685,7 @@ function renderPedidos(){
       <td style="font-size:11px;color:var(--muted);max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prods}</td>
       <td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.total).toFixed(2)}</td>
       <td><span class="estado-badge e-${p.estado}">${p.estado}</span></td>
-      <td style="font-size:11px;color:var(--muted)">${fecha}</td>
+      <td style="font-size:11px;color:var(--muted)">${fecha}<br><span style="color:var(--steel)">${hora}</span></td>
       <td><div class="actions-wrap">
         ${p.estado==='pendiente'?`<button class="btn-green" onclick="updatePedido('${p.id}','confirmado')">✅</button><button class="btn-red" onclick="updatePedido('${p.id}','cancelado')">❌</button>`:p.estado==='confirmado'?`<button class="btn-red" onclick="updatePedido('${p.id}','anulado')" style="font-size:11px;padding:5px 10px">🚫 Anular</button>`:''}
         <button class="btn-sm" onclick="waCliente('${p.cliente_telefono}','${p.codigo}')">💬</button>
@@ -702,19 +704,38 @@ async function eliminarPedidosSeleccionados(){
   const pin=prompt('🔐 Ingresa la clave para eliminar '+selected.length+' pedido(s):');
   if(pin!=='2468'){alert('❌ Clave incorrecta');return;}
   if(!confirm('¿Eliminar '+selected.length+' pedido(s) permanentemente? Esta acción no se puede deshacer.'))return;
+  let eliminados=0;
   for(const id of selected){
-    await db.from('pedidos').delete().eq('id',id);
+    const{error}=await db.from('pedidos').delete().eq('id',id);
+    if(!error)eliminados++;
   }
-  allPedidos=allPedidos.filter(p=>!selected.includes(p.id));
-  renderPedidos();
+  await loadPedidos();
   renderDashboard();
   document.getElementById('check-all').checked=false;
-  alert('✅ '+selected.length+' pedido(s) eliminado(s) correctamente');
+  alert('✅ '+eliminados+' pedido(s) eliminado(s) correctamente');
 }
 
 function exportarExcel(){
   const filtro=document.getElementById('filtro-estado').value;
   const filtered=filtro?allPedidos.filter(p=>p.estado===filtro):allPedidos;
+  if(!filtered.length){alert('No hay pedidos para exportar');return;}
+  const rows=[['Código','Cliente','Teléfono','Productos','Total USD','Estado','Fecha','Hora']];
+  filtered.forEach(p=>{
+    const dt=new Date(p.created_at);
+    const fecha=dt.toLocaleDateString('es-EC');
+    const hora=dt.toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit'});
+    const prods=(p.productos||[]).map(i=>i.nombre+' x'+i.cantidad).join(' | ');
+    rows.push([p.codigo,p.cliente_nombre,p.cliente_telefono,prods,parseFloat(p.total).toFixed(2),p.estado,fecha,hora]);
+  });
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='pedidos_ruizpsm_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
   if(!filtered.length){alert('No hay pedidos para exportar');return;}
   const rows=[['Código','Cliente','Teléfono','Productos','Total','Estado','Fecha']];
   filtered.forEach(p=>{
@@ -825,6 +846,21 @@ function editProduct(id){
   Object.entries(specMap).forEach(([key,id])=>{document.getElementById(id).value=specs[key]||'';});
   document.querySelector('[onclick="showTab(\'productos\',this)"]').click();
   setTimeout(()=>window.scrollTo({top:0,behavior:'smooth'}),100);
+}
+
+async function agregarStock(id,nombre,stockActual){
+  const cantidad=prompt(`➕ Agregar stock a "${nombre}"\n\nStock actual: ${stockActual} uds\n\n¿Cuántas unidades deseas agregar?`);
+  if(!cantidad||isNaN(parseInt(cantidad))||parseInt(cantidad)<=0){
+    if(cantidad!==null)alert('Ingresa una cantidad válida mayor a 0');
+    return;
+  }
+  const nuevoCantidad=parseInt(cantidad);
+  const nuevoStock=stockActual+nuevoCantidad;
+  const{error}=await db.from('productos').update({stock:nuevoStock}).eq('id',id);
+  if(error){alert('❌ Error al agregar stock');return;}
+  await loadProducts();
+  renderDashboard();
+  alert(`✅ Stock actualizado\n"${nombre}"\n${stockActual} + ${nuevoCantidad} = ${nuevoStock} unidades`);
 }
 
 async function deleteProduct(id,nombre){
