@@ -69,6 +69,7 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
 .e-pendiente{background:rgba(201,168,76,0.15);color:var(--gold)}
 .e-confirmado{background:rgba(37,211,102,0.15);color:var(--green)}
 .e-cancelado{background:rgba(226,75,74,0.15);color:var(--red)}
+.e-anulado{background:rgba(136,135,128,0.2);color:var(--muted)}
 .actions-wrap{display:flex;gap:6px;flex-wrap:wrap}
 .alert{padding:10px 14px;border-radius:4px;font-size:13px;margin-bottom:1rem}
 .alert.success{background:rgba(37,211,102,0.1);border:1px solid var(--green);color:var(--green)}
@@ -202,6 +203,26 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
             <div id="img-previews" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div>
             <div id="img-current" style="font-size:11px;color:var(--muted);margin-top:6px"></div>
           </div>
+          <div class="fg full" style="margin-top:0.5rem">
+            <div style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;padding-top:1rem;border-top:1px solid var(--steel)">
+              Especificaciones adicionales <span style="color:var(--muted);font-size:10px;font-weight:400;text-transform:none;letter-spacing:0">(opcionales)</span>
+            </div>
+            <div class="form-grid">
+              <div class="fg"><label>Marca / Fabricante</label><input type="text" id="s-marca" placeholder="Ej: SKF, Siemens, Bosch"></div>
+              <div class="fg"><label>Modelo</label><input type="text" id="s-modelo" placeholder="Ej: 6205-2Z, AC-200"></div>
+              <div class="fg"><label>Material</label><input type="text" id="s-material" placeholder="Ej: Acero inoxidable, Aluminio"></div>
+              <div class="fg"><label>Dimensiones</label><input type="text" id="s-dimensiones" placeholder="Ej: 25x52x15 mm"></div>
+              <div class="fg"><label>Peso</label><input type="text" id="s-peso" placeholder="Ej: 1.5 kg"></div>
+              <div class="fg"><label>Potencia</label><input type="text" id="s-potencia" placeholder="Ej: 2 HP, 1500W"></div>
+              <div class="fg"><label>Voltaje</label><input type="text" id="s-voltaje" placeholder="Ej: 110V, 220V, 380V"></div>
+              <div class="fg"><label>Velocidad / RPM</label><input type="text" id="s-rpm" placeholder="Ej: 1750 RPM"></div>
+              <div class="fg"><label>Presión máxima</label><input type="text" id="s-presion" placeholder="Ej: 150 PSI, 10 bar"></div>
+              <div class="fg"><label>Temperatura de operación</label><input type="text" id="s-temp" placeholder="Ej: -20°C a 120°C"></div>
+              <div class="fg"><label>País de origen</label><input type="text" id="s-origen" placeholder="Ej: Alemania, USA, China"></div>
+              <div class="fg"><label>Garantía</label><input type="text" id="s-garantia" placeholder="Ej: 12 meses, 6 meses"></div>
+              <div class="fg full"><label>Descripción / Notas adicionales</label><textarea id="s-descripcion" placeholder="Detalles adicionales del producto, aplicaciones, compatibilidad..." style="height:80px"></textarea></div>
+            </div>
+          </div>
         </div>
         <div style="display:flex;gap:8px;margin-top:1rem">
           <button class="btn-gold" onclick="saveProduct()" style="flex:2">💾 Guardar</button>
@@ -229,6 +250,7 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
           <option value="pendiente">Pendientes</option>
           <option value="confirmado">Confirmados</option>
           <option value="cancelado">Cancelados</option>
+          <option value="anulado">Anulados</option>
         </select>
       </div>
       <div style="overflow-x:auto">
@@ -602,7 +624,7 @@ function renderPedidos(){
   document.getElementById('pedidos-tbody').innerHTML=filtered.map(p=>{
     const fecha=new Date(p.created_at).toLocaleDateString('es-EC',{day:'2-digit',month:'2-digit',year:'numeric'});
     const prods=(p.productos||[]).map(i=>`${i.nombre} x${i.cantidad}`).join(', ');
-    return `<tr><td style="font-family:monospace;color:var(--gold);font-size:12px">${p.codigo}</td><td style="color:var(--white)">${p.cliente_nombre}</td><td style="color:var(--muted);font-size:12px">${p.cliente_telefono}</td><td style="font-size:11px;color:var(--muted);max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prods}</td><td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.total).toFixed(2)}</td><td><span class="estado-badge e-${p.estado}">${p.estado}</span></td><td style="font-size:11px;color:var(--muted)">${fecha}</td><td><div class="actions-wrap">${p.estado==='pendiente'?`<button class="btn-green" onclick="updatePedido('${p.id}','confirmado')">✅</button><button class="btn-red" onclick="updatePedido('${p.id}','cancelado')">❌</button>`:''}<button class="btn-sm" onclick="waCliente('${p.cliente_telefono}','${p.codigo}')">💬</button></div></td></tr>`;
+    return `<tr><td style="font-family:monospace;color:var(--gold);font-size:12px">${p.codigo}</td><td style="color:var(--white)">${p.cliente_nombre}</td><td style="color:var(--muted);font-size:12px">${p.cliente_telefono}</td><td style="font-size:11px;color:var(--muted);max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prods}</td><td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.total).toFixed(2)}</td><td><span class="estado-badge e-${p.estado}">${p.estado}</span></td><td style="font-size:11px;color:var(--muted)">${fecha}</td><td><div class="actions-wrap">${p.estado==='pendiente'?`<button class="btn-green" onclick="updatePedido('${p.id}','confirmado')">✅</button><button class="btn-red" onclick="updatePedido('${p.id}','cancelado')">❌</button>`:p.estado==='confirmado'?`<button class="btn-red" onclick="updatePedido('${p.id}','anulado')" style="font-size:11px;padding:5px 10px">🚫 Anular</button>`:''}<button class="btn-sm" onclick="waCliente('${p.cliente_telefono}','${p.codigo}')">💬</button></div></td></tr>`;
   }).join('');
 }
 
@@ -653,7 +675,10 @@ async function saveProduct(){
       }catch(e){console.error('Error subiendo imagen '+i,e);}
     }
   }
-  const data={nombre,referencia,categoria,precio,stock,destacado,imagenes};
+  const specs={};
+  const specFields={marca:'s-marca',modelo:'s-modelo',material:'s-material',dimensiones:'s-dimensiones',peso:'s-peso',potencia:'s-potencia',voltaje:'s-voltaje',rpm:'s-rpm',presion:'s-presion',temperatura:'s-temp',origen:'s-origen',garantia:'s-garantia',descripcion:'s-descripcion'};
+  Object.entries(specFields).forEach(([key,id])=>{const v=document.getElementById(id).value.trim();if(v)specs[key]=v;});
+  const data={nombre,referencia,categoria,precio,stock,destacado,especificaciones:specs,imagenes};
   if(imagen)data.imagen=imagen;
   let error;
   if(id){({error}=await db.from('productos').update(data).eq('id',id));}
@@ -690,6 +715,9 @@ function editProduct(id){
     wrap.appendChild(div);
   });
   if(imgs.length)document.getElementById('img-current').textContent=imgs.length+' imagen(es) actual(es). Selecciona nuevas para reemplazar.';
+  const specs=p.especificaciones||{};
+  const specMap={marca:'s-marca',modelo:'s-modelo',material:'s-material',dimensiones:'s-dimensiones',peso:'s-peso',potencia:'s-potencia',voltaje:'s-voltaje',rpm:'s-rpm',presion:'s-presion',temperatura:'s-temp',origen:'s-origen',garantia:'s-garantia',descripcion:'s-descripcion'};
+  Object.entries(specMap).forEach(([key,id])=>{document.getElementById(id).value=specs[key]||'';});
   document.querySelector('[onclick="showTab(\'productos\',this)"]').click();
   setTimeout(()=>window.scrollTo({top:0,behavior:'smooth'}),100);
 }
@@ -701,8 +729,22 @@ async function deleteProduct(id,nombre){
 }
 
 async function updatePedido(id,estado){
+  if(estado==='anulado'){
+    const pedido=allPedidos.find(p=>p.id===id);
+    if(!pedido)return;
+    const pin=prompt('🔐 Ingresa la clave para anular el pedido '+pedido.codigo+':');
+    if(pin!=='2468'){alert('❌ Clave incorrecta. No se puede anular el pedido.');return;}
+    if(!confirm('¿Confirmas anular el pedido '+pedido.codigo+'?\n\nEl stock de los productos se devolverá automáticamente.'))return;
+    const prods=pedido.productos||[];
+    for(const item of prods){
+      const{data:prod}=await db.from('productos').select('stock').eq('id',item.id).single();
+      if(prod)await db.from('productos').update({stock:prod.stock+item.cantidad}).eq('id',item.id);
+    }
+  }
   await db.from('pedidos').update({estado}).eq('id',id);
-  await loadPedidos();renderDashboard();
+  await loadPedidos();
+  await loadProducts();
+  renderDashboard();
 }
 
 function waCliente(tel,codigo){
@@ -716,6 +758,7 @@ function resetForm(){
   document.getElementById('p-img').value='';
   document.getElementById('img-previews').innerHTML='';
   document.getElementById('img-current').textContent='';
+  ['s-marca','s-modelo','s-material','s-dimensiones','s-peso','s-potencia','s-voltaje','s-rpm','s-presion','s-temp','s-origen','s-garantia','s-descripcion'].forEach(id=>document.getElementById(id).value='');
 }
 
 function updateSecurityInfo(){
