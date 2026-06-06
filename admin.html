@@ -3,767 +3,452 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin | Ruiz PSM</title>
+<meta name="description" content="Ruiz PSM - Purchases, Sale & Manufacturing. Repuestos y maquinaria industrial.">
+<title>Ruiz PSM | Purchases, Sale & Manufacturing</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--gold:#C9A84C;--gold2:#dbb95a;--dark:#0A0C10;--navy:#0D1B2A;--steel:#1E3A5F;--light:#F4F6F8;--muted:#8A9BB0;--white:#fff;--red:#E24B4A;--green:#25D366}
-body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;min-height:100vh}
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
-.login-box{background:var(--navy);border:1px solid var(--gold);border-radius:8px;padding:2.5rem;max-width:400px;width:100%}
-.login-title{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.5rem}
-.login-sub{font-size:13px;color:var(--muted);margin-bottom:2rem}
+body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif}
+a{text-decoration:none;color:inherit}
+nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);border-bottom:1px solid var(--gold);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;backdrop-filter:blur(8px)}
+.nav-brand{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+.nav-brand span{color:var(--white)}
+.nav-logo{height:40px;width:auto;object-fit:contain;display:none}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:color 0.2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-wa{background:var(--gold);color:#0A0C10;padding:8px 18px;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.nav-wa:hover{background:var(--gold2)}
+.hero{background:linear-gradient(135deg,#0A0C10 0%,#0D1B2A 60%,#0A1628 100%);padding:5rem 2rem 4rem;text-align:center;border-bottom:1px solid var(--steel);position:relative;overflow:hidden}
+.hero-gear{position:absolute;font-size:250px;opacity:0.03;pointer-events:none;line-height:1}
+.hero-badge{display:inline-block;background:rgba(201,168,76,0.1);border:1px solid var(--gold);color:var(--gold);font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:5px 16px;border-radius:2px;margin-bottom:1.5rem}
+.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(32px,6vw,68px);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:3px;line-height:1}
+.hero h1 span{color:var(--gold)}
+.hero-slogan{font-size:13px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:6px}
+.hero-sub{font-size:15px;color:var(--muted);margin-top:1rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7}
+.hero-stats{display:flex;justify-content:center;gap:3rem;margin-top:3rem;flex-wrap:wrap}
+.hero-stat-num{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;color:var(--gold)}
+.hero-stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px}
+.hero-btns{display:flex;gap:1rem;justify-content:center;margin-top:2.5rem;flex-wrap:wrap}
+.btn-gold{background:var(--gold);color:#0A0C10;padding:14px 32px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:4px;cursor:pointer}
+.btn-gold:hover{background:var(--gold2)}
+.btn-out{background:transparent;color:var(--gold);padding:14px 32px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--gold);border-radius:4px;display:inline-block}
+.btn-out:hover{background:var(--gold);color:#0A0C10}
+section{padding:4rem 2rem}
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:0.5rem}
+.sec-line{width:60px;height:2px;background:var(--gold);margin:0 auto 3rem}
+.cats-wrap{display:flex;gap:1px;background:var(--steel);max-width:900px;margin:0 auto;flex-wrap:wrap}
+.cat-btn{flex:1;min-width:120px;background:var(--navy);padding:1.25rem;text-align:center;cursor:pointer;transition:background 0.2s;border:none;color:var(--white)}
+.cat-btn:hover,.cat-btn.active{background:#0F2035}
+.cat-btn.active{border-bottom:2px solid var(--gold)}
+.cat-icon{font-size:28px;display:block;margin-bottom:6px}
+.cat-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--white)}
+.cat-count{font-size:10px;color:var(--muted);margin-top:2px}
+.prods-section{background:#080A0D;padding:4rem 2rem}
+.search-wrap{display:flex;max-width:500px;margin:0 auto 2rem;background:var(--navy);border:1px solid var(--steel);border-radius:4px;padding:8px 12px;align-items:center;gap:8px}
+.search-wrap input{flex:1;background:transparent;border:none;outline:none;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif}
+.search-wrap input::placeholder{color:var(--muted)}
+.prods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1px;background:var(--steel);max-width:1100px;margin:0 auto}
+.prod-card{background:var(--navy);transition:background 0.2s;position:relative;display:flex;flex-direction:column}
+.prod-card:hover{background:#0F2035}
+.prod-card.out{opacity:0.6}
+.prod-img{width:100%;height:180px;object-fit:cover;background:#0A0C10;display:block}
+.prod-img-placeholder{width:100%;height:180px;background:#0A0C10;display:flex;align-items:center;justify-content:center;font-size:48px}
+.prod-body{padding:1.25rem;flex:1;display:flex;flex-direction:column}
+.prod-badges{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.badge-cat{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-weight:600}
+.badge-dest{background:var(--gold);color:#0A0C10;font-size:9px;font-weight:700;padding:2px 6px;border-radius:2px;text-transform:uppercase;letter-spacing:1px}
+.prod-name{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:600;color:var(--white);margin-bottom:4px;line-height:1.2}
+.prod-ref{font-size:10px;color:var(--muted);font-family:monospace;letter-spacing:1px;margin-bottom:10px}
+.prod-price{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--gold);margin-top:auto}
+.prod-price small{font-size:12px;font-weight:400;color:var(--muted)}
+.stk-wrap{margin-top:10px}
+.stk-top{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px}
+.stk-bar{height:2px;background:var(--steel);border-radius:2px;overflow:hidden}
+.stk-fill{height:100%;border-radius:2px}
+.s-ok{background:var(--gold)}
+.s-low{background:var(--red)}
+.add-btn{width:100%;margin-top:12px;background:transparent;border:1px solid var(--gold);color:var(--gold);padding:9px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all 0.2s}
+.add-btn:hover{background:var(--gold);color:#0A0C10}
+.out-tag{font-size:10px;color:var(--red);text-transform:uppercase;letter-spacing:1px;text-align:center;margin-top:12px}
+.loading-msg{grid-column:1/-1;text-align:center;padding:4rem;color:var(--muted);font-size:15px}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:900px;margin:0 auto;align-items:center}
+.about-text p{color:var(--muted);line-height:1.8;margin-bottom:1rem;font-size:15px}
+.about-feats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
+.feat{background:var(--navy);border:1px solid var(--steel);border-left:3px solid var(--gold);padding:1rem}
+.feat-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.feat-desc{font-size:12px;color:var(--muted)}
+.contact-sec{background:#080A0D}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:800px;margin:0 auto}
+.contact-info h3,.contact-form h3{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem}
+.c-item{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
+.c-ico{font-size:22px}
+.c-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.c-val{font-size:14px;color:var(--white)}
+.c-val a{color:var(--gold)}
+.wa-btn{display:block;background:var(--green);color:#fff;text-align:center;padding:14px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;border-radius:4px;margin-top:2rem}
+.wa-btn:hover{background:#1ebe5a}
 .fg{margin-bottom:1rem}
 .fg label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px}
-.fg input,.fg select,.fg textarea{width:100%;background:var(--dark);border:1px solid var(--steel);border-radius:4px;padding:10px 14px;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif;outline:none;transition:border 0.2s}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold)}
-.fg textarea{height:80px;resize:vertical}
-.fg select option{background:var(--dark)}
-.fg-hint{font-size:11px;color:var(--muted);margin-top:4px}
-.btn-gold{width:100%;background:var(--gold);color:#0A0C10;border:none;padding:12px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:background 0.2s}
-.btn-gold:hover{background:var(--gold2)}
-.btn-sm{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:6px 14px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all 0.2s}
-.btn-sm:hover{background:var(--gold);color:#0A0C10}
-.btn-red{background:transparent;border:1px solid var(--red);color:var(--red);padding:6px 14px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:3px}
-.btn-red:hover{background:var(--red);color:#fff}
-.btn-green{background:var(--green);border:none;color:#fff;padding:6px 14px;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:3px}
-.btn-outline-full{width:100%;background:transparent;border:1px solid var(--steel);color:var(--muted);padding:10px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all 0.2s;margin-top:8px}
-.btn-outline-full:hover{border-color:var(--gold);color:var(--gold)}
-.login-err{color:var(--red);font-size:13px;margin-top:1rem;text-align:center;display:none}
-#admin-panel{display:none}
-.admin-nav{background:var(--navy);border-bottom:1px solid var(--gold);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:60px;position:sticky;top:0;z-index:100}
-.admin-brand{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
-.admin-brand span{color:var(--white)}
-.admin-tabs{display:flex;gap:0}
-.tab-btn{background:transparent;border:none;color:var(--muted);padding:0 1rem;height:60px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s}
-.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
-.tab-btn:hover{color:var(--white)}
-.logout-btn{background:transparent;border:1px solid var(--steel);color:var(--muted);padding:6px 14px;font-size:12px;cursor:pointer;border-radius:3px}
-.logout-btn:hover{border-color:var(--red);color:var(--red)}
-.admin-content{padding:2rem;max-width:1200px;margin:0 auto}
-.tab-content{display:none}
-.tab-content.active{display:block}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
-.stat-card{background:var(--navy);border:1px solid var(--steel);border-radius:6px;padding:1.25rem;text-align:center}
-.stat-card.gold{border-color:var(--gold)}
-.stat-num{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;color:var(--gold)}
-.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
-.card{background:var(--navy);border:1px solid var(--steel);border-radius:6px;padding:1.5rem;margin-bottom:1.5rem}
-.card-title{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.25rem}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.form-grid .full{grid-column:1/-1}
-.img-preview{width:100%;height:150px;object-fit:cover;border-radius:4px;margin-top:8px;display:none}
-.logo-preview{width:120px;height:120px;object-fit:contain;border-radius:4px;margin-top:8px;display:none;background:var(--dark);border:1px solid var(--steel);padding:8px}
-.prods-table{width:100%;border-collapse:collapse}
-.prods-table th{text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:8px 12px;border-bottom:1px solid var(--steel)}
-.prods-table td{padding:10px 12px;border-bottom:1px solid rgba(30,58,95,0.5);font-size:13px;vertical-align:middle}
-.prods-table tr:hover td{background:rgba(13,27,42,0.5)}
-.prod-thumb{width:48px;height:48px;object-fit:cover;border-radius:4px}
-.prod-thumb-ph{width:48px;height:48px;background:var(--dark);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:20px}
-.stock-badge{padding:3px 8px;border-radius:3px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
-.stock-ok{background:rgba(201,168,76,0.15);color:var(--gold)}
-.stock-low{background:rgba(226,75,74,0.15);color:var(--red)}
-.stock-out{background:rgba(226,75,74,0.3);color:var(--red)}
-.estado-badge{padding:3px 8px;border-radius:3px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
-.e-pendiente{background:rgba(201,168,76,0.15);color:var(--gold)}
-.e-confirmado{background:rgba(37,211,102,0.15);color:var(--green)}
-.e-cancelado{background:rgba(226,75,74,0.15);color:var(--red)}
-.actions-wrap{display:flex;gap:6px;flex-wrap:wrap}
-.alert{padding:10px 14px;border-radius:4px;font-size:13px;margin-bottom:1rem}
-.alert.success{background:rgba(37,211,102,0.1);border:1px solid var(--green);color:var(--green)}
-.alert.error{background:rgba(226,75,74,0.1);border:1px solid var(--red);color:var(--red)}
-.chart-bar-wrap{margin-top:1rem}
-.chart-row{display:flex;align-items:center;gap:1rem;margin-bottom:8px}
-.chart-label{font-size:12px;color:var(--muted);min-width:120px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chart-bar-bg{flex:1;height:20px;background:var(--dark);border-radius:3px;overflow:hidden}
-.chart-bar-fill{height:100%;background:var(--gold);border-radius:3px;transition:width 0.5s}
-.chart-val{font-size:12px;color:var(--gold);min-width:50px;font-family:'Rajdhani',sans-serif;font-weight:600}
-.empty-state{text-align:center;padding:2rem;color:var(--muted);font-size:14px}
-.sec-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-.sec-card{background:var(--navy);border:1px solid var(--steel);border-radius:6px;padding:1.5rem}
-.sec-card-title{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--steel)}
-.current-info{background:var(--dark);border:1px solid var(--steel);border-radius:4px;padding:10px 14px;margin-bottom:1rem}
-.current-info-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.current-info-val{font-size:14px;color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:600}
-.verify-step{display:none}
-.verify-step.show{display:block}
-.step-indicator{display:flex;gap:8px;margin-bottom:1.5rem;align-items:center}
-.step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--steel);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);flex-shrink:0}
-.step-dot.active{border-color:var(--gold);color:var(--gold)}
-.step-dot.done{background:var(--gold);border-color:var(--gold);color:#0A0C10}
-.step-line{flex:1;height:2px;background:var(--steel)}
-.step-line.done{background:var(--gold)}
-.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
-.section-hdr h2{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px}
-.config-section{margin-bottom:2rem}
-.config-section-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:2px;margin-bottom:1rem;padding-bottom:8px;border-bottom:1px solid var(--steel);display:flex;align-items:center;gap:8px}
-.preview-box{background:var(--dark);border:1px solid var(--steel);border-radius:6px;padding:1.5rem;margin-top:1rem}
-.preview-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem}
-.preview-hero{background:linear-gradient(135deg,#0A0C10,#0D1B2A);padding:1.5rem;border-radius:4px;text-align:center}
-.preview-brand{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:2px}
-.preview-slogan{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
-.preview-hero-title{font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--white);margin-top:8px}
-.preview-hero-sub{font-size:12px;color:var(--muted);margin-top:4px}
-.preview-contact{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem}
-.preview-contact-item{background:rgba(30,58,95,0.3);border-radius:4px;padding:8px;font-size:11px}
-.preview-contact-label{color:var(--muted);margin-bottom:2px}
-.preview-contact-val{color:var(--white);font-weight:500}
-@media(max-width:768px){.form-grid,.sec-grid{grid-template-columns:1fr}.admin-tabs .tab-btn{padding:0 0.6rem;font-size:10px}.preview-contact{grid-template-columns:1fr}}
+.fg input,.fg textarea{width:100%;background:var(--navy);border:1px solid var(--steel);border-radius:4px;padding:10px 14px;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif;outline:none}
+.fg input:focus,.fg textarea:focus{border-color:var(--gold)}
+.fg textarea{height:100px;resize:vertical}
+.f-submit{width:100%;background:var(--gold);color:#0A0C10;border:none;padding:12px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:4px}
+.f-submit:hover{background:var(--gold2)}
+.social-links{display:flex;gap:12px;margin-top:1rem}
+.social-btn{background:var(--navy);border:1px solid var(--steel);color:var(--muted);padding:8px 16px;border-radius:4px;font-size:13px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px}
+.social-btn:hover{border-color:var(--gold);color:var(--gold)}
+footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-align:center}
+.f-brand{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+.f-brand span{color:var(--white)}
+.f-copy{font-size:11px;color:var(--muted);margin-top:0.5rem}
+.cart-float{position:fixed;bottom:2rem;right:2rem;z-index:200}
+.cart-fab{background:var(--gold);color:#0A0C10;border:none;width:58px;height:58px;border-radius:50%;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,0.4);transition:transform 0.2s;position:relative}
+.cart-fab:hover{transform:scale(1.1)}
+.cart-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;border-radius:50%;width:22px;height:22px;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:300;align-items:center;justify-content:center;padding:1rem}
+.modal-ov.open{display:flex}
+.modal-box{background:var(--navy);border:1px solid var(--gold);border-radius:8px;max-width:460px;width:100%;padding:2rem;max-height:85vh;overflow-y:auto}
+.modal-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--gold);margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:1px}
+.modal-empty{text-align:center;color:var(--muted);padding:2rem 0;font-size:14px}
+.m-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--steel);gap:8px}
+.m-item-info{flex:1}
+.m-item-name{font-size:13px;color:var(--white);font-weight:500}
+.m-item-ref{font-size:10px;color:var(--muted);font-family:monospace}
+.m-item-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.qty-btn{background:var(--steel);border:none;color:var(--white);width:26px;height:26px;border-radius:3px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.qty-num{font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold);min-width:24px;text-align:center}
+.m-item-price{font-family:'Rajdhani',sans-serif;font-size:15px;color:var(--gold);min-width:65px;text-align:right}
+.m-total{font-family:'Rajdhani',sans-serif;font-size:22px;color:var(--gold);text-align:right;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--steel)}
+.checkout-form{margin-top:1.5rem;border-top:1px solid var(--steel);padding-top:1.5rem}
+.checkout-title{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem}
+.m-actions{display:flex;gap:8px;margin-top:1rem}
+.m-close{flex:1;background:transparent;border:1px solid var(--steel);color:var(--muted);padding:10px;cursor:pointer;border-radius:4px;font-size:13px}
+.m-confirm{flex:2;background:var(--gold);border:none;color:#0A0C10;padding:10px;cursor:pointer;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.m-confirm:hover{background:var(--gold2)}
+.toast{position:fixed;bottom:6rem;right:2rem;background:var(--navy);border:1px solid var(--gold);color:var(--white);padding:12px 20px;border-radius:6px;font-size:13px;z-index:400;display:none;max-width:280px}
+.toast.show{display:block}
+.toast.success{border-color:var(--green);color:var(--green)}
+.toast.error{border-color:var(--red);color:var(--red)}
+@media(max-width:768px){.nav-links{display:none}.about-grid,.contact-grid{grid-template-columns:1fr}.about-feats{grid-template-columns:1fr}.hero-stats{gap:1.5rem}}
 </style>
 </head>
 <body>
+<nav>
+  <div style="display:flex;align-items:center;gap:12px">
+    <img id="nav-logo" class="nav-logo" src="" alt="Logo">
+    <div class="nav-brand" id="nav-brand"><span>RUIZ</span> PSM</div>
+  </div>
+  <div class="nav-links">
+    <a href="#productos">Productos</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+  <a id="nav-wa-btn" href="https://wa.me/593969889751" target="_blank" class="nav-wa">📱 WhatsApp</a>
+</nav>
 
-<!-- LOGIN -->
-<div class="login-wrap" id="login-screen">
-  <div class="login-box">
-    <div class="login-title">🔐 Admin Panel</div>
-    <div class="login-sub">Ruiz PSM · Acceso Administrador</div>
-    <div class="fg"><label>Usuario</label><input type="text" id="l-user" placeholder="Usuario admin" autocomplete="username"></div>
-    <div class="fg"><label>Contraseña</label><input type="password" id="l-pass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password"></div>
-    <button class="btn-gold" onclick="doLogin()">Ingresar al Panel</button>
-    <button class="btn-outline-full" onclick="showRecovery()">¿Olvidaste tu contraseña?</button>
-    <div class="login-err" id="login-err">❌ Usuario o contraseña incorrectos</div>
-    <div id="recovery-box" style="display:none;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--steel)">
-      <div style="font-family:'Rajdhani',sans-serif;font-size:14px;color:var(--gold);margin-bottom:1rem;text-transform:uppercase;letter-spacing:1px">🔑 Recuperar acceso</div>
-      <div class="fg"><label>Email de recuperación</label><input type="email" id="r-email" placeholder="Tu email registrado"></div>
-      <button class="btn-gold" onclick="verifyRecoveryEmail()">Verificar email</button>
-      <div id="recovery-step2" style="display:none;margin-top:1rem">
-        <div class="fg"><label>Nueva contraseña</label><input type="password" id="r-newpass" placeholder="Mínimo 8 caracteres"></div>
-        <div class="fg"><label>Confirmar contraseña</label><input type="password" id="r-confirmpass" placeholder="Repite la contraseña"></div>
-        <button class="btn-gold" onclick="doRecovery()">Cambiar contraseña</button>
+<section class="hero">
+  <div class="hero-gear" style="right:-60px;top:-60px">⚙</div>
+  <div class="hero-gear" style="left:-40px;bottom:-60px">🔧</div>
+  <div class="hero-badge" id="hero-badge">Purchases · Sale · Manufacturing</div>
+  <h1 id="hero-title"><span>RUIZ</span> PSM</h1>
+  <p class="hero-slogan" id="hero-slogan">Purchases, Sale & Manufacturing</p>
+  <p class="hero-sub" id="hero-sub">Tu proveedor de confianza en repuestos y maquinaria industrial.</p>
+  <div class="hero-stats">
+    <div><div class="hero-stat-num" id="stat-prods">...</div><div class="hero-stat-label">Productos</div></div>
+    <div><div class="hero-stat-num">100%</div><div class="hero-stat-label">Calidad</div></div>
+    <div><div class="hero-stat-num">24h</div><div class="hero-stat-label">Atención</div></div>
+  </div>
+  <div class="hero-btns">
+    <button class="btn-gold" onclick="document.getElementById('productos').scrollIntoView({behavior:'smooth'})">Ver Catálogo</button>
+    <a id="hero-wa-btn" href="https://wa.me/593969889751" target="_blank" class="btn-out">Contactar ahora</a>
+  </div>
+</section>
+
+<section style="padding:3rem 2rem;background:var(--dark)">
+  <div class="sec-title">Categorías</div>
+  <div class="sec-line"></div>
+  <div class="cats-wrap" id="cats-wrap">
+    <button class="cat-btn active" onclick="filterCat('todos',this)">
+      <span class="cat-icon">🏭</span>
+      <div class="cat-name">Todos</div>
+      <div class="cat-count" id="count-todos">...</div>
+    </button>
+  </div>
+</section>
+
+<section class="prods-section" id="productos">
+  <div class="sec-title">Nuestros Productos</div>
+  <div class="sec-line"></div>
+  <div class="search-wrap">
+    <span>🔍</span>
+    <input type="text" id="search" placeholder="Buscar producto, referencia..." oninput="renderProds()">
+  </div>
+  <div id="grid" class="prods-grid">
+    <div class="loading-msg">⚙️ Cargando productos...</div>
+  </div>
+</section>
+
+<section id="nosotros" style="background:var(--dark)">
+  <div class="sec-title">Sobre Nosotros</div>
+  <div class="sec-line"></div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Ruiz PSM nace con el compromiso de ofrecer repuestos y maquinaria de alta calidad para el sector industrial y agrícola.</p>
+      <p>Contamos con un amplio catálogo de productos para mantener tu maquinaria funcionando al máximo rendimiento, con atención personalizada y precios competitivos.</p>
+      <div class="about-feats">
+        <div class="feat"><div class="feat-title">Calidad</div><div class="feat-desc">Productos certificados y garantizados</div></div>
+        <div class="feat"><div class="feat-title">Rapidez</div><div class="feat-desc">Entrega ágil a todo destino</div></div>
+        <div class="feat"><div class="feat-title">Precios</div><div class="feat-desc">Los mejores precios del mercado</div></div>
+        <div class="feat"><div class="feat-title">Soporte</div><div class="feat-desc">Asesoría técnica especializada</div></div>
       </div>
-      <div id="recovery-msg" style="font-size:12px;margin-top:8px"></div>
     </div>
+    <div style="background:var(--navy);border:1px solid var(--steel);padding:2rem;text-align:center">
+      <div style="font-size:80px">⚙️</div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:48px;font-weight:700;color:var(--gold);margin-top:1rem">100%</div>
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:8px">Compromiso con la calidad</div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-sec" id="contacto">
+  <div class="sec-title">Contacto</div>
+  <div class="sec-line"></div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <h3>Encuéntranos</h3>
+      <div class="c-item"><span class="c-ico">📍</span><div><div class="c-label">Dirección</div><div class="c-val" id="c-direccion">53 South St, Newark, NJ 07102</div></div></div>
+      <div class="c-item"><span class="c-ico">📱</span><div><div class="c-label">WhatsApp</div><div class="c-val" id="c-whatsapp">+593 969 889 751</div></div></div>
+      <div class="c-item" id="c-tel-wrap" style="display:none"><span class="c-ico">📞</span><div><div class="c-label">Teléfono</div><div class="c-val" id="c-telefono"></div></div></div>
+      <div class="c-item" id="c-email-wrap" style="display:none"><span class="c-ico">📧</span><div><div class="c-label">Email</div><div class="c-val" id="c-email"></div></div></div>
+      <div class="c-item"><span class="c-ico">⏰</span><div><div class="c-label">Horario</div><div class="c-val" id="c-horario">Lun - Sáb: 8:00 - 18:00</div></div></div>
+      <div id="social-wrap" style="display:none" class="social-links"></div>
+      <a id="contact-wa-btn" href="https://wa.me/593969889751" target="_blank" class="wa-btn">💬 Escribir por WhatsApp</a>
+    </div>
+    <div class="contact-form">
+      <h3>Enviar mensaje</h3>
+      <div class="fg"><label>Nombre</label><input type="text" id="f-nombre" placeholder="Tu nombre completo"></div>
+      <div class="fg"><label>Teléfono</label><input type="tel" id="f-tel" placeholder="Tu número de contacto"></div>
+      <div class="fg"><label>Mensaje</label><textarea id="f-msg" placeholder="¿En qué podemos ayudarte?"></textarea></div>
+      <button class="f-submit" onclick="sendWA()">Enviar por WhatsApp</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-brand" id="footer-brand"><span>RUIZ</span> PSM</div>
+  <div style="font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:1px" id="footer-slogan">Purchases, Sale & Manufacturing</div>
+  <div class="f-copy">© 2026 Ruiz PSM · Todos los derechos reservados</div>
+</footer>
+
+<div class="cart-float">
+  <button class="cart-fab" onclick="openCart()">🛒<span class="cart-badge" id="cart-badge"></span></button>
+</div>
+
+<div class="modal-ov" id="modal" onclick="if(event.target===this)closeCart()">
+  <div class="modal-box">
+    <div class="modal-title">🛒 Tu Pedido</div>
+    <div id="modal-body"></div>
+    <div id="modal-footer"></div>
   </div>
 </div>
 
-<!-- ADMIN PANEL -->
-<div id="admin-panel">
-  <nav class="admin-nav">
-    <div class="admin-brand"><span>RUIZ</span> PSM</div>
-    <div class="admin-tabs">
-      <button class="tab-btn active" onclick="showTab('dashboard',this)">📊 Dashboard</button>
-      <button class="tab-btn" onclick="showTab('productos',this)">📦 Productos</button>
-      <button class="tab-btn" onclick="showTab('pedidos',this)">📋 Pedidos</button>
-      <button class="tab-btn" onclick="showTab('configuracion',this)">⚙️ Configuración</button>
-      <button class="tab-btn" onclick="showTab('seguridad',this)">🔐 Seguridad</button>
-    </div>
-    <button class="logout-btn" onclick="doLogout()">Salir</button>
-  </nav>
-
-  <div class="admin-content">
-
-    <!-- DASHBOARD -->
-    <div class="tab-content active" id="tab-dashboard">
-      <div class="stats-grid">
-        <div class="stat-card gold"><div class="stat-num" id="s-total-prods">0</div><div class="stat-label">Productos</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-total-pedidos">0</div><div class="stat-label">Total Pedidos</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-pendientes">0</div><div class="stat-label">Pendientes</div></div>
-        <div class="stat-card gold"><div class="stat-num" id="s-ingresos">$0</div><div class="stat-label">Ingresos</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-stock-bajo">0</div><div class="stat-label">Stock Bajo</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-sin-stock">0</div><div class="stat-label">Sin Stock</div></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
-        <div class="card"><div class="card-title">📦 Más vendidos</div><div id="chart-vendidos"><div class="empty-state">Sin datos aún</div></div></div>
-        <div class="card"><div class="card-title">⚠️ Alertas de stock</div><div id="stock-alerts"><div class="empty-state">Todo en orden ✅</div></div></div>
-      </div>
-      <div class="card" style="margin-top:1.5rem"><div class="card-title">📋 Últimos pedidos</div><div id="recent-pedidos"><div class="empty-state">Sin pedidos aún</div></div></div>
-    </div>
-
-    <!-- PRODUCTOS -->
-    <div class="tab-content" id="tab-productos">
-      <div class="card">
-        <div class="card-title">➕ Agregar / Editar Producto</div>
-        <div id="prod-alert"></div>
-        <input type="hidden" id="edit-id">
-        <div class="form-grid">
-          <div class="fg"><label>Nombre *</label><input type="text" id="p-nombre" placeholder="Ej: Rodamiento SKF 6205"></div>
-          <div class="fg"><label>Referencia</label><input type="text" id="p-ref" placeholder="Ej: ROD-6205"></div>
-          <div class="fg"><label>Categoría *</label>
-            <select id="p-cat">
-              <option value="">Seleccionar...</option>
-              <option value="repuestos">Repuestos</option>
-              <option value="maquinaria">Maquinaria</option>
-              <option value="herramientas">Herramientas</option>
-              <option value="motores">Motores</option>
-              <option value="bombas">Bombas</option>
-            </select>
-          </div>
-          <div class="fg"><label>Precio (USD) *</label><input type="number" id="p-precio" placeholder="0.00" min="0" step="0.01"></div>
-          <div class="fg"><label>Stock *</label><input type="number" id="p-stock" placeholder="0" min="0"></div>
-          <div class="fg"><label>¿Destacado?</label>
-            <select id="p-dest"><option value="false">No</option><option value="true">⭐ Sí</option></select>
-          </div>
-          <div class="fg full"><label>Imagen del producto</label>
-            <input type="file" id="p-img" accept="image/*" onchange="previewImg(this)">
-            <img id="img-preview" class="img-preview">
-            <div id="img-current" style="font-size:11px;color:var(--muted);margin-top:6px"></div>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:1rem">
-          <button class="btn-gold" onclick="saveProduct()" style="flex:2">💾 Guardar</button>
-          <button class="btn-sm" onclick="resetForm()" style="flex:1">Limpiar</button>
-        </div>
-      </div>
-      <div class="section-hdr">
-        <h2>Catálogo</h2>
-        <span style="font-size:12px;color:var(--muted)" id="prod-count"></span>
-      </div>
-      <div style="overflow-x:auto">
-        <table class="prods-table">
-          <thead><tr><th>Img</th><th>Producto</th><th>Cat.</th><th>Precio</th><th>Stock</th><th>Dest.</th><th>Acciones</th></tr></thead>
-          <tbody id="prods-tbody"><tr><td colspan="7" class="empty-state">Cargando...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- PEDIDOS -->
-    <div class="tab-content" id="tab-pedidos">
-      <div class="section-hdr">
-        <h2>Pedidos</h2>
-        <select id="filtro-estado" onchange="renderPedidos()" style="background:var(--navy);border:1px solid var(--steel);color:var(--light);padding:6px 10px;border-radius:4px;font-size:12px">
-          <option value="">Todos</option>
-          <option value="pendiente">Pendientes</option>
-          <option value="confirmado">Confirmados</option>
-          <option value="cancelado">Cancelados</option>
-        </select>
-      </div>
-      <div style="overflow-x:auto">
-        <table class="prods-table">
-          <thead><tr><th>Código</th><th>Cliente</th><th>Teléfono</th><th>Productos</th><th>Total</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
-          <tbody id="pedidos-tbody"><tr><td colspan="8" class="empty-state">Cargando...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- CONFIGURACIÓN -->
-    <div class="tab-content" id="tab-configuracion">
-      <div id="config-alert"></div>
-      <div style="display:grid;grid-template-columns:1fr 380px;gap:1.5rem;align-items:start">
-        <div>
-          <!-- IDENTIDAD -->
-          <div class="card">
-            <div class="card-title">🏭 Identidad del Negocio</div>
-            <div class="form-grid">
-              <div class="fg"><label>Nombre del negocio</label><input type="text" id="c-nombre" placeholder="Ej: Ruiz PSM"></div>
-              <div class="fg"><label>Slogan</label><input type="text" id="c-slogan" placeholder="Ej: Purchases, Sale & Manufacturing"></div>
-              <div class="fg full"><label>Logo del negocio</label>
-                <input type="file" id="c-logo" accept="image/*" onchange="previewLogo(this)">
-                <img id="logo-preview" class="logo-preview">
-                <div id="logo-current" style="font-size:11px;color:var(--muted);margin-top:6px"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- CONTACTO -->
-          <div class="card">
-            <div class="card-title">📱 Información de Contacto</div>
-            <div class="form-grid">
-              <div class="fg"><label>WhatsApp (con código de país)</label><input type="text" id="c-wa" placeholder="593969889751"><div class="fg-hint">Sin + ni espacios. Ej: 593969889751</div></div>
-              <div class="fg"><label>Teléfono fijo (opcional)</label><input type="text" id="c-tel" placeholder="+1 973 555 0000"></div>
-              <div class="fg"><label>Email de contacto</label><input type="email" id="c-email" placeholder="contacto@ruizpsm.com"></div>
-              <div class="fg"><label>Horario de atención</label><input type="text" id="c-horario" placeholder="Lun - Sáb: 8:00 - 18:00"></div>
-              <div class="fg full"><label>Dirección</label><input type="text" id="c-dir" placeholder="53 South St, Newark, NJ 07102"></div>
-            </div>
-          </div>
-
-          <!-- REDES SOCIALES -->
-          <div class="card">
-            <div class="card-title">📲 Redes Sociales</div>
-            <div class="form-grid">
-              <div class="fg"><label>Instagram (usuario)</label><input type="text" id="c-ig" placeholder="@ruizpsm"><div class="fg-hint">Solo el usuario, sin el link completo</div></div>
-              <div class="fg"><label>Facebook (usuario o link)</label><input type="text" id="c-fb" placeholder="ruizpsm"></div>
-            </div>
-          </div>
-
-          <!-- HERO -->
-          <div class="card">
-            <div class="card-title">🖼️ Texto Principal de la Tienda</div>
-            <div class="fg"><label>Título principal</label><input type="text" id="c-hero-titulo" placeholder="Tu proveedor de confianza"></div>
-            <div class="fg"><label>Subtítulo</label><input type="text" id="c-hero-sub" placeholder="Calidad garantizada y los mejores precios del mercado"></div>
-          </div>
-
-          <button class="btn-gold" onclick="saveConfig()" style="margin-bottom:2rem">💾 Guardar toda la configuración</button>
-        </div>
-
-        <!-- PREVIEW -->
-        <div style="position:sticky;top:80px">
-          <div class="preview-box">
-            <div class="preview-title">👁️ Vista previa en tiempo real</div>
-            <div class="preview-hero">
-              <div class="preview-brand" id="prev-nombre">RUIZ PSM</div>
-              <div class="preview-slogan" id="prev-slogan">Purchases, Sale & Manufacturing</div>
-              <div class="preview-hero-title" id="prev-hero-titulo">Tu proveedor de confianza</div>
-              <div class="preview-hero-sub" id="prev-hero-sub">Calidad garantizada y los mejores precios</div>
-            </div>
-            <div class="preview-contact">
-              <div class="preview-contact-item"><div class="preview-contact-label">📱 WhatsApp</div><div class="preview-contact-val" id="prev-wa">+593 969 889 751</div></div>
-              <div class="preview-contact-item"><div class="preview-contact-label">📍 Dirección</div><div class="preview-contact-val" id="prev-dir">Newark, NJ</div></div>
-              <div class="preview-contact-item"><div class="preview-contact-label">⏰ Horario</div><div class="preview-contact-val" id="prev-horario">Lun-Sáb 8-18h</div></div>
-              <div class="preview-contact-item"><div class="preview-contact-label">📧 Email</div><div class="preview-contact-val" id="prev-email">-</div></div>
-              <div class="preview-contact-item"><div class="preview-contact-label">📸 Instagram</div><div class="preview-contact-val" id="prev-ig">-</div></div>
-              <div class="preview-contact-item"><div class="preview-contact-label">👥 Facebook</div><div class="preview-contact-val" id="prev-fb">-</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SEGURIDAD -->
-    <div class="tab-content" id="tab-seguridad">
-      <div style="margin-bottom:1.5rem">
-        <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.5rem">🔐 Seguridad</div>
-        <div style="font-size:13px;color:var(--muted)">Cambia tus credenciales. Siempre se requiere verificación con tu contraseña actual.</div>
-      </div>
-      <div class="sec-grid">
-        <div class="sec-card">
-          <div class="sec-card-title">👤 Cambiar Usuario</div>
-          <div class="current-info"><div class="current-info-label">Usuario actual</div><div class="current-info-val" id="show-current-user">admin</div></div>
-          <div id="alert-user"></div>
-          <div class="step-indicator">
-            <div class="step-dot active" id="ud-dot1">1</div>
-            <div class="step-line" id="ud-line1"></div>
-            <div class="step-dot" id="ud-dot2">2</div>
-          </div>
-          <div id="ud-step1">
-            <div class="fg"><label>Contraseña actual</label><input type="password" id="ud-verify" placeholder="Tu contraseña actual"></div>
-            <button class="btn-gold" onclick="verifyForUser()">Verificar identidad</button>
-          </div>
-          <div class="verify-step" id="ud-step2">
-            <div class="fg"><label>Nuevo usuario</label><input type="text" id="ud-newuser" placeholder="Mínimo 4 caracteres"><div class="fg-hint">Solo letras, números y guiones bajos</div></div>
-            <div class="fg"><label>Confirmar con contraseña</label><input type="password" id="ud-confirm-pass" placeholder="Tu contraseña actual"></div>
-            <button class="btn-gold" onclick="saveNewUser()">💾 Guardar usuario</button>
-          </div>
-        </div>
-        <div class="sec-card">
-          <div class="sec-card-title">🔑 Cambiar Contraseña</div>
-          <div id="alert-pass"></div>
-          <div class="step-indicator">
-            <div class="step-dot active" id="pd-dot1">1</div>
-            <div class="step-line" id="pd-line1"></div>
-            <div class="step-dot" id="pd-dot2">2</div>
-            <div class="step-line" id="pd-line2"></div>
-            <div class="step-dot" id="pd-dot3">3</div>
-          </div>
-          <div id="pd-step1">
-            <div class="fg"><label>Contraseña actual</label><input type="password" id="pd-current" placeholder="Tu contraseña actual"></div>
-            <button class="btn-gold" onclick="verifyForPass()">Verificar identidad</button>
-          </div>
-          <div class="verify-step" id="pd-step2">
-            <div class="fg"><label>Nueva contraseña</label><input type="password" id="pd-new" placeholder="Mínimo 8 caracteres"><div class="fg-hint">Usa mayúsculas, números y símbolos</div></div>
-            <div class="fg"><label>Confirmar nueva contraseña</label><input type="password" id="pd-confirm" placeholder="Repite la nueva contraseña"></div>
-            <button class="btn-gold" onclick="saveNewPass()">💾 Guardar contraseña</button>
-          </div>
-        </div>
-        <div class="sec-card">
-          <div class="sec-card-title">📧 Email de Recuperación</div>
-          <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.3);border-radius:4px;padding:12px;margin-bottom:1rem;font-size:13px;color:var(--muted);line-height:1.6">ℹ️ Úsalo para recuperar tu acceso si olvidas tu contraseña.</div>
-          <div class="current-info"><div class="current-info-label">Email registrado</div><div class="current-info-val" id="show-current-email">No configurado</div></div>
-          <div id="alert-email"></div>
-          <div class="step-indicator">
-            <div class="step-dot active" id="ed-dot1">1</div>
-            <div class="step-line" id="ed-line1"></div>
-            <div class="step-dot" id="ed-dot2">2</div>
-          </div>
-          <div id="ed-step1">
-            <div class="fg"><label>Contraseña actual</label><input type="password" id="ed-verify" placeholder="Tu contraseña actual"></div>
-            <button class="btn-gold" onclick="verifyForEmail()">Verificar identidad</button>
-          </div>
-          <div class="verify-step" id="ed-step2">
-            <div class="fg"><label>Nuevo email</label><input type="email" id="ed-newemail" placeholder="tu@email.com"></div>
-            <div class="fg"><label>Confirmar email</label><input type="email" id="ed-confirmemail" placeholder="Repite el email"></div>
-            <button class="btn-gold" onclick="saveNewEmail()">💾 Guardar email</button>
-          </div>
-        </div>
-        <div class="sec-card">
-          <div class="sec-card-title">🛡️ Sesión actual</div>
-          <div class="current-info" style="margin-bottom:1rem"><div class="current-info-label">Sesión como</div><div class="current-info-val" id="session-user">admin</div></div>
-          <div class="current-info" style="margin-bottom:1rem"><div class="current-info-label">Último acceso</div><div class="current-info-val" id="last-access">-</div></div>
-          <div class="current-info" style="margin-bottom:1.5rem"><div class="current-info-label">Email recuperación</div><div class="current-info-val" id="session-email">No configurado</div></div>
-          <button class="btn-gold" onclick="doLogout()" style="background:var(--red)">🚪 Cerrar sesión</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
+<div class="toast" id="toast"></div>
 
 <script>
 const SUPABASE_URL='https://iwbjzffwpijbeqyavtkd.supabase.co';
 const SUPABASE_KEY='sb_publishable_6tONcb7KYIxWPyIW5OTP7w_pZuXiUzu';
 const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
-const CREDS_KEY='ruizpsm_creds';
-const DEFAULT_CREDS={user:'admin',pass:'RuizPSM2026$',email:''};
-function getCreds(){try{return JSON.parse(localStorage.getItem(CREDS_KEY))||DEFAULT_CREDS;}catch{return DEFAULT_CREDS;}}
-function saveCreds(c){localStorage.setItem(CREDS_KEY,JSON.stringify(c));}
+const ICONS={repuestos:'⚙️',maquinaria:'🏭',herramientas:'🛠️',motores:'⚡',bombas:'💧',default:'🔩'};
+let products=[],cart={},currentCat='todos',WA='593969889751';
 
-let allProducts=[],allPedidos=[],configData={};
-
-function doLogin(){
-  const u=document.getElementById('l-user').value.trim();
-  const p=document.getElementById('l-pass').value.trim();
-  const creds=getCreds();
-  if(u===creds.user&&p===creds.pass){
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('admin-panel').style.display='block';
-    localStorage.setItem('ruizpsm_last',new Date().toLocaleString('es-EC'));
-    updateSecurityInfo();
-    loadAll();
-  } else {
-    const err=document.getElementById('login-err');
-    err.style.display='block';
-    setTimeout(()=>err.style.display='none',3000);
-  }
-}
-
-function doLogout(){
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('admin-panel').style.display='none';
-  document.getElementById('l-user').value='';
-  document.getElementById('l-pass').value='';
-}
-
-function showRecovery(){
-  const box=document.getElementById('recovery-box');
-  box.style.display=box.style.display==='none'?'block':'none';
-}
-
-function verifyRecoveryEmail(){
-  const email=document.getElementById('r-email').value.trim();
-  const creds=getCreds();
-  const msg=document.getElementById('recovery-msg');
-  if(email===creds.email&&creds.email!=''){
-    document.getElementById('recovery-step2').style.display='block';
-    msg.style.color='var(--green)';msg.textContent='✅ Email verificado.';
-  } else {
-    msg.style.color='var(--red)';msg.textContent='❌ Email incorrecto.';
-  }
-}
-
-function doRecovery(){
-  const np=document.getElementById('r-newpass').value.trim();
-  const cp=document.getElementById('r-confirmpass').value.trim();
-  const msg=document.getElementById('recovery-msg');
-  if(np.length<8){msg.style.color='var(--red)';msg.textContent='Mínimo 8 caracteres';return;}
-  if(np!==cp){msg.style.color='var(--red)';msg.textContent='Las contraseñas no coinciden';return;}
-  const creds=getCreds();creds.pass=np;saveCreds(creds);
-  msg.style.color='var(--green)';msg.textContent='✅ Contraseña cambiada. Ya puedes iniciar sesión.';
-  document.getElementById('recovery-step2').style.display='none';
-}
-
-function showTab(tab,el){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-  el.classList.add('active');
-  if(tab==='seguridad')updateSecurityInfo();
-  if(tab==='configuracion')loadConfig();
-}
-
-async function loadAll(){await loadProducts();await loadPedidos();await loadConfig();renderDashboard();}
-
-async function loadProducts(){
-  const{data}=await db.from('productos').select('*').order('created_at',{ascending:false});
-  allProducts=data||[];
-  renderProductsTable();
-  document.getElementById('prod-count').textContent=allProducts.length+' productos';
-}
-
-async function loadPedidos(){
-  const{data}=await db.from('pedidos').select('*').order('created_at',{ascending:false});
-  allPedidos=data||[];
-  renderPedidos();
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show '+(type||'');
+  setTimeout(()=>t.className='toast',3000);
 }
 
 async function loadConfig(){
   const{data}=await db.from('configuracion').select('*').eq('id','main').single();
-  if(data){
-    configData=data;
-    document.getElementById('c-nombre').value=data.negocio_nombre||'';
-    document.getElementById('c-slogan').value=data.negocio_slogan||'';
-    document.getElementById('c-wa').value=data.whatsapp||'';
-    document.getElementById('c-tel').value=data.telefono||'';
-    document.getElementById('c-email').value=data.email||'';
-    document.getElementById('c-horario').value=data.horario||'';
-    document.getElementById('c-dir').value=data.direccion||'';
-    document.getElementById('c-ig').value=data.instagram||'';
-    document.getElementById('c-fb').value=data.facebook||'';
-    document.getElementById('c-hero-titulo').value=data.hero_titulo||'';
-    document.getElementById('c-hero-sub').value=data.hero_subtitulo||'';
-    if(data.logo)document.getElementById('logo-current').textContent='Logo actual: '+data.logo;
-    updatePreview();
+  if(!data)return;
+  WA=data.whatsapp||'593969889751';
+  const nombre=data.negocio_nombre||'Ruiz PSM';
+  const slogan=data.negocio_slogan||'Purchases, Sale & Manufacturing';
+  document.getElementById('nav-brand').innerHTML='<span>'+nombre.split(' ')[0]+'</span> '+nombre.split(' ').slice(1).join(' ');
+  document.getElementById('hero-title').innerHTML='<span>'+nombre.split(' ')[0]+'</span> '+nombre.split(' ').slice(1).join(' ');
+  document.getElementById('hero-slogan').textContent=slogan;
+  document.getElementById('hero-badge').textContent=slogan;
+  if(data.hero_titulo)document.getElementById('hero-sub').textContent=data.hero_subtitulo||'';
+  document.getElementById('footer-brand').innerHTML='<span>'+nombre.split(' ')[0]+'</span> '+nombre.split(' ').slice(1).join(' ');
+  document.getElementById('footer-slogan').textContent=slogan;
+  document.title=nombre+' | '+slogan;
+  const waUrl='https://wa.me/'+WA;
+  document.getElementById('nav-wa-btn').href=waUrl;
+  document.getElementById('hero-wa-btn').href=waUrl;
+  document.getElementById('contact-wa-btn').href=waUrl;
+  document.getElementById('c-whatsapp').textContent='+'+WA;
+  if(data.direccion)document.getElementById('c-direccion').textContent=data.direccion;
+  if(data.horario)document.getElementById('c-horario').textContent=data.horario;
+  if(data.telefono){document.getElementById('c-telefono').textContent=data.telefono;document.getElementById('c-tel-wrap').style.display='flex';}
+  if(data.email){document.getElementById('c-email').textContent=data.email;document.getElementById('c-email-wrap').style.display='flex';}
+  const socials=[];
+  if(data.instagram)socials.push(`<a href="https://instagram.com/${data.instagram.replace('@','')}" target="_blank" class="social-btn">📸 ${data.instagram}</a>`);
+  if(data.facebook)socials.push(`<a href="https://facebook.com/${data.facebook}" target="_blank" class="social-btn">👥 ${data.facebook}</a>`);
+  if(socials.length){document.getElementById('social-wrap').innerHTML=socials.join('');document.getElementById('social-wrap').style.display='flex';}
+  if(data.logo){
+    const logoUrl=SUPABASE_URL+'/storage/v1/object/public/productos/'+data.logo;
+    const logoEl=document.getElementById('nav-logo');
+    logoEl.src=logoUrl;logoEl.style.display='block';
   }
-  setupConfigListeners();
 }
 
-function setupConfigListeners(){
-  ['c-nombre','c-slogan','c-wa','c-email','c-horario','c-dir','c-ig','c-fb','c-hero-titulo','c-hero-sub'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.addEventListener('input',updatePreview);
+async function loadProducts(){
+  const{data,error}=await db.from('productos').select('*').order('created_at',{ascending:false});
+  if(error){document.getElementById('grid').innerHTML='<div class="loading-msg">⚠️ Error cargando productos</div>';return;}
+  products=data||[];
+  document.getElementById('stat-prods').textContent=products.length;
+  buildCats();renderProds();
+}
+
+function buildCats(){
+  const cats=[...new Set(products.map(p=>p.categoria).filter(Boolean))];
+  const wrap=document.getElementById('cats-wrap');
+  wrap.querySelectorAll('.cat-btn:not(:first-child)').forEach(b=>b.remove());
+  document.getElementById('count-todos').textContent=products.length+' productos';
+  cats.forEach(cat=>{
+    const count=products.filter(p=>p.categoria===cat).length;
+    const btn=document.createElement('button');
+    btn.className='cat-btn';
+    btn.onclick=function(){filterCat(cat,this)};
+    btn.innerHTML='<span class="cat-icon">'+(ICONS[cat]||ICONS.default)+'</span><div class="cat-name">'+cat+'</div><div class="cat-count">'+count+' productos</div>';
+    wrap.appendChild(btn);
   });
 }
 
-function updatePreview(){
-  document.getElementById('prev-nombre').textContent=document.getElementById('c-nombre').value||'RUIZ PSM';
-  document.getElementById('prev-slogan').textContent=document.getElementById('c-slogan').value||'Purchases, Sale & Manufacturing';
-  document.getElementById('prev-hero-titulo').textContent=document.getElementById('c-hero-titulo').value||'Tu proveedor de confianza';
-  document.getElementById('prev-hero-sub').textContent=document.getElementById('c-hero-sub').value||'Calidad garantizada';
-  document.getElementById('prev-wa').textContent=document.getElementById('c-wa').value||'-';
-  document.getElementById('prev-dir').textContent=document.getElementById('c-dir').value||'-';
-  document.getElementById('prev-horario').textContent=document.getElementById('c-horario').value||'-';
-  document.getElementById('prev-email').textContent=document.getElementById('c-email').value||'-';
-  document.getElementById('prev-ig').textContent=document.getElementById('c-ig').value||'-';
-  document.getElementById('prev-fb').textContent=document.getElementById('c-fb').value||'-';
+function filterCat(cat,el){
+  currentCat=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderProds();
 }
 
-async function saveConfig(){
-  const logoFile=document.getElementById('c-logo').files[0];
-  let logoName=configData.logo||'';
-  if(logoFile){
-    const ext=logoFile.name.split('.').pop();
-    const fname='logo.'+ext;
-    const{error:upErr}=await db.storage.from('productos').upload(fname,logoFile,{upsert:true});
-    if(!upErr)logoName=fname;
-  }
-  const data={
-    negocio_nombre:document.getElementById('c-nombre').value.trim(),
-    negocio_slogan:document.getElementById('c-slogan').value.trim(),
-    whatsapp:document.getElementById('c-wa').value.trim(),
-    telefono:document.getElementById('c-tel').value.trim(),
-    email:document.getElementById('c-email').value.trim(),
-    horario:document.getElementById('c-horario').value.trim(),
-    direccion:document.getElementById('c-dir').value.trim(),
-    instagram:document.getElementById('c-ig').value.trim(),
-    facebook:document.getElementById('c-fb').value.trim(),
-    hero_titulo:document.getElementById('c-hero-titulo').value.trim(),
-    hero_subtitulo:document.getElementById('c-hero-sub').value.trim(),
-    logo:logoName
-  };
-  const{error}=await db.from('configuracion').update(data).eq('id','main');
-  if(error){showConfigAlert('❌ Error al guardar: '+error.message,'error');return;}
-  configData={...configData,...data};
-  showConfigAlert('✅ Configuración guardada. La tienda se actualizará automáticamente.','success');
-}
-
-function showConfigAlert(msg,type){
-  const el=document.getElementById('config-alert');
-  el.className='alert '+type;
-  el.textContent=msg;
-  setTimeout(()=>el.textContent='',5000);
-}
-
-function previewLogo(input){
-  const preview=document.getElementById('logo-preview');
-  if(input.files&&input.files[0]){
-    const reader=new FileReader();
-    reader.onload=e=>{preview.src=e.target.result;preview.style.display='block'};
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-
-function renderDashboard(){
-  const pendientes=allPedidos.filter(p=>p.estado==='pendiente').length;
-  const ingresos=allPedidos.filter(p=>p.estado==='confirmado').reduce((a,p)=>a+parseFloat(p.total||0),0);
-  const stockBajo=allProducts.filter(p=>p.stock>0&&p.stock<=5).length;
-  const sinStock=allProducts.filter(p=>p.stock===0).length;
-  document.getElementById('s-total-prods').textContent=allProducts.length;
-  document.getElementById('s-total-pedidos').textContent=allPedidos.length;
-  document.getElementById('s-pendientes').textContent=pendientes;
-  document.getElementById('s-ingresos').textContent='$'+ingresos.toFixed(0);
-  document.getElementById('s-stock-bajo').textContent=stockBajo;
-  document.getElementById('s-sin-stock').textContent=sinStock;
-  const alerts=allProducts.filter(p=>p.stock<=5);
-  document.getElementById('stock-alerts').innerHTML=!alerts.length?'<div class="empty-state">Todo en orden ✅</div>':alerts.map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--steel)"><span style="font-size:13px;color:var(--white)">${p.nombre}</span><span class="stock-badge ${p.stock===0?'stock-out':'stock-low'}">${p.stock===0?'SIN STOCK':p.stock+' uds'}</span></div>`).join('');
-  const recent=allPedidos.slice(0,5);
-  document.getElementById('recent-pedidos').innerHTML=!recent.length?'<div class="empty-state">Sin pedidos aún</div>':`<table style="width:100%;font-size:13px;border-collapse:collapse"><tr style="color:var(--muted);font-size:11px;text-transform:uppercase"><td style="padding:6px">Código</td><td>Cliente</td><td>Total</td><td>Estado</td></tr>${recent.map(p=>`<tr style="border-top:1px solid var(--steel)"><td style="padding:8px;font-family:monospace;color:var(--gold)">${p.codigo}</td><td>${p.cliente_nombre}</td><td style="color:var(--gold);font-family:'Rajdhani',sans-serif">$${parseFloat(p.total).toFixed(2)}</td><td><span class="estado-badge e-${p.estado}">${p.estado}</span></td></tr>`).join('')}</table>`;
-  const ventas={};
-  allPedidos.filter(p=>p.estado==='confirmado').forEach(ped=>{(ped.productos||[]).forEach(item=>{ventas[item.nombre]=(ventas[item.nombre]||0)+item.cantidad;});});
-  const sorted=Object.entries(ventas).sort((a,b)=>b[1]-a[1]).slice(0,5);
-  document.getElementById('chart-vendidos').innerHTML=!sorted.length?'<div class="empty-state">Sin ventas aún</div>':sorted.map(([name,qty])=>`<div class="chart-row"><div class="chart-label">${name.substring(0,15)}</div><div class="chart-bar-bg"><div class="chart-bar-fill" style="width:${Math.round((qty/sorted[0][1])*100)}%"></div></div><div class="chart-val">${qty} uds</div></div>`).join('');
-}
-
-function renderProductsTable(){
-  if(!allProducts.length){document.getElementById('prods-tbody').innerHTML='<tr><td colspan="7" class="empty-state">No hay productos</td></tr>';return;}
-  document.getElementById('prods-tbody').innerHTML=allProducts.map(p=>{
+function renderProds(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const filtered=products.filter(p=>{
+    const mc=currentCat==='todos'||p.categoria===currentCat;
+    const mq=!q||(p.nombre&&p.nombre.toLowerCase().includes(q))||(p.referencia&&p.referencia.toLowerCase().includes(q));
+    return mc&&mq;
+  });
+  const grid=document.getElementById('grid');
+  if(!filtered.length){grid.innerHTML='<div class="loading-msg">🔍 No se encontraron productos</div>';return;}
+  grid.innerHTML=filtered.map(p=>{
+    const out=p.stock===0;const low=p.stock>0&&p.stock<=5;
+    const pct=Math.min(100,Math.round((p.stock/Math.max(p.stock,50))*100));
     const imgUrl=p.imagen?`${SUPABASE_URL}/storage/v1/object/public/productos/${p.imagen}`:'';
-    const sc=p.stock===0?'stock-out':p.stock<=5?'stock-low':'stock-ok';
-    return `<tr><td>${imgUrl?`<img src="${imgUrl}" class="prod-thumb" onerror="this.style.display='none'">`:`<div class="prod-thumb-ph">🔩</div>`}</td><td><div style="font-weight:500;color:var(--white)">${p.nombre}</div><div style="font-size:10px;color:var(--muted);font-family:monospace">${p.referencia||''}</div></td><td style="color:var(--muted);font-size:12px;text-transform:uppercase">${p.categoria||''}</td><td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.precio).toFixed(2)}</td><td><span class="stock-badge ${sc}">${p.stock===0?'Sin stock':p.stock<=5?p.stock+' ⚠️':p.stock+' uds'}</span></td><td style="color:${p.destacado?'var(--gold)':'var(--muted)'}">${p.destacado?'⭐':'No'}</td><td><div class="actions-wrap"><button class="btn-sm" onclick="editProduct('${p.id}')">✏️</button><button class="btn-red" onclick="deleteProduct('${p.id}','${p.nombre}')">🗑️</button></div></td></tr>`;
+    return `<div class="prod-card${out?' out':''}">
+      ${imgUrl?`<img class="prod-img" src="${imgUrl}" alt="${p.nombre}" onerror="this.style.display='none'">`:`<div class="prod-img-placeholder">${ICONS[p.categoria]||ICONS.default}</div>`}
+      <div class="prod-body">
+        <div class="prod-badges"><span class="badge-cat">${p.categoria||''}</span>${p.destacado?'<span class="badge-dest">⭐ Destacado</span>':''}</div>
+        <div class="prod-name">${p.nombre}</div>
+        ${p.referencia?`<div class="prod-ref">Ref: ${p.referencia}</div>`:''}
+        <div class="prod-price">$${parseFloat(p.precio).toFixed(2)} <small>USD</small></div>
+        <div class="stk-wrap">
+          <div class="stk-top"><span>${out?'Sin stock':low?'⚠️ Stock bajo':'En stock'}</span><span>${p.stock} uds</span></div>
+          <div class="stk-bar"><div class="stk-fill ${low||out?'s-low':'s-ok'}" style="width:${pct}%"></div></div>
+        </div>
+        ${out?'<div class="out-tag">No disponible</div>':`<button class="add-btn" onclick="addCart('${p.id}')">+ Agregar al pedido</button>`}
+      </div>
+    </div>`;
   }).join('');
 }
 
-function renderPedidos(){
-  const filtro=document.getElementById('filtro-estado').value;
-  const filtered=filtro?allPedidos.filter(p=>p.estado===filtro):allPedidos;
-  if(!filtered.length){document.getElementById('pedidos-tbody').innerHTML='<tr><td colspan="8" class="empty-state">No hay pedidos</td></tr>';return;}
-  document.getElementById('pedidos-tbody').innerHTML=filtered.map(p=>{
-    const fecha=new Date(p.created_at).toLocaleDateString('es-EC',{day:'2-digit',month:'2-digit',year:'numeric'});
-    const prods=(p.productos||[]).map(i=>`${i.nombre} x${i.cantidad}`).join(', ');
-    return `<tr><td style="font-family:monospace;color:var(--gold);font-size:12px">${p.codigo}</td><td style="color:var(--white)">${p.cliente_nombre}</td><td style="color:var(--muted);font-size:12px">${p.cliente_telefono}</td><td style="font-size:11px;color:var(--muted);max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prods}</td><td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.total).toFixed(2)}</td><td><span class="estado-badge e-${p.estado}">${p.estado}</span></td><td style="font-size:11px;color:var(--muted)">${fecha}</td><td><div class="actions-wrap">${p.estado==='pendiente'?`<button class="btn-green" onclick="updatePedido('${p.id}','confirmado')">✅</button><button class="btn-red" onclick="updatePedido('${p.id}','cancelado')">❌</button>`:''}<button class="btn-sm" onclick="waCliente('${p.cliente_telefono}','${p.codigo}')">💬</button></div></td></tr>`;
-  }).join('');
+function addCart(id){
+  const p=products.find(x=>x.id===id);
+  if(!p||p.stock===0)return;
+  const cur=cart[id]||0;
+  if(cur>=p.stock){showToast('No hay más stock disponible','error');return;}
+  cart[id]=cur+1;updateBadge();
+  showToast('✅ '+p.nombre+' agregado');
 }
 
-function previewImg(input){
-  const preview=document.getElementById('img-preview');
-  if(input.files&&input.files[0]){const reader=new FileReader();reader.onload=e=>{preview.src=e.target.result;preview.style.display='block'};reader.readAsDataURL(input.files[0]);}
+function updateBadge(){
+  const total=Object.values(cart).reduce((a,b)=>a+b,0);
+  const badge=document.getElementById('cart-badge');
+  badge.textContent=total||'';badge.style.display=total>0?'flex':'none';
 }
 
-async function saveProduct(){
-  const id=document.getElementById('edit-id').value;
-  const nombre=document.getElementById('p-nombre').value.trim();
-  const referencia=document.getElementById('p-ref').value.trim();
-  const categoria=document.getElementById('p-cat').value;
-  const precio=parseFloat(document.getElementById('p-precio').value);
-  const stock=parseInt(document.getElementById('p-stock').value);
-  const destacado=document.getElementById('p-dest').value==='true';
-  const imgFile=document.getElementById('p-img').files[0];
-  if(!nombre||!categoria||isNaN(precio)||isNaN(stock)){showProdAlert('Completa todos los campos requeridos','error');return;}
-  let imagen=null;
-  if(id){const cur=allProducts.find(p=>p.id===id);if(cur)imagen=cur.imagen;}
-  if(imgFile){
-    const ext=imgFile.name.split('.').pop();
-    const fname=(id||Date.now())+'.'+ext;
-    const{error:upErr}=await db.storage.from('productos').upload(fname,imgFile,{upsert:true});
-    if(!upErr)imagen=fname;
+function openCart(){
+  const items=Object.entries(cart).filter(([,q])=>q>0);
+  let html='';let total=0;
+  if(!items.length){
+    html='<div class="modal-empty">Tu carrito está vacío 🛒</div>';
+    document.getElementById('modal-body').innerHTML=html;
+    document.getElementById('modal-footer').innerHTML='<div class="m-actions"><button class="m-close" onclick="closeCart()">Cerrar</button></div>';
+  } else {
+    items.forEach(([id,qty])=>{
+      const p=products.find(x=>x.id===id);if(!p)return;
+      const sub=p.precio*qty;total+=sub;
+      html+=`<div class="m-item"><div class="m-item-info"><div class="m-item-name">${p.nombre}</div><div class="m-item-ref">${p.referencia||''}</div></div><div class="m-item-right"><button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button><span class="qty-num">${qty}</span><button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button><span class="m-item-price">$${sub.toFixed(2)}</span></div></div>`;
+    });
+    html+=`<div class="m-total">Total: $${total.toFixed(2)}</div>`;
+    document.getElementById('modal-body').innerHTML=html;
+    document.getElementById('modal-footer').innerHTML=`<div class="checkout-form"><div class="checkout-title">📋 Datos para el pedido</div><div class="fg"><label>Tu nombre</label><input type="text" id="c-nombre" placeholder="Nombre completo"></div><div class="fg"><label>Tu teléfono</label><input type="tel" id="c-tel" placeholder="+1 o +593..."></div></div><div class="m-actions"><button class="m-close" onclick="closeCart()">Cancelar</button><button class="m-confirm" onclick="confirmarPedido()">✅ Confirmar Compra</button></div>`;
   }
-  const data={nombre,referencia,categoria,precio,stock,destacado};
-  if(imagen)data.imagen=imagen;
-  let error;
-  if(id){({error}=await db.from('productos').update(data).eq('id',id));}
-  else{({error}=await db.from('productos').insert(data));}
-  if(error){showProdAlert('Error: '+error.message,'error');return;}
-  showProdAlert(id?'✅ Producto actualizado':'✅ Producto agregado','success');
-  resetForm();await loadProducts();renderDashboard();
+  document.getElementById('modal').classList.add('open');
 }
 
-function showProdAlert(msg,type){
-  const el=document.getElementById('prod-alert');
-  el.className='alert '+type;el.textContent=msg;
-  setTimeout(()=>el.textContent='',4000);
+function changeQty(id,delta){
+  const p=products.find(x=>x.id===id);if(!p)return;
+  cart[id]=(cart[id]||0)+delta;
+  if(cart[id]<=0)delete cart[id];
+  if(delta>0&&cart[id]>p.stock){cart[id]=p.stock;showToast('Stock máximo alcanzado','error');}
+  updateBadge();
+  if(Object.keys(cart).length>0)openCart();else closeCart();
 }
 
-function editProduct(id){
-  const p=allProducts.find(x=>x.id===id);if(!p)return;
-  document.getElementById('edit-id').value=p.id;
-  document.getElementById('p-nombre').value=p.nombre;
-  document.getElementById('p-ref').value=p.referencia||'';
-  document.getElementById('p-cat').value=p.categoria||'';
-  document.getElementById('p-precio').value=p.precio;
-  document.getElementById('p-stock').value=p.stock;
-  document.getElementById('p-dest').value=p.destacado?'true':'false';
-  if(p.imagen)document.getElementById('img-current').textContent='Imagen actual: '+p.imagen;
-  document.querySelector('[onclick="showTab(\'productos\',this)"]').click();
+function closeCart(){document.getElementById('modal').classList.remove('open');}
+
+async function confirmarPedido(){
+  const nombre=document.getElementById('c-nombre').value.trim();
+  const tel=document.getElementById('c-tel').value.trim();
+  if(!nombre||!tel){showToast('Ingresa tu nombre y teléfono','error');return;}
+  const items=Object.entries(cart).filter(([,q])=>q>0);
+  if(!items.length)return;
+  const btn=document.querySelector('.m-confirm');
+  btn.textContent='Procesando...';btn.disabled=true;
+  let total=0;
+  const productosCarrito=items.map(([id,qty])=>{
+    const p=products.find(x=>x.id===id);
+    const sub=p.precio*qty;total+=sub;
+    return{id:p.id,nombre:p.nombre,referencia:p.referencia,precio:p.precio,cantidad:qty,subtotal:sub};
+  });
+  const codigo='PSM-'+Date.now().toString(36).toUpperCase();
+  const{error}=await db.from('pedidos').insert({codigo,cliente_nombre:nombre,cliente_telefono:tel,productos:productosCarrito,total,estado:'pendiente'});
+  if(error){showToast('Error al procesar. Intenta de nuevo.','error');btn.textContent='✅ Confirmar Compra';btn.disabled=false;return;}
+  for(const[id,qty]of items){
+    const p=products.find(x=>x.id===id);
+    await db.from('productos').update({stock:p.stock-qty}).eq('id',id);
+  }
+  let msg='🏭 *RUIZ PSM - Nuevo Pedido*%0A%0A📋 *Código:* '+codigo+'%0A👤 *Cliente:* '+nombre+'%0A📱 *Tel:* '+tel+'%0A%0A*Productos:*%0A';
+  productosCarrito.forEach(p=>{msg+='▪ '+p.nombre+' x'+p.cantidad+' = $'+p.subtotal.toFixed(2)+'%0A';});
+  msg+='%0A💰 *Total: $'+total.toFixed(2)+'*';
+  cart={};updateBadge();closeCart();await loadProducts();
+  showToast('🎉 Pedido '+codigo+' confirmado!');
+  setTimeout(()=>window.open('https://wa.me/'+WA+'?text='+msg,'_blank'),500);
 }
 
-async function deleteProduct(id,nombre){
-  if(!confirm('¿Eliminar "'+nombre+'"?'))return;
-  await db.from('productos').delete().eq('id',id);
-  await loadProducts();renderDashboard();
+function sendWA(){
+  const nombre=document.getElementById('f-nombre').value||'Cliente';
+  const tel=document.getElementById('f-tel').value||'No indicado';
+  const msg=document.getElementById('f-msg').value||'Consulta general';
+  window.open('https://wa.me/'+WA+'?text=Hola! Soy '+encodeURIComponent(nombre)+', tel: '+encodeURIComponent(tel)+'.%0A%0A'+encodeURIComponent(msg),'_blank');
 }
 
-async function updatePedido(id,estado){
-  await db.from('pedidos').update({estado}).eq('id',id);
-  await loadPedidos();renderDashboard();
-}
-
-function waCliente(tel,codigo){
-  window.open('https://wa.me/'+tel.replace(/[^0-9]/g,'')+'?text=Hola! Te contactamos de *Ruiz PSM* sobre tu pedido *'+codigo+'*','_blank');
-}
-
-function resetForm(){
-  ['edit-id','p-nombre','p-ref','p-precio','p-stock'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('p-cat').value='';
-  document.getElementById('p-dest').value='false';
-  document.getElementById('p-img').value='';
-  document.getElementById('img-preview').style.display='none';
-  document.getElementById('img-current').textContent='';
-}
-
-function updateSecurityInfo(){
-  const creds=getCreds();
-  const last=localStorage.getItem('ruizpsm_last')||'-';
-  document.getElementById('show-current-user').textContent=creds.user;
-  document.getElementById('show-current-email').textContent=creds.email||'No configurado';
-  document.getElementById('session-user').textContent=creds.user;
-  document.getElementById('session-email').textContent=creds.email||'No configurado';
-  document.getElementById('last-access').textContent=last;
-}
-
-function verifyForUser(){
-  const pass=document.getElementById('ud-verify').value;
-  if(pass===getCreds().pass){
-    document.getElementById('ud-step1').style.display='none';
-    document.getElementById('ud-step2').classList.add('show');
-    document.getElementById('ud-dot1').className='step-dot done';
-    document.getElementById('ud-line1').className='step-line done';
-    document.getElementById('ud-dot2').className='step-dot active';
-  } else showSecAlert('alert-user','❌ Contraseña incorrecta','error');
-}
-
-function saveNewUser(){
-  const newUser=document.getElementById('ud-newuser').value.trim();
-  const confirmPass=document.getElementById('ud-confirm-pass').value;
-  const creds=getCreds();
-  if(!newUser||newUser.length<4){showSecAlert('alert-user','Mínimo 4 caracteres','error');return;}
-  if(!/^[a-zA-Z0-9_]+$/.test(newUser)){showSecAlert('alert-user','Solo letras, números y guiones bajos','error');return;}
-  if(confirmPass!==creds.pass){showSecAlert('alert-user','❌ Contraseña incorrecta','error');return;}
-  creds.user=newUser;saveCreds(creds);updateSecurityInfo();
-  showSecAlert('alert-user','✅ Usuario cambiado a "'+newUser+'"','success');
-  document.getElementById('ud-dot2').className='step-dot done';
-}
-
-function verifyForPass(){
-  const pass=document.getElementById('pd-current').value;
-  if(pass===getCreds().pass){
-    document.getElementById('pd-step1').style.display='none';
-    document.getElementById('pd-step2').classList.add('show');
-    document.getElementById('pd-dot1').className='step-dot done';
-    document.getElementById('pd-line1').className='step-line done';
-    document.getElementById('pd-dot2').className='step-dot active';
-  } else showSecAlert('alert-pass','❌ Contraseña incorrecta','error');
-}
-
-function saveNewPass(){
-  const np=document.getElementById('pd-new').value;
-  const cp=document.getElementById('pd-confirm').value;
-  const creds=getCreds();
-  if(np.length<8){showSecAlert('alert-pass','Mínimo 8 caracteres','error');return;}
-  if(np!==cp){showSecAlert('alert-pass','❌ No coinciden','error');return;}
-  if(np===creds.pass){showSecAlert('alert-pass','Debe ser diferente a la actual','error');return;}
-  creds.pass=np;saveCreds(creds);
-  showSecAlert('alert-pass','✅ Contraseña cambiada','success');
-  document.getElementById('pd-dot2').className='step-dot done';
-  document.getElementById('pd-line2').className='step-line done';
-  document.getElementById('pd-dot3').className='step-dot done';
-}
-
-function verifyForEmail(){
-  const pass=document.getElementById('ed-verify').value;
-  if(pass===getCreds().pass){
-    document.getElementById('ed-step1').style.display='none';
-    document.getElementById('ed-step2').classList.add('show');
-    document.getElementById('ed-dot1').className='step-dot done';
-    document.getElementById('ed-line1').className='step-line done';
-    document.getElementById('ed-dot2').className='step-dot active';
-  } else showSecAlert('alert-email','❌ Contraseña incorrecta','error');
-}
-
-function saveNewEmail(){
-  const ne=document.getElementById('ed-newemail').value.trim();
-  const ce=document.getElementById('ed-confirmemail').value.trim();
-  if(!ne||!ne.includes('@')){showSecAlert('alert-email','Email inválido','error');return;}
-  if(ne!==ce){showSecAlert('alert-email','❌ No coinciden','error');return;}
-  const creds=getCreds();creds.email=ne;saveCreds(creds);updateSecurityInfo();
-  showSecAlert('alert-email','✅ Email guardado: '+ne,'success');
-  document.getElementById('ed-dot2').className='step-dot done';
-}
-
-function showSecAlert(id,msg,type){
-  const el=document.getElementById(id);
-  el.className='alert '+type;el.textContent=msg;
-  setTimeout(()=>el.textContent='',4000);
-}
+loadConfig();
+loadProducts();
 </script>
 </body>
 </html>
