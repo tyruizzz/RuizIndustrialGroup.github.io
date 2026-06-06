@@ -705,9 +705,11 @@ async function eliminarPedidosSeleccionados(){
   for(const id of selected){
     await db.from('pedidos').delete().eq('id',id);
   }
-  await loadPedidos();
+  allPedidos=allPedidos.filter(p=>!selected.includes(p.id));
+  renderPedidos();
   renderDashboard();
-  alert('✅ '+selected.length+' pedido(s) eliminado(s)');
+  document.getElementById('check-all').checked=false;
+  alert('✅ '+selected.length+' pedido(s) eliminado(s) correctamente');
 }
 
 function exportarExcel(){
