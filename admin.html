@@ -419,7 +419,9 @@ const SUPABASE_KEY='sb_publishable_6tONcb7KYIxWPyIW5OTP7w_pZuXiUzu';
 const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 const CREDS_KEY='ruizpsm_creds';
-const DEFAULT_CREDS={user:'admin',pass:'RuizPSM2026$',email:''};
+const SESSION_KEY='ruizpsm_session';
+const SESSION_HOURS=8;
+const DEFAULT_CREDS={user:'admin',pass:'admin123',email:''};
 function getCreds(){try{return JSON.parse(localStorage.getItem(CREDS_KEY))||DEFAULT_CREDS;}catch{return DEFAULT_CREDS;}}
 function saveCreds(c){localStorage.setItem(CREDS_KEY,JSON.stringify(c));}
 
@@ -430,9 +432,10 @@ function doLogin(){
   const p=document.getElementById('l-pass').value.trim();
   const creds=getCreds();
   if(u===creds.user&&p===creds.pass){
+    localStorage.setItem(SESSION_KEY,Date.now().toString());
+    localStorage.setItem('ruizpsm_last',new Date().toLocaleString('es-EC'));
     document.getElementById('login-screen').style.display='none';
     document.getElementById('admin-panel').style.display='block';
-    localStorage.setItem('ruizpsm_last',new Date().toLocaleString('es-EC'));
     updateSecurityInfo();
     loadAll();
   } else {
