@@ -3,127 +3,136 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Ruiz Industrial Group - Venta de repuestos de maquinaria y maquinaria industrial en Ecuador.">
-<title>Ruiz Industrial Group | Repuestos & Maquinaria Industrial</title>
+<meta name="description" content="Ruiz PSM - Purchases, Sale & Manufacturing. Repuestos y maquinaria industrial en Ecuador.">
+<title>Ruiz PSM | Purchases, Sale & Manufacturing</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--gold:#C9A84C;--gold2:#dbb95a;--dark:#0A0C10;--navy:#0D1B2A;--steel:#1E3A5F;--light:#F4F6F8;--muted:#8A9BB0;--white:#fff}
+:root{--gold:#C9A84C;--gold2:#dbb95a;--dark:#0A0C10;--navy:#0D1B2A;--steel:#1E3A5F;--light:#F4F6F8;--muted:#8A9BB0;--white:#fff;--red:#E24B4A;--green:#25D366}
 body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif}
 a{text-decoration:none;color:inherit}
-nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);border-bottom:1px solid var(--gold);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px}
-.nav-brand{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);border-bottom:1px solid var(--gold);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;backdrop-filter:blur(8px)}
+.nav-brand{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
 .nav-brand span{color:var(--white)}
 .nav-links{display:flex;gap:2rem}
-.nav-links a{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:color 0.2s}
+.nav-links a{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:color 0.2s}
 .nav-links a:hover{color:var(--gold)}
-.nav-wa{background:var(--gold);color:#0A0C10;padding:8px 18px;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase}
+.nav-wa{background:var(--gold);color:#0A0C10;padding:8px 18px;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase}
 .nav-wa:hover{background:var(--gold2)}
-.sync-bar{background:rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.2);padding:6px 2rem;text-align:center;font-size:11px;color:var(--gold);letter-spacing:1px}
 .hero{background:linear-gradient(135deg,#0A0C10 0%,#0D1B2A 60%,#0A1628 100%);padding:5rem 2rem 4rem;text-align:center;border-bottom:1px solid var(--steel);position:relative;overflow:hidden}
 .hero-gear{position:absolute;font-size:250px;opacity:0.03;pointer-events:none;line-height:1}
 .hero-badge{display:inline-block;background:rgba(201,168,76,0.1);border:1px solid var(--gold);color:var(--gold);font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:5px 16px;border-radius:2px;margin-bottom:1.5rem}
-.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,6vw,72px);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:3px}
+.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(32px,6vw,68px);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:3px;line-height:1}
 .hero h1 span{color:var(--gold)}
-.hero-sub{font-size:16px;color:var(--muted);margin-top:1rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7}
+.hero-sub{font-size:15px;color:var(--muted);margin-top:1rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7}
 .hero-stats{display:flex;justify-content:center;gap:3rem;margin-top:3rem;flex-wrap:wrap}
 .hero-stat-num{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;color:var(--gold)}
 .hero-stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px}
 .hero-btns{display:flex;gap:1rem;justify-content:center;margin-top:2.5rem;flex-wrap:wrap}
-.btn-gold{background:var(--gold);color:#0A0C10;padding:14px 32px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:4px;cursor:pointer}
+.btn-gold{background:var(--gold);color:#0A0C10;padding:14px 32px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:4px;cursor:pointer;transition:background 0.2s}
 .btn-gold:hover{background:var(--gold2)}
-.btn-out{background:transparent;color:var(--gold);padding:14px 32px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--gold);border-radius:4px;display:inline-block}
+.btn-out{background:transparent;color:var(--gold);padding:14px 32px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--gold);border-radius:4px;display:inline-block;transition:all 0.2s}
 .btn-out:hover{background:var(--gold);color:#0A0C10}
 section{padding:4rem 2rem}
-.sec-title{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:0.5rem}
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:0.5rem}
 .sec-line{width:60px;height:2px;background:var(--gold);margin:0 auto 3rem}
-.cats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--steel);max-width:900px;margin:0 auto}
-.cat-card{background:var(--navy);padding:1.5rem;text-align:center;cursor:pointer;transition:background 0.2s}
-.cat-card:hover,.cat-card.active{background:#0F2035}
-.cat-card.active{border-bottom:2px solid var(--gold)}
-.cat-icon{font-size:32px;margin-bottom:0.75rem;display:block}
-.cat-name{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;color:var(--white);text-transform:uppercase;letter-spacing:1px}
-.cat-count{font-size:11px;color:var(--muted);margin-top:4px}
+.cats-wrap{display:flex;gap:1px;background:var(--steel);max-width:900px;margin:0 auto;flex-wrap:wrap}
+.cat-btn{flex:1;min-width:120px;background:var(--navy);padding:1.25rem;text-align:center;cursor:pointer;transition:background 0.2s;border:none;color:var(--white)}
+.cat-btn:hover,.cat-btn.active{background:#0F2035}
+.cat-btn.active{border-bottom:2px solid var(--gold)}
+.cat-icon{font-size:28px;display:block;margin-bottom:6px}
+.cat-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--white)}
+.cat-count{font-size:10px;color:var(--muted);margin-top:2px}
 .prods-section{background:#080A0D;padding:4rem 2rem}
 .search-wrap{display:flex;max-width:500px;margin:0 auto 2rem;background:var(--navy);border:1px solid var(--steel);border-radius:4px;padding:8px 12px;align-items:center;gap:8px}
 .search-wrap input{flex:1;background:transparent;border:none;outline:none;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif}
 .search-wrap input::placeholder{color:var(--muted)}
-.prods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--steel);max-width:1100px;margin:0 auto}
-.prod-card{background:var(--navy);padding:1.5rem;transition:background 0.2s}
+.prods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1px;background:var(--steel);max-width:1100px;margin:0 auto}
+.prod-card{background:var(--navy);transition:background 0.2s;position:relative;display:flex;flex-direction:column}
 .prod-card:hover{background:#0F2035}
-.prod-card.out{opacity:0.55}
-.prod-cat{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:10px;font-weight:600}
-.prod-ico{font-size:36px;margin-bottom:12px;display:block}
+.prod-card.out{opacity:0.6}
+.prod-img{width:100%;height:180px;object-fit:cover;background:#0A0C10;display:block}
+.prod-img-placeholder{width:100%;height:180px;background:#0A0C10;display:flex;align-items:center;justify-content:center;font-size:48px}
+.prod-body{padding:1.25rem;flex:1;display:flex;flex-direction:column}
+.prod-badges{display:flex;gap:6px;margin-bottom:8px}
+.badge-cat{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-weight:600}
+.badge-dest{background:var(--gold);color:#0A0C10;font-size:9px;font-weight:700;padding:2px 6px;border-radius:2px;text-transform:uppercase;letter-spacing:1px}
 .prod-name{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:600;color:var(--white);margin-bottom:4px;line-height:1.2}
 .prod-ref{font-size:10px;color:var(--muted);font-family:monospace;letter-spacing:1px;margin-bottom:10px}
-.prod-price{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:var(--gold)}
+.prod-price{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--gold);margin-top:auto}
 .prod-price small{font-size:12px;font-weight:400;color:var(--muted)}
 .stk-wrap{margin-top:10px}
 .stk-top{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px}
 .stk-bar{height:2px;background:var(--steel);border-radius:2px;overflow:hidden}
 .stk-fill{height:100%;border-radius:2px}
 .s-ok{background:var(--gold)}
-.s-low{background:#E24B4A}
-.add-btn{width:100%;margin-top:14px;background:transparent;border:1px solid var(--gold);color:var(--gold);padding:8px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all 0.2s}
+.s-low{background:var(--red)}
+.add-btn{width:100%;margin-top:12px;background:transparent;border:1px solid var(--gold);color:var(--gold);padding:9px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all 0.2s}
 .add-btn:hover{background:var(--gold);color:#0A0C10}
-.out-tag{font-size:10px;color:#E24B4A;text-transform:uppercase;letter-spacing:1px;text-align:center;margin-top:12px}
-.loading-msg{grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted);font-size:15px}
+.out-tag{font-size:10px;color:var(--red);text-transform:uppercase;letter-spacing:1px;text-align:center;margin-top:12px}
+.loading-msg{grid-column:1/-1;text-align:center;padding:4rem;color:var(--muted);font-size:15px}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:900px;margin:0 auto;align-items:center}
 .about-text p{color:var(--muted);line-height:1.8;margin-bottom:1rem;font-size:15px}
 .about-feats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
 .feat{background:var(--navy);border:1px solid var(--steel);border-left:3px solid var(--gold);padding:1rem}
 .feat-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
 .feat-desc{font-size:12px;color:var(--muted)}
-.about-vis{background:var(--navy);border:1px solid var(--steel);padding:2rem;text-align:center}
 .contact-sec{background:#080A0D}
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:800px;margin:0 auto}
-.contact-info h3,.contact-form h3{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem}
+.contact-info h3,.contact-form h3{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem}
 .c-item{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
-.c-ico{font-size:24px;margin-top:2px}
+.c-ico{font-size:22px}
 .c-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.c-val{font-size:15px;color:var(--white)}
-.wa-btn{display:block;background:#25D366;color:#fff;text-align:center;padding:16px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;letter-spacing:2px;text-transform:uppercase;border-radius:4px;margin-top:2rem}
+.c-val{font-size:14px;color:var(--white)}
+.wa-btn{display:block;background:var(--green);color:#fff;text-align:center;padding:14px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;border-radius:4px;margin-top:2rem}
 .wa-btn:hover{background:#1ebe5a}
 .fg{margin-bottom:1rem}
 .fg label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px}
 .fg input,.fg textarea{width:100%;background:var(--navy);border:1px solid var(--steel);border-radius:4px;padding:10px 14px;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif;outline:none}
 .fg input:focus,.fg textarea:focus{border-color:var(--gold)}
 .fg textarea{height:100px;resize:vertical}
-.f-submit{width:100%;background:var(--gold);color:#0A0C10;border:none;padding:12px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:4px}
+.f-submit{width:100%;background:var(--gold);color:#0A0C10;border:none;padding:12px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:4px}
 .f-submit:hover{background:var(--gold2)}
+footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-align:center}
+.f-brand{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+.f-brand span{color:var(--white)}
+.f-copy{font-size:11px;color:var(--muted);margin-top:0.5rem}
 .cart-float{position:fixed;bottom:2rem;right:2rem;z-index:200}
-.cart-fab{background:var(--gold);color:#0A0C10;border:none;width:56px;height:56px;border-radius:50%;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,0.4);transition:transform 0.2s;position:relative}
+.cart-fab{background:var(--gold);color:#0A0C10;border:none;width:58px;height:58px;border-radius:50%;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,0.4);transition:transform 0.2s;position:relative}
 .cart-fab:hover{transform:scale(1.1)}
-.cart-badge{position:absolute;top:-4px;right:-4px;background:#E24B4A;color:#fff;border-radius:50%;width:20px;height:20px;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center}
-.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center}
+.cart-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;border-radius:50%;width:22px;height:22px;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:300;align-items:center;justify-content:center;padding:1rem}
 .modal-ov.open{display:flex}
-.modal-box{background:var(--navy);border:1px solid var(--gold);border-radius:8px;max-width:420px;width:90%;padding:2rem;max-height:80vh;overflow-y:auto}
-.modal-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold);margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:1px}
-.modal-empty{text-align:center;color:var(--muted);padding:2rem 0}
-.m-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--steel)}
-.m-item-name{font-size:13px;color:var(--white)}
+.modal-box{background:var(--navy);border:1px solid var(--gold);border-radius:8px;max-width:460px;width:100%;padding:2rem;max-height:85vh;overflow-y:auto}
+.modal-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--gold);margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:1px}
+.modal-empty{text-align:center;color:var(--muted);padding:2rem 0;font-size:14px}
+.m-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--steel);gap:8px}
+.m-item-info{flex:1}
+.m-item-name{font-size:13px;color:var(--white);font-weight:500}
 .m-item-ref{font-size:10px;color:var(--muted);font-family:monospace}
-.m-item-right{display:flex;align-items:center;gap:8px}
-.qty-btn{background:var(--steel);border:none;color:var(--white);width:24px;height:24px;border-radius:3px;cursor:pointer;font-size:14px}
-.qty-num{font-family:'Rajdhani',sans-serif;font-size:15px;color:var(--gold);min-width:20px;text-align:center}
-.m-item-price{font-family:'Rajdhani',sans-serif;font-size:15px;color:var(--gold);min-width:60px;text-align:right}
-.m-total{font-family:'Rajdhani',sans-serif;font-size:20px;color:var(--gold);text-align:right;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--steel)}
+.m-item-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.qty-btn{background:var(--steel);border:none;color:var(--white);width:26px;height:26px;border-radius:3px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.qty-num{font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold);min-width:24px;text-align:center}
+.m-item-price{font-family:'Rajdhani',sans-serif;font-size:15px;color:var(--gold);min-width:65px;text-align:right}
+.m-total{font-family:'Rajdhani',sans-serif;font-size:22px;color:var(--gold);text-align:right;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--steel)}
+.checkout-form{margin-top:1.5rem;border-top:1px solid var(--steel);padding-top:1.5rem}
+.checkout-title{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem}
 .m-actions{display:flex;gap:8px;margin-top:1rem}
 .m-close{flex:1;background:transparent;border:1px solid var(--steel);color:var(--muted);padding:10px;cursor:pointer;border-radius:4px;font-size:13px}
-.m-wa{flex:2;background:#25D366;border:none;color:#fff;padding:10px;cursor:pointer;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase}
-footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-align:center}
-.f-brand{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
-.f-brand span{color:var(--white)}
-.f-copy{font-size:12px;color:var(--muted);margin-top:0.5rem}
+.m-confirm{flex:2;background:var(--gold);border:none;color:#0A0C10;padding:10px;cursor:pointer;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.m-confirm:hover{background:var(--gold2)}
+.m-wa{flex:2;background:var(--green);border:none;color:#fff;padding:10px;cursor:pointer;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.toast{position:fixed;bottom:6rem;right:2rem;background:var(--navy);border:1px solid var(--gold);color:var(--white);padding:12px 20px;border-radius:6px;font-size:13px;z-index:400;display:none;max-width:280px}
+.toast.show{display:block}
+.toast.success{border-color:#25D366;color:#25D366}
+.toast.error{border-color:var(--red);color:var(--red)}
 @media(max-width:768px){.nav-links{display:none}.about-grid,.contact-grid{grid-template-columns:1fr}.about-feats{grid-template-columns:1fr}.hero-stats{gap:1.5rem}}
 </style>
 </head>
 <body>
-
-<div class="sync-bar">🔄 Productos sincronizados en tiempo real desde Google Sheets</div>
-
 <nav>
-  <div class="nav-brand"><span>RUIZ</span> INDUSTRIAL GROUP</div>
+  <div class="nav-brand"><span>RUIZ</span> PSM</div>
   <div class="nav-links">
     <a href="#productos">Productos</a>
     <a href="#nosotros">Nosotros</a>
@@ -131,12 +140,12 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
   </div>
   <a href="https://wa.me/593969889751" target="_blank" class="nav-wa">📱 WhatsApp</a>
 </nav>
-
 <section class="hero">
   <div class="hero-gear" style="right:-60px;top:-60px">⚙</div>
   <div class="hero-gear" style="left:-40px;bottom:-60px">🔧</div>
-  <div class="hero-badge">Ecuador · Industria · Calidad</div>
-  <h1>RUIZ <span>INDUSTRIAL</span> GROUP</h1>
+  <div class="hero-badge">Purchases · Sale · Manufacturing</div>
+  <h1>RUIZ <span>PSM</span></h1>
+  <p style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:0.5rem">Purchases, Sale & Manufacturing</p>
   <p class="hero-sub">Tu proveedor de confianza en repuestos y maquinaria industrial. Calidad garantizada y los mejores precios del mercado.</p>
   <div class="hero-stats">
     <div><div class="hero-stat-num" id="stat-prods">...</div><div class="hero-stat-label">Productos</div></div>
@@ -148,61 +157,56 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
     <a href="https://wa.me/593969889751" target="_blank" class="btn-out">Contactar ahora</a>
   </div>
 </section>
-
 <section style="padding:3rem 2rem;background:var(--dark)">
   <div class="sec-title">Categorías</div>
   <div class="sec-line"></div>
-  <div class="cats-grid" id="cats-grid">
-    <div class="cat-card active" onclick="filterCat('todos',this)">
+  <div class="cats-wrap" id="cats-wrap">
+    <button class="cat-btn active" onclick="filterCat('todos',this)">
       <span class="cat-icon">🏭</span>
       <div class="cat-name">Todos</div>
       <div class="cat-count" id="count-todos">...</div>
-    </div>
+    </button>
   </div>
 </section>
-
 <section class="prods-section" id="productos">
   <div class="sec-title">Nuestros Productos</div>
   <div class="sec-line"></div>
   <div class="search-wrap">
     <span>🔍</span>
-    <input type="text" id="search" placeholder="Buscar repuesto o maquinaria..." oninput="renderProds()">
+    <input type="text" id="search" placeholder="Buscar producto, referencia..." oninput="renderProds()">
   </div>
   <div id="grid" class="prods-grid">
     <div class="loading-msg">⚙️ Cargando productos...</div>
   </div>
 </section>
-
 <section id="nosotros" style="background:var(--dark)">
   <div class="sec-title">Sobre Nosotros</div>
   <div class="sec-line"></div>
   <div class="about-grid">
     <div class="about-text">
-      <p>Ruiz Industrial Group nace con el compromiso de ofrecer repuestos y maquinaria de alta calidad para el sector industrial y agrícola del Ecuador.</p>
+      <p>Ruiz PSM nace con el compromiso de ofrecer repuestos y maquinaria de alta calidad para el sector industrial y agrícola.</p>
       <p>Contamos con un amplio catálogo de productos para mantener tu maquinaria funcionando al máximo rendimiento, con atención personalizada y precios competitivos.</p>
-      <p>Trabajamos con las mejores marcas del mercado y garantizamos la calidad de cada producto que ofrecemos.</p>
       <div class="about-feats">
         <div class="feat"><div class="feat-title">Calidad</div><div class="feat-desc">Productos certificados y garantizados</div></div>
-        <div class="feat"><div class="feat-title">Rapidez</div><div class="feat-desc">Entrega ágil a todo el Ecuador</div></div>
+        <div class="feat"><div class="feat-title">Rapidez</div><div class="feat-desc">Entrega ágil a todo destino</div></div>
         <div class="feat"><div class="feat-title">Precios</div><div class="feat-desc">Los mejores precios del mercado</div></div>
         <div class="feat"><div class="feat-title">Soporte</div><div class="feat-desc">Asesoría técnica especializada</div></div>
       </div>
     </div>
-    <div class="about-vis">
+    <div style="background:var(--navy);border:1px solid var(--steel);padding:2rem;text-align:center">
       <div style="font-size:80px">⚙️</div>
       <div style="font-family:'Rajdhani',sans-serif;font-size:48px;font-weight:700;color:var(--gold);margin-top:1rem">100%</div>
-      <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:8px">Compromiso con la calidad</div>
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:8px">Compromiso con la calidad</div>
     </div>
   </div>
 </section>
-
 <section class="contact-sec" id="contacto">
   <div class="sec-title">Contacto</div>
   <div class="sec-line"></div>
   <div class="contact-grid">
     <div class="contact-info">
       <h3>Encuéntranos</h3>
-      <div class="c-item"><span class="c-ico">📍</span><div><div class="c-label">Ubicación</div><div class="c-val">Ecuador</div></div></div>
+      <div class="c-item"><span class="c-ico">📍</span><div><div class="c-label">Ubicación</div><div class="c-val">53 South St, Newark, NJ 07102</div></div></div>
       <div class="c-item"><span class="c-ico">📱</span><div><div class="c-label">WhatsApp</div><div class="c-val">+593 969 889 751</div></div></div>
       <div class="c-item"><span class="c-ico">⏰</span><div><div class="c-label">Horario</div><div class="c-val">Lun - Sáb: 8:00 - 18:00</div></div></div>
       <a href="https://wa.me/593969889751" target="_blank" class="wa-btn">💬 Escribir por WhatsApp</a>
@@ -216,87 +220,67 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
     </div>
   </div>
 </section>
-
 <footer>
-  <div class="f-brand"><span>RUIZ</span> INDUSTRIAL GROUP</div>
-  <div class="f-copy">© 2026 Ruiz Industrial Group · Ecuador · Todos los derechos reservados</div>
+  <div class="f-brand"><span>RUIZ</span> PSM</div>
+  <div style="font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:1px">Purchases, Sale & Manufacturing</div>
+  <div class="f-copy">© 2026 Ruiz PSM · Todos los derechos reservados</div>
 </footer>
-
 <div class="cart-float">
   <button class="cart-fab" onclick="openCart()">🛒<span class="cart-badge" id="cart-badge"></span></button>
 </div>
-
 <div class="modal-ov" id="modal" onclick="if(event.target===this)closeCart()">
   <div class="modal-box">
     <div class="modal-title">🛒 Tu Pedido</div>
     <div id="modal-body"></div>
-    <div class="m-actions">
-      <button class="m-close" onclick="closeCart()">Cerrar</button>
-      <button class="m-wa" onclick="sendCartWA()">💬 Pedir por WhatsApp</button>
-    </div>
+    <div id="modal-footer"></div>
   </div>
 </div>
-
+<div class="toast" id="toast"></div>
 <script>
+const SUPABASE_URL='https://iwbjzffwpijbeqyavtkd.supabase.co';
+const SUPABASE_KEY='sb_publishable_6tONcb7KYIxWPyIW5OTP7w_pZuXiUzu';
 const WA='593969889751';
-const PROXY='https://corsproxy.io/?';
-const CSV='https://docs.google.com/spreadsheets/d/e/2PACX-1vSu8VHZs3aPKJ6OZ9Y--sRX0v-vk3hXJwXDq5DgyluuSLdckO4GWQQRwfruwMQ3_01yESbgiksEZrdy/pub?gid=0&single=true&output=csv';
+const {createClient}=supabase;
+const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 const ICONS={repuestos:'⚙️',maquinaria:'🏭',herramientas:'🛠️',motores:'⚡',bombas:'💧',default:'🔩'};
-
 let products=[];
 let cart={};
 let currentCat='todos';
 
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast show '+(type||'');
+  setTimeout(()=>t.className='toast',3000);
+}
+
 async function loadProducts(){
-  try{
-    const url=PROXY+encodeURIComponent(CSV);
-    const res=await fetch(url);
-    if(!res.ok)throw new Error('Error al cargar');
-    const text=await res.text();
-    const rows=text.trim().split('\n');
-    const headers=rows[0].split(',').map(h=>h.trim().toLowerCase().replace(/"/g,''));
-    products=rows.slice(1).filter(r=>r.trim()).map((row,idx)=>{
-      const vals=row.match(/(".*?"|[^,]+)(?=,|$)/g)||row.split(',');
-      const obj={};
-      headers.forEach((h,i)=>obj[h]=(vals[i]||'').trim().replace(/"/g,''));
-      const cat=(obj.cat||'general').toLowerCase();
-      return{
-        id:obj.id||String(idx+1),
-        name:obj.name||'Producto',
-        ref:obj.ref||'',
-        cat:cat,
-        price:parseFloat(obj.price)||0,
-        stock:parseInt(obj.stock)||0,
-        icon:ICONS[cat]||ICONS.default
-      };
-    });
-    document.getElementById('stat-prods').textContent=products.length;
-    document.getElementById('count-todos').textContent=products.length+' productos';
-    buildCats();
-    renderProds();
-  }catch(e){
-    document.getElementById('grid').innerHTML='<div class="loading-msg">⚠️ Error cargando productos. Intenta recargar la página.</div>';
-    console.error(e);
-  }
+  const {data,error}=await db.from('productos').select('*').order('created_at',{ascending:false});
+  if(error){document.getElementById('grid').innerHTML='<div class="loading-msg">⚠️ Error cargando productos</div>';return;}
+  products=data||[];
+  document.getElementById('stat-prods').textContent=products.length;
+  buildCats();
+  renderProds();
 }
 
 function buildCats(){
-  const cats=[...new Set(products.map(p=>p.cat))];
-  const grid=document.getElementById('cats-grid');
-  grid.querySelectorAll('.cat-card:not(:first-child)').forEach(c=>c.remove());
+  const cats=[...new Set(products.map(p=>p.categoria).filter(Boolean))];
+  const wrap=document.getElementById('cats-wrap');
+  wrap.querySelectorAll('.cat-btn:not(:first-child)').forEach(b=>b.remove());
+  document.getElementById('count-todos').textContent=products.length+' productos';
   cats.forEach(cat=>{
-    const count=products.filter(p=>p.cat===cat).length;
-    const div=document.createElement('div');
-    div.className='cat-card';
-    div.onclick=function(){filterCat(cat,this)};
-    div.innerHTML='<span class="cat-icon">'+(ICONS[cat]||ICONS.default)+'</span><div class="cat-name">'+cat+'</div><div class="cat-count">'+count+' productos</div>';
-    grid.appendChild(div);
+    const count=products.filter(p=>p.categoria===cat).length;
+    const btn=document.createElement('button');
+    btn.className='cat-btn';
+    btn.onclick=function(){filterCat(cat,this)};
+    btn.innerHTML='<span class="cat-icon">'+(ICONS[cat]||ICONS.default)+'</span><div class="cat-name">'+cat+'</div><div class="cat-count">'+count+' productos</div>';
+    wrap.appendChild(btn);
   });
 }
 
 function filterCat(cat,el){
   currentCat=cat;
-  document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
   renderProds();
 }
@@ -304,32 +288,46 @@ function filterCat(cat,el){
 function renderProds(){
   const q=document.getElementById('search').value.toLowerCase();
   const filtered=products.filter(p=>{
-    const mc=currentCat==='todos'||p.cat===currentCat;
-    const mq=!q||p.name.toLowerCase().includes(q)||(p.ref&&p.ref.toLowerCase().includes(q));
+    const mc=currentCat==='todos'||p.categoria===currentCat;
+    const mq=!q||(p.nombre&&p.nombre.toLowerCase().includes(q))||(p.referencia&&p.referencia.toLowerCase().includes(q));
     return mc&&mq;
   });
   const grid=document.getElementById('grid');
   if(!filtered.length){grid.innerHTML='<div class="loading-msg">🔍 No se encontraron productos</div>';return;}
   grid.innerHTML=filtered.map(p=>{
-    const pct=p.stock>0?Math.min(100,Math.round((p.stock/Math.max(p.stock,50))*100)):0;
-    const low=p.stock>0&&p.stock<=5;
     const out=p.stock===0;
-    return '<div class="prod-card'+(out?' out':'')+'">'+
-      '<div class="prod-cat">'+p.cat+'</div>'+
-      '<span class="prod-ico">'+p.icon+'</span>'+
-      '<div class="prod-name">'+p.name+'</div>'+
-      (p.ref?'<div class="prod-ref">Ref: '+p.ref+'</div>':'')+
-      '<div class="prod-price">$'+p.price.toFixed(2)+' <small>USD</small></div>'+
-      '<div class="stk-wrap">'+
-        '<div class="stk-top"><span>'+(out?'Sin stock':low?'Stock bajo':'En stock')+'</span><span>'+p.stock+' uds</span></div>'+
-        '<div class="stk-bar"><div class="stk-fill '+(low||out?'s-low':'s-ok')+'" style="width:'+pct+'%"></div></div>'+
-      '</div>'+
-      (out?'<div class="out-tag">No disponible</div>':'<button class="add-btn" onclick="addCart(\''+p.id+'\')">+ Agregar al pedido</button>')+
-    '</div>';
+    const low=p.stock>0&&p.stock<=5;
+    const pct=Math.min(100,Math.round((p.stock/Math.max(p.stock,50))*100));
+    const imgUrl=p.imagen?`${SUPABASE_URL}/storage/v1/object/public/productos/${p.imagen}`:'';
+    return `<div class="prod-card${out?' out':''}">
+      ${imgUrl?`<img class="prod-img" src="${imgUrl}" alt="${p.nombre}" onerror="this.style.display='none'">`:`<div class="prod-img-placeholder">${ICONS[p.categoria]||ICONS.default}</div>`}
+      <div class="prod-body">
+        <div class="prod-badges">
+          <span class="badge-cat">${p.categoria||''}</span>
+          ${p.destacado?'<span class="badge-dest">⭐ Destacado</span>':''}
+        </div>
+        <div class="prod-name">${p.nombre}</div>
+        ${p.referencia?`<div class="prod-ref">Ref: ${p.referencia}</div>`:''}
+        <div class="prod-price">$${parseFloat(p.precio).toFixed(2)} <small>USD</small></div>
+        <div class="stk-wrap">
+          <div class="stk-top"><span>${out?'Sin stock':low?'⚠️ Stock bajo':'En stock'}</span><span>${p.stock} uds</span></div>
+          <div class="stk-bar"><div class="stk-fill ${low||out?'s-low':'s-ok'}" style="width:${pct}%"></div></div>
+        </div>
+        ${out?'<div class="out-tag">No disponible</div>':`<button class="add-btn" onclick="addCart('${p.id}')">+ Agregar al pedido</button>`}
+      </div>
+    </div>`;
   }).join('');
 }
 
-function addCart(id){cart[id]=(cart[id]||0)+1;updateBadge();}
+function addCart(id){
+  const p=products.find(x=>x.id===id);
+  if(!p||p.stock===0)return;
+  const cur=cart[id]||0;
+  if(cur>=p.stock){showToast('No hay más stock disponible','error');return;}
+  cart[id]=cur+1;
+  updateBadge();
+  showToast('✅ '+p.nombre+' agregado');
+}
 
 function updateBadge(){
   const total=Object.values(cart).reduce((a,b)=>a+b,0);
@@ -341,57 +339,105 @@ function updateBadge(){
 function openCart(){
   const items=Object.entries(cart).filter(([,q])=>q>0);
   let html='';let total=0;
-  if(!items.length){html='<div class="modal-empty">Tu carrito está vacío 🛒</div>';}
-  else{
+  if(!items.length){
+    html='<div class="modal-empty">Tu carrito está vacío 🛒<br><small>Agrega productos para continuar</small></div>';
+    document.getElementById('modal-body').innerHTML=html;
+    document.getElementById('modal-footer').innerHTML='<div class="m-actions"><button class="m-close" onclick="closeCart()">Cerrar</button></div>';
+  } else {
     items.forEach(([id,qty])=>{
-      const p=products.find(x=>x.id==id);if(!p)return;
-      const sub=p.price*qty;total+=sub;
-      html+='<div class="m-item">'+
-        '<div><div class="m-item-name">'+p.name+'</div><div class="m-item-ref">'+p.ref+'</div></div>'+
-        '<div class="m-item-right">'+
-          '<button class="qty-btn" onclick="changeQty(\''+p.id+'\',-1)">−</button>'+
-          '<span class="qty-num">'+qty+'</span>'+
-          '<button class="qty-btn" onclick="changeQty(\''+p.id+'\',1)">+</button>'+
-          '<span class="m-item-price">$'+sub.toFixed(2)+'</span>'+
-        '</div></div>';
+      const p=products.find(x=>x.id===id);if(!p)return;
+      const sub=p.precio*qty;total+=sub;
+      html+=`<div class="m-item">
+        <div class="m-item-info"><div class="m-item-name">${p.nombre}</div><div class="m-item-ref">${p.referencia||''}</div></div>
+        <div class="m-item-right">
+          <button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button>
+          <span class="qty-num">${qty}</span>
+          <button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button>
+          <span class="m-item-price">$${sub.toFixed(2)}</span>
+        </div>
+      </div>`;
     });
-    html+='<div class="m-total">Total: $'+total.toFixed(2)+'</div>';
+    html+=`<div class="m-total">Total: $${total.toFixed(2)}</div>`;
+    document.getElementById('modal-body').innerHTML=html;
+    document.getElementById('modal-footer').innerHTML=`
+      <div class="checkout-form">
+        <div class="checkout-title">📋 Datos para el pedido</div>
+        <div class="fg"><label>Tu nombre</label><input type="text" id="c-nombre" placeholder="Nombre completo"></div>
+        <div class="fg"><label>Tu teléfono</label><input type="tel" id="c-tel" placeholder="+1 o +593..."></div>
+      </div>
+      <div class="m-actions">
+        <button class="m-close" onclick="closeCart()">Cancelar</button>
+        <button class="m-confirm" onclick="confirmarPedido()">✅ Confirmar Compra</button>
+      </div>`;
   }
-  document.getElementById('modal-body').innerHTML=html;
   document.getElementById('modal').classList.add('open');
 }
 
 function changeQty(id,delta){
+  const p=products.find(x=>x.id===id);
+  if(!p)return;
   cart[id]=(cart[id]||0)+delta;
   if(cart[id]<=0)delete cart[id];
-  updateBadge();openCart();
+  if(delta>0&&cart[id]>p.stock){cart[id]=p.stock;showToast('Stock máximo alcanzado','error');}
+  updateBadge();
+  if(Object.keys(cart).length>0)openCart();
+  else closeCart();
 }
 
 function closeCart(){document.getElementById('modal').classList.remove('open');}
 
-function sendCartWA(){
+async function confirmarPedido(){
+  const nombre=document.getElementById('c-nombre').value.trim();
+  const tel=document.getElementById('c-tel').value.trim();
+  if(!nombre||!tel){showToast('Por favor ingresa tu nombre y teléfono','error');return;}
   const items=Object.entries(cart).filter(([,q])=>q>0);
   if(!items.length)return;
-  let msg='Hola! Quisiera hacer el siguiente pedido:%0A%0A';
+  const btn=document.querySelector('.m-confirm');
+  btn.textContent='Procesando...';
+  btn.disabled=true;
   let total=0;
-  items.forEach(([id,qty])=>{
-    const p=products.find(x=>x.id==id);if(!p)return;
-    const sub=p.price*qty;total+=sub;
-    msg+='%E2%96%AA '+p.name+(p.ref?' ('+p.ref+')':'')+' x'+qty+' = $'+sub.toFixed(2)+'%0A';
+  const productosCarrito=items.map(([id,qty])=>{
+    const p=products.find(x=>x.id===id);
+    const sub=p.precio*qty;total+=sub;
+    return{id:p.id,nombre:p.nombre,referencia:p.referencia,precio:p.precio,cantidad:qty,subtotal:sub};
   });
-  msg+='%0A*Total: $'+total.toFixed(2)+'*%0A%0APor favor confirmar disponibilidad y forma de pago.';
-  window.open('https://wa.me/'+WA+'?text='+msg,'_blank');
+  const codigo='PSM-'+Date.now().toString(36).toUpperCase();
+  const{error:pedidoError}=await db.from('pedidos').insert({
+    codigo,
+    cliente_nombre:nombre,
+    cliente_telefono:tel,
+    productos:productosCarrito,
+    total,
+    estado:'pendiente'
+  });
+  if(pedidoError){showToast('Error al procesar pedido. Intenta de nuevo.','error');btn.textContent='✅ Confirmar Compra';btn.disabled=false;return;}
+  for(const[id,qty]of items){
+    const p=products.find(x=>x.id===id);
+    await db.from('productos').update({stock:p.stock-qty}).eq('id',id);
+  }
+  let msg='🏭 *RUIZ PSM - Nuevo Pedido*%0A%0A';
+  msg+='📋 *Código:* '+codigo+'%0A';
+  msg+='👤 *Cliente:* '+nombre+'%0A';
+  msg+='📱 *Teléfono:* '+tel+'%0A%0A';
+  msg+='*Productos:*%0A';
+  productosCarrito.forEach(p=>{msg+='▪ '+p.nombre+' x'+p.cantidad+' = $'+p.subtotal.toFixed(2)+'%0A';});
+  msg+='%0A💰 *Total: $'+total.toFixed(2)+'*';
+  cart={};
+  updateBadge();
+  closeCart();
+  await loadProducts();
+  showToast('🎉 Pedido '+codigo+' confirmado!');
+  setTimeout(()=>window.open('https://wa.me/'+WA+'?text='+msg,'_blank'),500);
 }
 
 function sendWA(){
   const nombre=document.getElementById('f-nombre').value||'Cliente';
   const tel=document.getElementById('f-tel').value||'No indicado';
   const msg=document.getElementById('f-msg').value||'Consulta general';
-  window.open('https://wa.me/'+WA+'?text=Hola! Mi nombre es '+encodeURIComponent(nombre)+', mi teléfono es '+encodeURIComponent(tel)+'.%0A%0AMensaje: '+encodeURIComponent(msg),'_blank');
+  window.open('https://wa.me/'+WA+'?text=Hola! Soy '+encodeURIComponent(nombre)+', tel: '+encodeURIComponent(tel)+'.%0A%0A'+encodeURIComponent(msg),'_blank');
 }
 
 loadProducts();
-setInterval(loadProducts,300000);
 </script>
 </body>
 </html>
