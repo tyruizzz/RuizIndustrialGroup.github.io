@@ -1015,8 +1015,8 @@ function openCart(){
           <div class="checkout-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Datos del pedido</div>
           <div class="fg"><label>Tu nombre</label><input type="text" id="c-nombre" placeholder="Nombre completo" value="${currentUser.user_metadata?.nombre||''}"></div>
           <div class="fg"><label>Tu teléfono</label>
-            <div class="phone-wrap">
-              <select class="phone-code" id="c-codigo">
+            <div style="display:flex;gap:6px">
+              <select id="c-codigo" style="width:80px;flex-shrink:0;background:var(--dark);border:1px solid var(--steel);border-radius:6px;padding:10px 4px;color:var(--light);font-size:12px;font-family:'Barlow',sans-serif;outline:none;text-align:center">
                 <option value="+1">+1</option>
                 <option value="+593" selected>+593</option>
                 <option value="+52">+52</option>
@@ -1036,7 +1036,7 @@ function openCart(){
                 <option value="+91">+91</option>
                 <option value="+61">+61</option>
               </select>
-              <input class="phone-num" type="tel" id="c-tel" placeholder="Número de teléfono">
+              <input type="tel" id="c-tel" placeholder="Número" style="flex:1;background:var(--dark);border:1px solid var(--steel);border-radius:6px;padding:10px 14px;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif;outline:none">
             </div>
           </div>
         </div>
