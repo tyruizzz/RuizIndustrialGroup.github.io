@@ -245,18 +245,22 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
     <div class="tab-content" id="tab-pedidos">
       <div class="section-hdr">
         <h2>Pedidos</h2>
-        <select id="filtro-estado" onchange="renderPedidos()" style="background:var(--navy);border:1px solid var(--steel);color:var(--light);padding:6px 10px;border-radius:4px;font-size:12px">
-          <option value="">Todos</option>
-          <option value="pendiente">Pendientes</option>
-          <option value="confirmado">Confirmados</option>
-          <option value="cancelado">Cancelados</option>
-          <option value="anulado">Anulados</option>
-        </select>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select id="filtro-estado" onchange="renderPedidos()" style="background:var(--navy);border:1px solid var(--steel);color:var(--light);padding:6px 10px;border-radius:4px;font-size:12px">
+            <option value="">Todos</option>
+            <option value="pendiente">Pendientes</option>
+            <option value="confirmado">Confirmados</option>
+            <option value="cancelado">Cancelados</option>
+            <option value="anulado">Anulados</option>
+          </select>
+          <button class="btn-sm" onclick="exportarExcel()" style="background:rgba(37,211,102,0.1);border-color:var(--green);color:var(--green)">📊 Exportar Excel</button>
+          <button class="btn-red" onclick="eliminarPedidosSeleccionados()">🗑️ Eliminar</button>
+        </div>
       </div>
       <div style="overflow-x:auto">
         <table class="prods-table">
-          <thead><tr><th>Código</th><th>Cliente</th><th>Teléfono</th><th>Productos</th><th>Total</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
-          <tbody id="pedidos-tbody"><tr><td colspan="8" class="empty-state">Cargando...</td></tr></tbody>
+          <thead><tr><th><input type="checkbox" id="check-all" onchange="toggleAllPedidos(this)" style="cursor:pointer"></th><th>Código</th><th>Cliente</th><th>Teléfono</th><th>Productos</th><th>Total</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+          <tbody id="pedidos-tbody"><tr><td colspan="9" class="empty-state">Cargando...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -667,12 +671,64 @@ function renderProductsTable(){
 function renderPedidos(){
   const filtro=document.getElementById('filtro-estado').value;
   const filtered=filtro?allPedidos.filter(p=>p.estado===filtro):allPedidos;
-  if(!filtered.length){document.getElementById('pedidos-tbody').innerHTML='<tr><td colspan="8" class="empty-state">No hay pedidos</td></tr>';return;}
+  if(!filtered.length){document.getElementById('pedidos-tbody').innerHTML='<tr><td colspan="9" class="empty-state">No hay pedidos</td></tr>';return;}
   document.getElementById('pedidos-tbody').innerHTML=filtered.map(p=>{
     const fecha=new Date(p.created_at).toLocaleDateString('es-EC',{day:'2-digit',month:'2-digit',year:'numeric'});
     const prods=(p.productos||[]).map(i=>`${i.nombre} x${i.cantidad}`).join(', ');
-    return `<tr><td style="font-family:monospace;color:var(--gold);font-size:12px">${p.codigo}</td><td style="color:var(--white)">${p.cliente_nombre}</td><td style="color:var(--muted);font-size:12px">${p.cliente_telefono}</td><td style="font-size:11px;color:var(--muted);max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prods}</td><td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.total).toFixed(2)}</td><td><span class="estado-badge e-${p.estado}">${p.estado}</span></td><td style="font-size:11px;color:var(--muted)">${fecha}</td><td><div class="actions-wrap">${p.estado==='pendiente'?`<button class="btn-green" onclick="updatePedido('${p.id}','confirmado')">✅</button><button class="btn-red" onclick="updatePedido('${p.id}','cancelado')">❌</button>`:p.estado==='confirmado'?`<button class="btn-red" onclick="updatePedido('${p.id}','anulado')" style="font-size:11px;padding:5px 10px">🚫 Anular</button>`:''}<button class="btn-sm" onclick="waCliente('${p.cliente_telefono}','${p.codigo}')">💬</button></div></td></tr>`;
+    return `<tr>
+      <td><input type="checkbox" class="pedido-check" value="${p.id}" style="cursor:pointer"></td>
+      <td style="font-family:monospace;color:var(--gold);font-size:12px">${p.codigo}</td>
+      <td style="color:var(--white)">${p.cliente_nombre}</td>
+      <td style="color:var(--muted);font-size:12px">${p.cliente_telefono}</td>
+      <td style="font-size:11px;color:var(--muted);max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prods}</td>
+      <td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.total).toFixed(2)}</td>
+      <td><span class="estado-badge e-${p.estado}">${p.estado}</span></td>
+      <td style="font-size:11px;color:var(--muted)">${fecha}</td>
+      <td><div class="actions-wrap">
+        ${p.estado==='pendiente'?`<button class="btn-green" onclick="updatePedido('${p.id}','confirmado')">✅</button><button class="btn-red" onclick="updatePedido('${p.id}','cancelado')">❌</button>`:p.estado==='confirmado'?`<button class="btn-red" onclick="updatePedido('${p.id}','anulado')" style="font-size:11px;padding:5px 10px">🚫 Anular</button>`:''}
+        <button class="btn-sm" onclick="waCliente('${p.cliente_telefono}','${p.codigo}')">💬</button>
+      </div></td>
+    </tr>`;
   }).join('');
+}
+
+function toggleAllPedidos(cb){
+  document.querySelectorAll('.pedido-check').forEach(c=>c.checked=cb.checked);
+}
+
+async function eliminarPedidosSeleccionados(){
+  const selected=[...document.querySelectorAll('.pedido-check:checked')].map(c=>c.value);
+  if(!selected.length){alert('Selecciona al menos un pedido para eliminar');return;}
+  const pin=prompt('🔐 Ingresa la clave para eliminar '+selected.length+' pedido(s):');
+  if(pin!=='2468'){alert('❌ Clave incorrecta');return;}
+  if(!confirm('¿Eliminar '+selected.length+' pedido(s) permanentemente? Esta acción no se puede deshacer.'))return;
+  for(const id of selected){
+    await db.from('pedidos').delete().eq('id',id);
+  }
+  await loadPedidos();
+  renderDashboard();
+  alert('✅ '+selected.length+' pedido(s) eliminado(s)');
+}
+
+function exportarExcel(){
+  const filtro=document.getElementById('filtro-estado').value;
+  const filtered=filtro?allPedidos.filter(p=>p.estado===filtro):allPedidos;
+  if(!filtered.length){alert('No hay pedidos para exportar');return;}
+  const rows=[['Código','Cliente','Teléfono','Productos','Total','Estado','Fecha']];
+  filtered.forEach(p=>{
+    const fecha=new Date(p.created_at).toLocaleDateString('es-EC');
+    const prods=(p.productos||[]).map(i=>i.nombre+' x'+i.cantidad).join(' | ');
+    rows.push([p.codigo,p.cliente_nombre,p.cliente_telefono,prods,'$'+parseFloat(p.total).toFixed(2),p.estado,fecha]);
+  });
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const BOM='\uFEFF';
+  const blob=new Blob([BOM+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='pedidos_ruizpsm_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function previewImgs(input){
