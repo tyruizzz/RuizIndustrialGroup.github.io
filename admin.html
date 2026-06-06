@@ -736,23 +736,6 @@ function exportarExcel(){
   a.click();
   URL.revokeObjectURL(url);
 }
-  if(!filtered.length){alert('No hay pedidos para exportar');return;}
-  const rows=[['Código','Cliente','Teléfono','Productos','Total','Estado','Fecha']];
-  filtered.forEach(p=>{
-    const fecha=new Date(p.created_at).toLocaleDateString('es-EC');
-    const prods=(p.productos||[]).map(i=>i.nombre+' x'+i.cantidad).join(' | ');
-    rows.push([p.codigo,p.cliente_nombre,p.cliente_telefono,prods,'$'+parseFloat(p.total).toFixed(2),p.estado,fecha]);
-  });
-  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
-  const BOM='\uFEFF';
-  const blob=new Blob([BOM+csv],{type:'text/csv;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download='pedidos_ruizpsm_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-}
 
 function previewImgs(input){
   const wrap=document.getElementById('img-previews');
