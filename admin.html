@@ -420,10 +420,48 @@ const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 const CREDS_KEY='ruizpsm_creds';
 const SESSION_KEY='ruizpsm_session';
-const SESSION_HOURS=8;
+const ACTIVITY_KEY='ruizpsm_activity';
+const AFK_MINUTES=60;
 const DEFAULT_CREDS={user:'admin',pass:'admin123',email:''};
 function getCreds(){try{return JSON.parse(localStorage.getItem(CREDS_KEY))||DEFAULT_CREDS;}catch{return DEFAULT_CREDS;}}
 function saveCreds(c){localStorage.setItem(CREDS_KEY,JSON.stringify(c));}
+
+function updateActivity(){localStorage.setItem(ACTIVITY_KEY,Date.now().toString());}
+
+function checkSession(){
+  const session=localStorage.getItem(SESSION_KEY);
+  const lastActivity=localStorage.getItem(ACTIVITY_KEY);
+  if(!session||!lastActivity)return false;
+  const afkElapsed=(Date.now()-parseInt(lastActivity))/(1000*60);
+  if(afkElapsed>AFK_MINUTES){
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(ACTIVITY_KEY);
+    return false;
+  }
+  return true;
+}
+
+function startActivityWatcher(){
+  ['mousemove','keydown','click','scroll','touchstart'].forEach(evt=>{
+    document.addEventListener(evt,updateActivity,{passive:true});
+  });
+  setInterval(()=>{
+    if(document.getElementById('admin-panel').style.display!=='none'){
+      if(!checkSession()){
+        showSessionExpired();
+      }
+    }
+  },60000);
+}
+
+function showSessionExpired(){
+  document.getElementById('admin-panel').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+  document.getElementById('login-err').textContent='⏱️ Sesión expirada por inactividad. Inicia sesión de nuevo.';
+  document.getElementById('login-err').style.display='block';
+}
 
 let allProducts=[],allPedidos=[],configData={};
 
@@ -434,18 +472,24 @@ function doLogin(){
   if(u===creds.user&&p===creds.pass){
     localStorage.setItem(SESSION_KEY,Date.now().toString());
     localStorage.setItem('ruizpsm_last',new Date().toLocaleString('es-EC'));
+    updateActivity();
     document.getElementById('login-screen').style.display='none';
     document.getElementById('admin-panel').style.display='block';
+    document.getElementById('login-err').style.display='none';
     updateSecurityInfo();
     loadAll();
+    startActivityWatcher();
   } else {
     const err=document.getElementById('login-err');
+    err.textContent='❌ Usuario o contraseña incorrectos';
     err.style.display='block';
     setTimeout(()=>err.style.display='none',3000);
   }
 }
 
 function doLogout(){
+  localStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(ACTIVITY_KEY);
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('admin-panel').style.display='none';
   document.getElementById('l-user').value='';
@@ -847,6 +891,15 @@ function showSecAlert(id,msg,type){
   const el=document.getElementById(id);
   el.className='alert '+type;el.textContent=msg;
   setTimeout(()=>el.textContent='',4000);
+}
+
+if(checkSession()){
+  updateActivity();
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('admin-panel').style.display='block';
+  updateSecurityInfo();
+  loadAll();
+  startActivityWatcher();
 }
 </script>
 </body>
