@@ -3,134 +3,119 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Ruiz Industrial Group - Venta de repuestos de maquinaria y maquinaria industrial en Ecuador. Calidad garantizada y los mejores precios.">
-<meta name="keywords" content="repuestos maquinaria Ecuador, maquinaria industrial, repuestos industriales, Ruiz Industrial Group">
+<meta name="description" content="Ruiz Industrial Group - Venta de repuestos de maquinaria y maquinaria industrial en Ecuador.">
 <title>Ruiz Industrial Group | Repuestos & Maquinaria Industrial</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --gold:#C9A84C;--gold2:#dbb95a;--dark:#0A0C10;--navy:#0D1B2A;
-  --steel:#1E3A5F;--light:#F4F6F8;--muted:#8A9BB0;--white:#fff;
-}
-body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;min-height:100vh}
+:root{--gold:#C9A84C;--gold2:#dbb95a;--dark:#0A0C10;--navy:#0D1B2A;--steel:#1E3A5F;--light:#F4F6F8;--muted:#8A9BB0;--white:#fff}
+body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif}
 a{text-decoration:none;color:inherit}
-nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);border-bottom:1px solid var(--gold);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;backdrop-filter:blur(8px)}
+nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);border-bottom:1px solid var(--gold);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px}
 .nav-brand{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
 .nav-brand span{color:var(--white)}
 .nav-links{display:flex;gap:2rem}
 .nav-links a{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:color 0.2s}
 .nav-links a:hover{color:var(--gold)}
-.nav-whatsapp{background:var(--gold);color:#0A0C10;padding:8px 18px;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;transition:background 0.2s}
-.nav-whatsapp:hover{background:var(--gold2);color:#0A0C10}
-.hero{background:linear-gradient(135deg,#0A0C10 0%,#0D1B2A 60%,#0A1628 100%);padding:5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--steel)}
-.hero-gear1{position:absolute;right:-60px;top:-60px;font-size:280px;opacity:0.03;line-height:1;pointer-events:none}
-.hero-gear2{position:absolute;left:-40px;bottom:-60px;font-size:200px;opacity:0.03;pointer-events:none}
+.nav-wa{background:var(--gold);color:#0A0C10;padding:8px 18px;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase}
+.nav-wa:hover{background:var(--gold2)}
+.sync-bar{background:rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.2);padding:6px 2rem;text-align:center;font-size:11px;color:var(--gold);letter-spacing:1px}
+.hero{background:linear-gradient(135deg,#0A0C10 0%,#0D1B2A 60%,#0A1628 100%);padding:5rem 2rem 4rem;text-align:center;border-bottom:1px solid var(--steel);position:relative;overflow:hidden}
+.hero-gear{position:absolute;font-size:250px;opacity:0.03;pointer-events:none;line-height:1}
 .hero-badge{display:inline-block;background:rgba(201,168,76,0.1);border:1px solid var(--gold);color:var(--gold);font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:5px 16px;border-radius:2px;margin-bottom:1.5rem}
-.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,6vw,72px);font-weight:700;line-height:1;color:var(--white);text-transform:uppercase;letter-spacing:3px}
+.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,6vw,72px);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:3px}
 .hero h1 span{color:var(--gold)}
 .hero-sub{font-size:16px;color:var(--muted);margin-top:1rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7}
 .hero-stats{display:flex;justify-content:center;gap:3rem;margin-top:3rem;flex-wrap:wrap}
-.hero-stat{text-align:center}
 .hero-stat-num{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;color:var(--gold)}
 .hero-stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px}
 .hero-btns{display:flex;gap:1rem;justify-content:center;margin-top:2.5rem;flex-wrap:wrap}
-.btn-primary{background:var(--gold);color:#0A0C10;padding:14px 32px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:4px;cursor:pointer;transition:background 0.2s}
-.btn-primary:hover{background:var(--gold2)}
-.btn-outline{background:transparent;color:var(--gold);padding:14px 32px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--gold);border-radius:4px;cursor:pointer;transition:all 0.2s;display:inline-block}
-.btn-outline:hover{background:var(--gold);color:#0A0C10}
+.btn-gold{background:var(--gold);color:#0A0C10;padding:14px 32px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:4px;cursor:pointer}
+.btn-gold:hover{background:var(--gold2)}
+.btn-out{background:transparent;color:var(--gold);padding:14px 32px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--gold);border-radius:4px;display:inline-block}
+.btn-out:hover{background:var(--gold);color:#0A0C10}
 section{padding:4rem 2rem}
-.section-title{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:0.5rem}
-.section-line{width:60px;height:2px;background:var(--gold);margin:0 auto 3rem}
-.cats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--steel);max-width:900px;margin:0 auto}
+.sec-title{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:0.5rem}
+.sec-line{width:60px;height:2px;background:var(--gold);margin:0 auto 3rem}
+.cats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--steel);max-width:900px;margin:0 auto}
 .cat-card{background:var(--navy);padding:1.5rem;text-align:center;cursor:pointer;transition:background 0.2s}
 .cat-card:hover,.cat-card.active{background:#0F2035}
 .cat-card.active{border-bottom:2px solid var(--gold)}
 .cat-icon{font-size:32px;margin-bottom:0.75rem;display:block}
 .cat-name{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;color:var(--white);text-transform:uppercase;letter-spacing:1px}
 .cat-count{font-size:11px;color:var(--muted);margin-top:4px}
-.products-section{background:#080A0D;padding:4rem 2rem}
-.search-bar{display:flex;gap:8px;max-width:500px;margin:0 auto 2rem;background:var(--navy);border:1px solid var(--steel);border-radius:4px;padding:8px 12px;align-items:center}
-.search-bar input{flex:1;background:transparent;border:none;outline:none;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif}
-.search-bar input::placeholder{color:var(--muted)}
-.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--steel);max-width:1100px;margin:0 auto}
-.prod-card{background:var(--navy);padding:1.5rem;transition:background 0.2s;position:relative}
+.prods-section{background:#080A0D;padding:4rem 2rem}
+.search-wrap{display:flex;max-width:500px;margin:0 auto 2rem;background:var(--navy);border:1px solid var(--steel);border-radius:4px;padding:8px 12px;align-items:center;gap:8px}
+.search-wrap input{flex:1;background:transparent;border:none;outline:none;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif}
+.search-wrap input::placeholder{color:var(--muted)}
+.prods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--steel);max-width:1100px;margin:0 auto}
+.prod-card{background:var(--navy);padding:1.5rem;transition:background 0.2s}
 .prod-card:hover{background:#0F2035}
 .prod-card.out{opacity:0.55}
-.prod-cat-tag{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:10px;font-weight:600}
-.prod-emoji{font-size:36px;margin-bottom:12px;display:block}
+.prod-cat{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:10px;font-weight:600}
+.prod-ico{font-size:36px;margin-bottom:12px;display:block}
 .prod-name{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:600;color:var(--white);margin-bottom:4px;line-height:1.2}
 .prod-ref{font-size:10px;color:var(--muted);font-family:monospace;letter-spacing:1px;margin-bottom:10px}
 .prod-price{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:var(--gold)}
 .prod-price small{font-size:12px;font-weight:400;color:var(--muted)}
-.stock-info{margin-top:10px}
-.stock-top{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px}
-.stock-bar{height:2px;background:var(--steel);border-radius:2px;overflow:hidden}
-.stock-fill{height:100%;border-radius:2px}
+.stk-wrap{margin-top:10px}
+.stk-top{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px}
+.stk-bar{height:2px;background:var(--steel);border-radius:2px;overflow:hidden}
+.stk-fill{height:100%;border-radius:2px}
 .s-ok{background:var(--gold)}
 .s-low{background:#E24B4A}
 .add-btn{width:100%;margin-top:14px;background:transparent;border:1px solid var(--gold);color:var(--gold);padding:8px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all 0.2s}
 .add-btn:hover{background:var(--gold);color:#0A0C10}
 .out-tag{font-size:10px;color:#E24B4A;text-transform:uppercase;letter-spacing:1px;text-align:center;margin-top:12px}
-.loading{text-align:center;padding:3rem;color:var(--muted)}
-.loading-spinner{font-size:36px;animation:spin 1s linear infinite;display:block;margin-bottom:1rem}
-@keyframes spin{to{transform:rotate(360deg)}}
+.loading-msg{grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted);font-size:15px}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:900px;margin:0 auto;align-items:center}
 .about-text p{color:var(--muted);line-height:1.8;margin-bottom:1rem;font-size:15px}
-.about-features{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
-.feature{background:var(--navy);border:1px solid var(--steel);border-left:3px solid var(--gold);padding:1rem}
-.feature-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.feature-desc{font-size:12px;color:var(--muted)}
-.about-visual{background:var(--navy);border:1px solid var(--steel);padding:2rem;text-align:center}
-.contact-section{background:#080A0D}
+.about-feats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
+.feat{background:var(--navy);border:1px solid var(--steel);border-left:3px solid var(--gold);padding:1rem}
+.feat-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.feat-desc{font-size:12px;color:var(--muted)}
+.about-vis{background:var(--navy);border:1px solid var(--steel);padding:2rem;text-align:center}
+.contact-sec{background:#080A0D}
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:800px;margin:0 auto}
-.contact-info h3{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem}
-.contact-item{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
-.contact-icon{font-size:24px;margin-top:2px}
-.contact-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.contact-value{font-size:15px;color:var(--white)}
-.wa-btn{display:block;background:#25D366;color:#fff;text-align:center;padding:16px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;letter-spacing:2px;text-transform:uppercase;border-radius:4px;margin-top:2rem;transition:background 0.2s}
+.contact-info h3,.contact-form h3{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem}
+.c-item{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
+.c-ico{font-size:24px;margin-top:2px}
+.c-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.c-val{font-size:15px;color:var(--white)}
+.wa-btn{display:block;background:#25D366;color:#fff;text-align:center;padding:16px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;letter-spacing:2px;text-transform:uppercase;border-radius:4px;margin-top:2rem}
 .wa-btn:hover{background:#1ebe5a}
-.contact-form h3{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem}
-.form-group{margin-bottom:1rem}
-.form-group label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px}
-.form-group input,.form-group textarea{width:100%;background:var(--navy);border:1px solid var(--steel);border-radius:4px;padding:10px 14px;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif;outline:none;transition:border 0.2s}
-.form-group input:focus,.form-group textarea:focus{border-color:var(--gold)}
-.form-group textarea{height:100px;resize:vertical}
-.form-submit{width:100%;background:var(--gold);color:#0A0C10;border:none;padding:12px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:background 0.2s}
-.form-submit:hover{background:var(--gold2)}
+.fg{margin-bottom:1rem}
+.fg label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px}
+.fg input,.fg textarea{width:100%;background:var(--navy);border:1px solid var(--steel);border-radius:4px;padding:10px 14px;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif;outline:none}
+.fg input:focus,.fg textarea:focus{border-color:var(--gold)}
+.fg textarea{height:100px;resize:vertical}
+.f-submit{width:100%;background:var(--gold);color:#0A0C10;border:none;padding:12px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:4px}
+.f-submit:hover{background:var(--gold2)}
 .cart-float{position:fixed;bottom:2rem;right:2rem;z-index:200}
-.cart-fab{background:var(--gold);color:#0A0C10;border:none;width:56px;height:56px;border-radius:50%;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,0.4);transition:transform 0.2s;display:flex;align-items:center;justify-content:center;position:relative}
+.cart-fab{background:var(--gold);color:#0A0C10;border:none;width:56px;height:56px;border-radius:50%;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,0.4);transition:transform 0.2s;position:relative}
 .cart-fab:hover{transform:scale(1.1)}
 .cart-badge{position:absolute;top:-4px;right:-4px;background:#E24B4A;color:#fff;border-radius:50%;width:20px;height:20px;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center}
-.modal-overlay.open{display:flex}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center}
+.modal-ov.open{display:flex}
 .modal-box{background:var(--navy);border:1px solid var(--gold);border-radius:8px;max-width:420px;width:90%;padding:2rem;max-height:80vh;overflow-y:auto}
 .modal-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold);margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:1px}
 .modal-empty{text-align:center;color:var(--muted);padding:2rem 0}
-.modal-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--steel)}
-.modal-item-name{font-size:13px;color:var(--white)}
-.modal-item-ref{font-size:10px;color:var(--muted);font-family:monospace}
-.modal-item-right{display:flex;align-items:center;gap:8px}
+.m-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--steel)}
+.m-item-name{font-size:13px;color:var(--white)}
+.m-item-ref{font-size:10px;color:var(--muted);font-family:monospace}
+.m-item-right{display:flex;align-items:center;gap:8px}
 .qty-btn{background:var(--steel);border:none;color:var(--white);width:24px;height:24px;border-radius:3px;cursor:pointer;font-size:14px}
 .qty-num{font-family:'Rajdhani',sans-serif;font-size:15px;color:var(--gold);min-width:20px;text-align:center}
-.modal-item-price{font-family:'Rajdhani',sans-serif;font-size:15px;color:var(--gold);min-width:60px;text-align:right}
-.modal-total{font-family:'Rajdhani',sans-serif;font-size:20px;color:var(--gold);text-align:right;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--steel)}
-.modal-actions{display:flex;gap:8px;margin-top:1rem}
-.modal-close-btn{flex:1;background:transparent;border:1px solid var(--steel);color:var(--muted);padding:10px;cursor:pointer;border-radius:4px;font-size:13px}
-.modal-wa-btn{flex:2;background:#25D366;border:none;color:#fff;padding:10px;cursor:pointer;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase}
-.modal-wa-btn:hover{background:#1ebe5a}
+.m-item-price{font-family:'Rajdhani',sans-serif;font-size:15px;color:var(--gold);min-width:60px;text-align:right}
+.m-total{font-family:'Rajdhani',sans-serif;font-size:20px;color:var(--gold);text-align:right;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--steel)}
+.m-actions{display:flex;gap:8px;margin-top:1rem}
+.m-close{flex:1;background:transparent;border:1px solid var(--steel);color:var(--muted);padding:10px;cursor:pointer;border-radius:4px;font-size:13px}
+.m-wa{flex:2;background:#25D366;border:none;color:#fff;padding:10px;cursor:pointer;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase}
 footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-align:center}
-.footer-brand{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
-.footer-brand span{color:var(--white)}
-.footer-copy{font-size:12px;color:var(--muted);margin-top:0.5rem}
-.sync-bar{background:rgba(201,168,76,0.08);border-bottom:1px solid rgba(201,168,76,0.2);padding:6px 2rem;text-align:center;font-size:11px;color:var(--gold);letter-spacing:1px}
-@media(max-width:768px){
-  .nav-links{display:none}
-  .about-grid,.contact-grid{grid-template-columns:1fr}
-  .about-features{grid-template-columns:1fr}
-  .hero-stats{gap:1.5rem}
-}
+.f-brand{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+.f-brand span{color:var(--white)}
+.f-copy{font-size:12px;color:var(--muted);margin-top:0.5rem}
+@media(max-width:768px){.nav-links{display:none}.about-grid,.contact-grid{grid-template-columns:1fr}.about-feats{grid-template-columns:1fr}.hero-stats{gap:1.5rem}}
 </style>
 </head>
 <body>
@@ -144,29 +129,29 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
     <a href="#nosotros">Nosotros</a>
     <a href="#contacto">Contacto</a>
   </div>
-  <a href="https://wa.me/593969889751" target="_blank" class="nav-whatsapp">📱 WhatsApp</a>
+  <a href="https://wa.me/593969889751" target="_blank" class="nav-wa">📱 WhatsApp</a>
 </nav>
 
 <section class="hero">
-  <div class="hero-gear1">⚙</div>
-  <div class="hero-gear2">🔧</div>
+  <div class="hero-gear" style="right:-60px;top:-60px">⚙</div>
+  <div class="hero-gear" style="left:-40px;bottom:-60px">🔧</div>
   <div class="hero-badge">Ecuador · Industria · Calidad</div>
   <h1>RUIZ <span>INDUSTRIAL</span> GROUP</h1>
   <p class="hero-sub">Tu proveedor de confianza en repuestos y maquinaria industrial. Calidad garantizada y los mejores precios del mercado.</p>
   <div class="hero-stats">
-    <div class="hero-stat"><div class="hero-stat-num" id="stat-prods">...</div><div class="hero-stat-label">Productos</div></div>
-    <div class="hero-stat"><div class="hero-stat-num">100%</div><div class="hero-stat-label">Calidad</div></div>
-    <div class="hero-stat"><div class="hero-stat-num">24h</div><div class="hero-stat-label">Atención</div></div>
+    <div><div class="hero-stat-num" id="stat-prods">...</div><div class="hero-stat-label">Productos</div></div>
+    <div><div class="hero-stat-num">100%</div><div class="hero-stat-label">Calidad</div></div>
+    <div><div class="hero-stat-num">24h</div><div class="hero-stat-label">Atención</div></div>
   </div>
   <div class="hero-btns">
-    <button class="btn-primary" onclick="document.getElementById('productos').scrollIntoView({behavior:'smooth'})">Ver Catálogo</button>
-    <a href="https://wa.me/593969889751" target="_blank" class="btn-outline">Contactar ahora</a>
+    <button class="btn-gold" onclick="document.getElementById('productos').scrollIntoView({behavior:'smooth'})">Ver Catálogo</button>
+    <a href="https://wa.me/593969889751" target="_blank" class="btn-out">Contactar ahora</a>
   </div>
 </section>
 
 <section style="padding:3rem 2rem;background:var(--dark)">
-  <div class="section-title">Categorías</div>
-  <div class="section-line"></div>
+  <div class="sec-title">Categorías</div>
+  <div class="sec-line"></div>
   <div class="cats-grid" id="cats-grid">
     <div class="cat-card active" onclick="filterCat('todos',this)">
       <span class="cat-icon">🏭</span>
@@ -176,37 +161,34 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
   </div>
 </section>
 
-<section class="products-section" id="productos">
-  <div class="section-title">Nuestros Productos</div>
-  <div class="section-line"></div>
-  <div class="search-bar">
+<section class="prods-section" id="productos">
+  <div class="sec-title">Nuestros Productos</div>
+  <div class="sec-line"></div>
+  <div class="search-wrap">
     <span>🔍</span>
     <input type="text" id="search" placeholder="Buscar repuesto o maquinaria..." oninput="renderProds()">
   </div>
-  <div id="grid" class="products-grid">
-    <div class="loading" style="grid-column:1/-1">
-      <span class="loading-spinner">⚙️</span>
-      Cargando productos...
-    </div>
+  <div id="grid" class="prods-grid">
+    <div class="loading-msg">⚙️ Cargando productos...</div>
   </div>
 </section>
 
 <section id="nosotros" style="background:var(--dark)">
-  <div class="section-title">Sobre Nosotros</div>
-  <div class="section-line"></div>
+  <div class="sec-title">Sobre Nosotros</div>
+  <div class="sec-line"></div>
   <div class="about-grid">
     <div class="about-text">
       <p>Ruiz Industrial Group nace con el compromiso de ofrecer repuestos y maquinaria de alta calidad para el sector industrial y agrícola del Ecuador.</p>
       <p>Contamos con un amplio catálogo de productos para mantener tu maquinaria funcionando al máximo rendimiento, con atención personalizada y precios competitivos.</p>
       <p>Trabajamos con las mejores marcas del mercado y garantizamos la calidad de cada producto que ofrecemos.</p>
-      <div class="about-features">
-        <div class="feature"><div class="feature-title">Calidad</div><div class="feature-desc">Productos certificados y garantizados</div></div>
-        <div class="feature"><div class="feature-title">Rapidez</div><div class="feature-desc">Entrega ágil a todo el Ecuador</div></div>
-        <div class="feature"><div class="feature-title">Precios</div><div class="feature-desc">Los mejores precios del mercado</div></div>
-        <div class="feature"><div class="feature-title">Soporte</div><div class="feature-desc">Asesoría técnica especializada</div></div>
+      <div class="about-feats">
+        <div class="feat"><div class="feat-title">Calidad</div><div class="feat-desc">Productos certificados y garantizados</div></div>
+        <div class="feat"><div class="feat-title">Rapidez</div><div class="feat-desc">Entrega ágil a todo el Ecuador</div></div>
+        <div class="feat"><div class="feat-title">Precios</div><div class="feat-desc">Los mejores precios del mercado</div></div>
+        <div class="feat"><div class="feat-title">Soporte</div><div class="feat-desc">Asesoría técnica especializada</div></div>
       </div>
     </div>
-    <div class="about-visual">
+    <div class="about-vis">
       <div style="font-size:80px">⚙️</div>
       <div style="font-family:'Rajdhani',sans-serif;font-size:48px;font-weight:700;color:var(--gold);margin-top:1rem">100%</div>
       <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:8px">Compromiso con la calidad</div>
@@ -214,198 +196,175 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
   </div>
 </section>
 
-<section class="contact-section" id="contacto">
-  <div class="section-title">Contacto</div>
-  <div class="section-line"></div>
+<section class="contact-sec" id="contacto">
+  <div class="sec-title">Contacto</div>
+  <div class="sec-line"></div>
   <div class="contact-grid">
     <div class="contact-info">
       <h3>Encuéntranos</h3>
-      <div class="contact-item">
-        <span class="contact-icon">📍</span>
-        <div><div class="contact-label">Ubicación</div><div class="contact-value">Ecuador</div></div>
-      </div>
-      <div class="contact-item">
-        <span class="contact-icon">📱</span>
-        <div><div class="contact-label">WhatsApp</div><div class="contact-value">+593 969 889 751</div></div>
-      </div>
-      <div class="contact-item">
-        <span class="contact-icon">⏰</span>
-        <div><div class="contact-label">Horario</div><div class="contact-value">Lun - Sáb: 8:00 - 18:00</div></div>
-      </div>
+      <div class="c-item"><span class="c-ico">📍</span><div><div class="c-label">Ubicación</div><div class="c-val">Ecuador</div></div></div>
+      <div class="c-item"><span class="c-ico">📱</span><div><div class="c-label">WhatsApp</div><div class="c-val">+593 969 889 751</div></div></div>
+      <div class="c-item"><span class="c-ico">⏰</span><div><div class="c-label">Horario</div><div class="c-val">Lun - Sáb: 8:00 - 18:00</div></div></div>
       <a href="https://wa.me/593969889751" target="_blank" class="wa-btn">💬 Escribir por WhatsApp</a>
     </div>
     <div class="contact-form">
       <h3>Enviar mensaje</h3>
-      <div class="form-group"><label>Nombre</label><input type="text" id="f-nombre" placeholder="Tu nombre completo"></div>
-      <div class="form-group"><label>Teléfono</label><input type="tel" id="f-tel" placeholder="Tu número de contacto"></div>
-      <div class="form-group"><label>Mensaje</label><textarea id="f-msg" placeholder="¿En qué podemos ayudarte?"></textarea></div>
-      <button class="form-submit" onclick="sendWA()">Enviar por WhatsApp</button>
+      <div class="fg"><label>Nombre</label><input type="text" id="f-nombre" placeholder="Tu nombre completo"></div>
+      <div class="fg"><label>Teléfono</label><input type="tel" id="f-tel" placeholder="Tu número de contacto"></div>
+      <div class="fg"><label>Mensaje</label><textarea id="f-msg" placeholder="¿En qué podemos ayudarte?"></textarea></div>
+      <button class="f-submit" onclick="sendWA()">Enviar por WhatsApp</button>
     </div>
   </div>
 </section>
 
 <footer>
-  <div class="footer-brand"><span>RUIZ</span> INDUSTRIAL GROUP</div>
-  <div class="footer-copy">© 2026 Ruiz Industrial Group · Ecuador · Todos los derechos reservados</div>
+  <div class="f-brand"><span>RUIZ</span> INDUSTRIAL GROUP</div>
+  <div class="f-copy">© 2026 Ruiz Industrial Group · Ecuador · Todos los derechos reservados</div>
 </footer>
 
 <div class="cart-float">
-  <button class="cart-fab" onclick="openCart()">
-    🛒
-    <span class="cart-badge" id="cart-badge">0</span>
-  </button>
+  <button class="cart-fab" onclick="openCart()">🛒<span class="cart-badge" id="cart-badge"></span></button>
 </div>
 
-<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeCart()">
+<div class="modal-ov" id="modal" onclick="if(event.target===this)closeCart()">
   <div class="modal-box">
     <div class="modal-title">🛒 Tu Pedido</div>
     <div id="modal-body"></div>
-    <div class="modal-actions">
-      <button class="modal-close-btn" onclick="closeCart()">Cerrar</button>
-      <button class="modal-wa-btn" onclick="sendCartWA()">💬 Pedir por WhatsApp</button>
+    <div class="m-actions">
+      <button class="m-close" onclick="closeCart()">Cerrar</button>
+      <button class="m-wa" onclick="sendCartWA()">💬 Pedir por WhatsApp</button>
     </div>
   </div>
 </div>
 
 <script>
-const WA = '593969889751';
-const SHEET_CSV = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vSu8VHZs3aPKJ6OZ9Y--sRX0v-vk3hXJwXDq5DgyluuSLdckO4GWQQRwfruwMQ3_01yESbgiksEZrdy/pub?gid=0&single=true&output=csv');
+const WA='593969889751';
+const PROXY='https://api.allorigins.win/raw?url=';
+const CSV='https://docs.google.com/spreadsheets/d/e/2PACX-1vSu8VHZs3aPKJ6OZ9Y--sRX0v-vk3hXJwXDq5DgyluuSLdckO4GWQQRwfruwMQ3_01yESbgiksEZrdy/pub?gid=0&single=true&output=csv';
+const ICONS={repuestos:'⚙️',maquinaria:'🏭',herramientas:'🛠️',motores:'⚡',bombas:'💧',default:'🔩'};
 
-const CAT_ICONS = {
-  repuestos:'⚙️', maquinaria:'🏭', herramientas:'🛠️',
-  motores:'⚡', bombas:'💧', default:'🔩'
-};
-
-let products = [];
-let cart = {};
-let currentCat = 'todos';
+let products=[];
+let cart={};
+let currentCat='todos';
 
 async function loadProducts(){
-  try {
-    const res = await fetch(SHEET_CSV);
-    const text = await res.text();
-    const rows = text.trim().split('\n');
-    const headers = rows[0].split(',').map(h=>h.trim().toLowerCase());
-    products = rows.slice(1).filter(r=>r.trim()).map(row=>{
-      const vals = row.split(',');
-      const obj = {};
-      headers.forEach((h,i)=>obj[h]=(vals[i]||'').trim());
-      return {
-        id: obj.id,
-        name: obj.name,
-        ref: obj.ref||'',
-        cat: (obj.cat||'general').toLowerCase(),
-        price: parseFloat(obj.price)||0,
-        stock: parseInt(obj.stock)||0,
-        max: parseInt(obj.stock)||100,
-        icon: CAT_ICONS[(obj.cat||'').toLowerCase()]||CAT_ICONS.default
+  try{
+    const url=PROXY+encodeURIComponent(CSV);
+    const res=await fetch(url);
+    if(!res.ok)throw new Error('Error al cargar');
+    const text=await res.text();
+    const rows=text.trim().split('\n');
+    const headers=rows[0].split(',').map(h=>h.trim().toLowerCase().replace(/"/g,''));
+    products=rows.slice(1).filter(r=>r.trim()).map((row,idx)=>{
+      const vals=row.match(/(".*?"|[^,]+)(?=,|$)/g)||row.split(',');
+      const obj={};
+      headers.forEach((h,i)=>obj[h]=(vals[i]||'').trim().replace(/"/g,''));
+      const cat=(obj.cat||'general').toLowerCase();
+      return{
+        id:obj.id||String(idx+1),
+        name:obj.name||'Producto',
+        ref:obj.ref||'',
+        cat:cat,
+        price:parseFloat(obj.price)||0,
+        stock:parseInt(obj.stock)||0,
+        icon:ICONS[cat]||ICONS.default
       };
     });
-    document.getElementById('stat-prods').textContent = products.length;
+    document.getElementById('stat-prods').textContent=products.length;
+    document.getElementById('count-todos').textContent=products.length+' productos';
     buildCats();
     renderProds();
-  } catch(e){
-    document.getElementById('grid').innerHTML = '<div class="loading" style="grid-column:1/-1">⚠️ Error cargando productos. Verifica tu conexión.</div>';
+  }catch(e){
+    document.getElementById('grid').innerHTML='<div class="loading-msg">⚠️ Error cargando productos. Intenta recargar la página.</div>';
+    console.error(e);
   }
 }
 
 function buildCats(){
-  const cats = [...new Set(products.map(p=>p.cat))];
-  const grid = document.getElementById('cats-grid');
-  document.getElementById('count-todos').textContent = products.length + ' productos';
+  const cats=[...new Set(products.map(p=>p.cat))];
+  const grid=document.getElementById('cats-grid');
+  grid.querySelectorAll('.cat-card:not(:first-child)').forEach(c=>c.remove());
   cats.forEach(cat=>{
-    const count = products.filter(p=>p.cat===cat).length;
-    const div = document.createElement('div');
-    div.className = 'cat-card';
-    div.onclick = function(){filterCat(cat,this)};
-    div.innerHTML = `<span class="cat-icon">${CAT_ICONS[cat]||CAT_ICONS.default}</span><div class="cat-name">${cat}</div><div class="cat-count">${count} productos</div>`;
+    const count=products.filter(p=>p.cat===cat).length;
+    const div=document.createElement('div');
+    div.className='cat-card';
+    div.onclick=function(){filterCat(cat,this)};
+    div.innerHTML='<span class="cat-icon">'+(ICONS[cat]||ICONS.default)+'</span><div class="cat-name">'+cat+'</div><div class="cat-count">'+count+' productos</div>';
     grid.appendChild(div);
   });
 }
 
 function filterCat(cat,el){
-  currentCat = cat;
+  currentCat=cat;
   document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
   el.classList.add('active');
   renderProds();
 }
 
 function renderProds(){
-  const q = document.getElementById('search').value.toLowerCase();
-  const filtered = products.filter(p=>{
-    const mc = currentCat==='todos'||p.cat===currentCat;
-    const mq = !q||p.name.toLowerCase().includes(q)||p.ref.toLowerCase().includes(q);
+  const q=document.getElementById('search').value.toLowerCase();
+  const filtered=products.filter(p=>{
+    const mc=currentCat==='todos'||p.cat===currentCat;
+    const mq=!q||p.name.toLowerCase().includes(q)||(p.ref&&p.ref.toLowerCase().includes(q));
     return mc&&mq;
   });
-  const grid = document.getElementById('grid');
-  if(!filtered.length){
-    grid.innerHTML='<div class="loading" style="grid-column:1/-1">🔍 No se encontraron productos</div>';
-    return;
-  }
-  grid.innerHTML = filtered.map(p=>{
-    const pct = p.max>0?Math.round((p.stock/p.max)*100):0;
-    const low = p.stock>0&&p.stock<=5;
-    const out = p.stock===0;
-    return `<div class="prod-card${out?' out':''}">
-      <div class="prod-cat-tag">${p.cat}</div>
-      <span class="prod-emoji">${p.icon}</span>
-      <div class="prod-name">${p.name}</div>
-      ${p.ref?`<div class="prod-ref">Ref: ${p.ref}</div>`:''}
-      <div class="prod-price">$${p.price.toFixed(2)} <small>USD</small></div>
-      <div class="stock-info">
-        <div class="stock-top"><span>${out?'Sin stock':low?'Stock bajo':'En stock'}</span><span>${p.stock} uds</span></div>
-        <div class="stock-bar"><div class="stock-fill ${low||out?'s-low':'s-ok'}" style="width:${pct}%"></div></div>
-      </div>
-      ${out?'<div class="out-tag">No disponible</div>':`<button class="add-btn" onclick="addCart('${p.id}')">+ Agregar al pedido</button>`}
-    </div>`;
+  const grid=document.getElementById('grid');
+  if(!filtered.length){grid.innerHTML='<div class="loading-msg">🔍 No se encontraron productos</div>';return;}
+  grid.innerHTML=filtered.map(p=>{
+    const pct=p.stock>0?Math.min(100,Math.round((p.stock/Math.max(p.stock,50))*100)):0;
+    const low=p.stock>0&&p.stock<=5;
+    const out=p.stock===0;
+    return '<div class="prod-card'+(out?' out':'')+'">'+
+      '<div class="prod-cat">'+p.cat+'</div>'+
+      '<span class="prod-ico">'+p.icon+'</span>'+
+      '<div class="prod-name">'+p.name+'</div>'+
+      (p.ref?'<div class="prod-ref">Ref: '+p.ref+'</div>':'')+
+      '<div class="prod-price">$'+p.price.toFixed(2)+' <small>USD</small></div>'+
+      '<div class="stk-wrap">'+
+        '<div class="stk-top"><span>'+(out?'Sin stock':low?'Stock bajo':'En stock')+'</span><span>'+p.stock+' uds</span></div>'+
+        '<div class="stk-bar"><div class="stk-fill '+(low||out?'s-low':'s-ok')+'" style="width:'+pct+'%"></div></div>'+
+      '</div>'+
+      (out?'<div class="out-tag">No disponible</div>':'<button class="add-btn" onclick="addCart(\''+p.id+'\')">+ Agregar al pedido</button>')+
+    '</div>';
   }).join('');
 }
 
-function addCart(id){
-  cart[id]=(cart[id]||0)+1;
-  updateBadge();
-}
+function addCart(id){cart[id]=(cart[id]||0)+1;updateBadge();}
 
 function updateBadge(){
-  const total = Object.values(cart).reduce((a,b)=>a+b,0);
-  const badge = document.getElementById('cart-badge');
-  badge.textContent = total;
-  badge.style.display = total>0?'flex':'none';
+  const total=Object.values(cart).reduce((a,b)=>a+b,0);
+  const badge=document.getElementById('cart-badge');
+  badge.textContent=total||'';
+  badge.style.display=total>0?'flex':'none';
 }
 
 function openCart(){
-  const items = Object.entries(cart).filter(([,q])=>q>0);
-  let html='';
-  let total=0;
-  if(!items.length){
-    html='<div class="modal-empty">Tu carrito está vacío 🛒</div>';
-  } else {
+  const items=Object.entries(cart).filter(([,q])=>q>0);
+  let html='';let total=0;
+  if(!items.length){html='<div class="modal-empty">Tu carrito está vacío 🛒</div>';}
+  else{
     items.forEach(([id,qty])=>{
-      const p = products.find(x=>x.id==id);
-      if(!p)return;
-      const sub = p.price*qty;
-      total += sub;
-      html+=`<div class="modal-item">
-        <div><div class="modal-item-name">${p.name}</div><div class="modal-item-ref">${p.ref}</div></div>
-        <div class="modal-item-right">
-          <button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button>
-          <span class="qty-num">${qty}</span>
-          <button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button>
-          <span class="modal-item-price">$${sub.toFixed(2)}</span>
-        </div>
-      </div>`;
+      const p=products.find(x=>x.id==id);if(!p)return;
+      const sub=p.price*qty;total+=sub;
+      html+='<div class="m-item">'+
+        '<div><div class="m-item-name">'+p.name+'</div><div class="m-item-ref">'+p.ref+'</div></div>'+
+        '<div class="m-item-right">'+
+          '<button class="qty-btn" onclick="changeQty(\''+p.id+'\',-1)">−</button>'+
+          '<span class="qty-num">'+qty+'</span>'+
+          '<button class="qty-btn" onclick="changeQty(\''+p.id+'\',1)">+</button>'+
+          '<span class="m-item-price">$'+sub.toFixed(2)+'</span>'+
+        '</div></div>';
     });
-    html+=`<div class="modal-total">Total: $${total.toFixed(2)}</div>`;
+    html+='<div class="m-total">Total: $'+total.toFixed(2)+'</div>';
   }
-  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-body').innerHTML=html;
   document.getElementById('modal').classList.add('open');
 }
 
 function changeQty(id,delta){
   cart[id]=(cart[id]||0)+delta;
   if(cart[id]<=0)delete cart[id];
-  updateBadge();
-  openCart();
+  updateBadge();openCart();
 }
 
 function closeCart(){document.getElementById('modal').classList.remove('open');}
@@ -416,26 +375,23 @@ function sendCartWA(){
   let msg='Hola! Quisiera hacer el siguiente pedido:%0A%0A';
   let total=0;
   items.forEach(([id,qty])=>{
-    const p=products.find(x=>x.id==id);
-    if(!p)return;
-    const sub=p.price*qty;
-    total+=sub;
-    msg+=`▪ ${p.name}${p.ref?' ('+p.ref+')':''} x${qty} = $${sub.toFixed(2)}%0A`;
+    const p=products.find(x=>x.id==id);if(!p)return;
+    const sub=p.price*qty;total+=sub;
+    msg+='%E2%96%AA '+p.name+(p.ref?' ('+p.ref+')':'')+' x'+qty+' = $'+sub.toFixed(2)+'%0A';
   });
-  msg+=`%0A*Total: $${total.toFixed(2)}*%0A%0APor favor confirmar disponibilidad y forma de pago.`;
-  window.open(`https://wa.me/${WA}?text=${msg}`,'_blank');
+  msg+='%0A*Total: $'+total.toFixed(2)+'*%0A%0APor favor confirmar disponibilidad y forma de pago.';
+  window.open('https://wa.me/'+WA+'?text='+msg,'_blank');
 }
 
 function sendWA(){
   const nombre=document.getElementById('f-nombre').value||'Cliente';
   const tel=document.getElementById('f-tel').value||'No indicado';
   const msg=document.getElementById('f-msg').value||'Consulta general';
-  const text=`Hola! Mi nombre es ${nombre}, mi teléfono es ${tel}.%0A%0AMensaje: ${msg}`;
-  window.open(`https://wa.me/${WA}?text=${text}`,'_blank');
+  window.open('https://wa.me/'+WA+'?text=Hola! Mi nombre es '+encodeURIComponent(nombre)+', mi teléfono es '+encodeURIComponent(tel)+'.%0A%0AMensaje: '+encodeURIComponent(msg),'_blank');
 }
 
 loadProducts();
-setInterval(loadProducts, 300000);
+setInterval(loadProducts,300000);
 </script>
 </body>
 </html>
