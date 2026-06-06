@@ -1090,9 +1090,9 @@ function cotizarCarritoWA(){
 
 async function confirmarPedido(){
   const nombre=document.getElementById('c-nombre').value.trim();
-  const codigo=document.getElementById('c-codigo')?document.getElementById('c-codigo').value:'';
+  const telCodigo=document.getElementById('c-codigo')?document.getElementById('c-codigo').value:'';
   const telNum=document.getElementById('c-tel').value.trim();
-  const tel=codigo&&telNum?codigo+' '+telNum:telNum;
+  const tel=telCodigo&&telNum?telCodigo+' '+telNum:telNum;
   if(!nombre||!telNum){showToast('Ingresa tu nombre y teléfono','error');return;}
   const items=Object.entries(cart).filter(([,q])=>q>0);if(!items.length)return;
   const btn=document.querySelector('.m-confirm');
