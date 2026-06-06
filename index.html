@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Ruiz Industrial Group - Venta de repuestos de maquinaria y maquinaria industrial en Ecuador. Calidad garantizada y los mejores precios.">
+<meta name="keywords" content="repuestos maquinaria Ecuador, maquinaria industrial, repuestos industriales, Ruiz Industrial Group">
+<title>Ruiz Industrial Group | Repuestos & Maquinaria Industrial</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#C9A84C;--gold2:#dbb95a;--dark:#0A0C10;--navy:#0D1B2A;
+  --steel:#1E3A5F;--light:#F4F6F8;--muted:#8A9BB0;--white:#fff;
+}
+body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;min-height:100vh}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);border-bottom:1px solid var(--gold);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;backdrop-filter:blur(8px)}
+.nav-brand{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+.nav-brand span{color:var(--white)}
+.nav-links{display:flex;gap:2rem}
+.nav-links a{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:color 0.2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-whatsapp{background:var(--gold);color:#0A0C10;padding:8px 18px;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;transition:background 0.2s}
+.nav-whatsapp:hover{background:var(--gold2);color:#0A0C10}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0A0C10 0%,#0D1B2A 60%,#0A1628 100%);padding:5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--steel)}
+.hero-gear1{position:absolute;right:-60px;top:-60px;font-size:280px;opacity:0.03;line-height:1;pointer-events:none}
+.hero-gear2{position:absolute;left:-40px;bottom:-60px;font-size:200px;opacity:0.03;pointer-events:none}
+.hero-badge{display:inline-block;background:rgba(201,168,76,0.1);border:1px solid var(--gold);color:var(--gold);font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:5px 16px;border-radius:2px;margin-bottom:1.5rem}
+.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,6vw,72px);font-weight:700;line-height:1;color:var(--white);text-transform:uppercase;letter-spacing:3px}
+.hero h1 span{color:var(--gold)}
+.hero-sub{font-size:16px;color:var(--muted);margin-top:1rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7}
+.hero-stats{display:flex;justify-content:center;gap:3rem;margin-top:3rem;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-num{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;color:var(--gold)}
+.hero-stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px}
+.hero-btns{display:flex;gap:1rem;justify-content:center;margin-top:2.5rem;flex-wrap:wrap}
+.btn-primary{background:var(--gold);color:#0A0C10;padding:14px 32px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:4px;cursor:pointer;transition:background 0.2s}
+.btn-primary:hover{background:var(--gold2)}
+.btn-outline{background:transparent;color:var(--gold);padding:14px 32px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--gold);border-radius:4px;cursor:pointer;transition:all 0.2s}
+.btn-outline:hover{background:var(--gold);color:#0A0C10}
+
+/* SECTIONS */
+section{padding:4rem 2rem}
+.section-title{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:0.5rem}
+.section-line{width:60px;height:2px;background:var(--gold);margin:0 auto 3rem}
+
+/* CATEGORIAS */
+.cats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--steel);max-width:900px;margin:0 auto}
+.cat-card{background:var(--navy);padding:2rem;text-align:center;cursor:pointer;transition:background 0.2s}
+.cat-card:hover,.cat-card.active{background:#0F2035}
+.cat-card.active{border-bottom:2px solid var(--gold)}
+.cat-icon{font-size:36px;margin-bottom:1rem;display:block}
+.cat-name{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:600;color:var(--white);text-transform:uppercase;letter-spacing:1px}
+.cat-count{font-size:12px;color:var(--muted);margin-top:4px}
+
+/* PRODUCTOS */
+.products-section{background:#080A0D;padding:4rem 2rem}
+.search-bar{display:flex;gap:8px;max-width:500px;margin:0 auto 2rem;background:var(--navy);border:1px solid var(--steel);border-radius:4px;padding:8px 12px;align-items:center}
+.search-bar input{flex:1;background:transparent;border:none;outline:none;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif}
+.search-bar input::placeholder{color:var(--muted)}
+.search-icon{color:var(--muted);font-size:18px}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--steel);max-width:1100px;margin:0 auto}
+.prod-card{background:var(--navy);padding:1.5rem;transition:background 0.2s;position:relative}
+.prod-card:hover{background:#0F2035}
+.prod-card.out{opacity:0.55}
+.prod-cat-tag{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--gold);margin-bottom:10px;font-weight:600}
+.prod-emoji{font-size:36px;margin-bottom:12px;display:block}
+.prod-name{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:600;color:var(--white);margin-bottom:4px;line-height:1.2}
+.prod-ref{font-size:10px;color:var(--muted);font-family:monospace;letter-spacing:1px;margin-bottom:10px}
+.prod-price{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;color:var(--gold)}
+.prod-price small{font-size:12px;font-weight:400;color:var(--muted)}
+.stock-info{margin-top:10px}
+.stock-top{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px}
+.stock-bar{height:2px;background:var(--steel);border-radius:2px;overflow:hidden}
+.stock-fill{height:100%;border-radius:2px}
+.s-ok{background:var(--gold)}
+.s-low{background:#E24B4A}
+.add-btn{width:100%;margin-top:14px;background:transparent;border:1px solid var(--gold);color:var(--gold);padding:8px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all 0.2s}
+.add-btn:hover{background:var(--gold);color:#0A0C10}
+.out-tag{font-size:10px;color:#E24B4A;text-transform:uppercase;letter-spacing:1px;text-align:center;margin-top:12px}
+
+/* NOSOTROS */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:900px;margin:0 auto;align-items:center}
+.about-text p{color:var(--muted);line-height:1.8;margin-bottom:1rem;font-size:15px}
+.about-features{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
+.feature{background:var(--navy);border:1px solid var(--steel);border-left:3px solid var(--gold);padding:1rem}
+.feature-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.feature-desc{font-size:12px;color:var(--muted)}
+.about-visual{background:var(--navy);border:1px solid var(--steel);padding:2rem;text-align:center}
+.about-big{font-family:'Rajdhani',sans-serif;font-size:80px;font-weight:700;color:var(--gold);line-height:1}
+.about-big-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:8px}
+
+/* CONTACTO */
+.contact-section{background:#080A0D}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:800px;margin:0 auto}
+.contact-info h3{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem}
+.contact-item{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
+.contact-icon{font-size:24px;margin-top:2px}
+.contact-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.contact-value{font-size:15px;color:var(--white)}
+.wa-btn{display:block;background:#25D366;color:#fff;text-align:center;padding:16px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;letter-spacing:2px;text-transform:uppercase;border-radius:4px;margin-top:2rem;transition:background 0.2s}
+.wa-btn:hover{background:#1ebe5a}
+.contact-form h3{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-group label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px}
+.form-group input,.form-group textarea{width:100%;background:var(--navy);border:1px solid var(--steel);border-radius:4px;padding:10px 14px;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif;outline:none;transition:border 0.2s}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--gold)}
+.form-group textarea{height:100px;resize:vertical}
+.form-submit{width:100%;background:var(--gold);color:#0A0C10;border:none;padding:12px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-top:0.5rem;transition:background 0.2s}
+.form-submit:hover{background:var(--gold2)}
+
+/* CARRITO FLOTANTE */
+.cart-float{position:fixed;bottom:2rem;right:2rem;z-index:200}
+.cart-fab{background:var(--gold);color:#0A0C10;border:none;width:56px;height:56px;border-radius:50%;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,0.4);transition:transform 0.2s;display:flex;align-items:center;justify-content:center}
+.cart-fab:hover{transform:scale(1.1)}
+.cart-badge{position:absolute;top:-4px;right:-4px;background:#E24B4A;color:#fff;border-radius:50%;width:20px;height:20px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;display:none}
+
+/* MODAL CARRITO */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--navy);border:1px solid var(--gold);border-radius:8px;max-width:420px;width:90%;padding:2rem;max-height:80vh;overflow-y:auto}
+.modal-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold);margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:1px}
+.modal-empty{text-align:center;color:var(--muted);padding:2rem 0}
+.modal-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--steel)}
+.modal-item-name{font-size:13px;color:var(--white)}
+.modal-item-ref{font-size:10px;color:var(--muted);font-family:monospace}
+.modal-item-right{display:flex;align-items:center;gap:8px}
+.qty-btn{background:var(--steel);border:none;color:var(--white);width:24px;height:24px;border-radius:3px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.qty-num{font-family:'Rajdhani',sans-serif;font-size:15px;color:var(--gold);min-width:20px;text-align:center}
+.modal-item-price{font-family:'Rajdhani',sans-serif;font-size:15px;color:var(--gold);min-width:60px;text-align:right}
+.modal-total{font-family:'Rajdhani',sans-serif;font-size:20px;color:var(--gold);text-align:right;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--steel)}
+.modal-actions{display:flex;gap:8px;margin-top:1rem}
+.modal-close-btn{flex:1;background:transparent;border:1px solid var(--steel);color:var(--muted);padding:10px;cursor:pointer;border-radius:4px;font-size:13px;font-family:'Barlow',sans-serif}
+.modal-wa-btn{flex:2;background:#25D366;border:none;color:#fff;padding:10px;cursor:pointer;border-radius:4px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.modal-wa-btn:hover{background:#1ebe5a}
+
+/* FOOTER */
+footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-align:center}
+.footer-brand{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
+.footer-brand span{color:var(--white)}
+.footer-copy{font-size:12px;color:var(--muted);margin-top:0.5rem}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .about-features{grid-template-columns:1fr}
+  .hero-stats{gap:1.5rem}
+}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand"><span>RUIZ</span> INDUSTRIAL GROUP</div>
+  <div class="nav-links">
+    <a href="#productos">Productos</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+  <a href="https://wa.me/593969889751" target="_blank" class="nav-whatsapp">📱 WhatsApp</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-gear1">⚙</div>
+  <div class="hero-gear2">🔧</div>
+  <div class="hero-badge">Ecuador · Industria · Calidad</div>
+  <h1>RUIZ <span>INDUSTRIAL</span> GROUP</h1>
+  <p class="hero-sub">Tu proveedor de confianza en repuestos y maquinaria industrial. Calidad garantizada y los mejores precios del mercado.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-num">500+</div><div class="hero-stat-label">Productos</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">100%</div><div class="hero-stat-label">Calidad</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">24h</div><div class="hero-stat-label">Atención</div></div>
+  </div>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="document.getElementById('productos').scrollIntoView({behavior:'smooth'})">Ver Catálogo</button>
+    <a href="https://wa.me/593969889751" target="_blank" class="btn-outline">Contactar ahora</a>
+  </div>
+</section>
+
+<!-- CATEGORIAS -->
+<section style="padding:3rem 2rem;background:var(--dark)">
+  <div class="section-title">Categorías</div>
+  <div class="section-line"></div>
+  <div class="cats-grid">
+    <div class="cat-card active" onclick="filterCat('todos',this)">
+      <span class="cat-icon">🏭</span>
+      <div class="cat-name">Todos</div>
+      <div class="cat-count">12 productos</div>
+    </div>
+    <div class="cat-card" onclick="filterCat('repuestos',this)">
+      <span class="cat-icon">⚙️</span>
+      <div class="cat-name">Repuestos</div>
+      <div class="cat-count">5 productos</div>
+    </div>
+    <div class="cat-card" onclick="filterCat('maquinaria',this)">
+      <span class="cat-icon">🔩</span>
+      <div class="cat-name">Maquinaria</div>
+      <div class="cat-count">4 productos</div>
+    </div>
+    <div class="cat-card" onclick="filterCat('herramientas',this)">
+      <span class="cat-icon">🛠️</span>
+      <div class="cat-name">Herramientas</div>
+      <div class="cat-count">3 productos</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTOS -->
+<section class="products-section" id="productos">
+  <div class="section-title">Nuestros Productos</div>
+  <div class="section-line"></div>
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="Buscar repuesto o maquinaria..." oninput="renderProds()">
+  </div>
+  <div id="grid" class="products-grid"></div>
+  <div id="no-results" class="hidden" style="text-align:center;padding:3rem;color:var(--muted)">No se encontraron productos</div>
+</section>
+
+<!-- NOSOTROS -->
+<section id="nosotros" style="background:var(--dark)">
+  <div class="section-title">Sobre Nosotros</div>
+  <div class="section-line"></div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Ruiz Industrial Group nace con el compromiso de ofrecer repuestos y maquinaria de alta calidad para el sector industrial y agrícola del Ecuador.</p>
+      <p>Contamos con un amplio catálogo de productos para mantener tu maquinaria funcionando al máximo rendimiento, con atención personalizada y precios competitivos.</p>
+      <p>Trabajamos con las mejores marcas del mercado y garantizamos la calidad de cada producto que ofrecemos.</p>
+      <div class="about-features">
+        <div class="feature"><div class="feature-title">Calidad</div><div class="feature-desc">Productos certificados y garantizados</div></div>
+        <div class="feature"><div class="feature-title">Rapidez</div><div class="feature-desc">Entrega ágil a todo el Ecuador</div></div>
+        <div class="feature"><div class="feature-title">Precios</div><div class="feature-desc">Los mejores precios del mercado</div></div>
+        <div class="feature"><div class="feature-title">Soporte</div><div class="feature-desc">Asesoría técnica especializada</div></div>
+      </div>
+    </div>
+    <div class="about-visual">
+      <div class="about-big">⚙️</div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:48px;font-weight:700;color:var(--gold);margin-top:1rem">100%</div>
+      <div class="about-big-label">Compromiso con la calidad</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contact-section" id="contacto">
+  <div class="section-title">Contacto</div>
+  <div class="section-line"></div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <h3>Encuéntranos</h3>
+      <div class="contact-item">
+        <span class="contact-icon">📍</span>
+        <div><div class="contact-label">Ubicación</div><div class="contact-value">Ecuador</div></div>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">📱</span>
+        <div><div class="contact-label">WhatsApp</div><div class="contact-value">+593 969 889 751</div></div>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">⏰</span>
+        <div><div class="contact-label">Horario</div><div class="contact-value">Lun - Sáb: 8:00 - 18:00</div></div>
+      </div>
+      <a href="https://wa.me/593969889751" target="_blank" class="wa-btn">💬 Escribir por WhatsApp</a>
+    </div>
+    <div class="contact-form">
+      <h3>Enviar mensaje</h3>
+      <div class="form-group"><label>Nombre</label><input type="text" placeholder="Tu nombre completo"></div>
+      <div class="form-group"><label>Teléfono</label><input type="tel" placeholder="Tu número de contacto"></div>
+      <div class="form-group"><label>Mensaje</label><textarea placeholder="¿En qué podemos ayudarte?"></textarea></div>
+      <button class="form-submit" onclick="sendWA()">Enviar por WhatsApp</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand"><span>RUIZ</span> INDUSTRIAL GROUP</div>
+  <div class="footer-copy">© 2026 Ruiz Industrial Group · Ecuador · Todos los derechos reservados</div>
+</footer>
+
+<!-- CARRITO FLOTANTE -->
+<div class="cart-float">
+  <button class="cart-fab" onclick="openCart()">🛒<span class="cart-badge" id="cart-badge">0</span></button>
+</div>
+
+<!-- MODAL CARRITO -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeCart()">
+  <div class="modal-box">
+    <div class="modal-title">🛒 Tu Pedido</div>
+    <div id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="modal-close-btn" onclick="closeCart()">Cerrar</button>
+      <button class="modal-wa-btn" onclick="sendCartWA()">💬 Pedir por WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const WA = '593969889751';
+const products = [
+  {id:1,name:'Rodamiento SKF 6205',ref:'ROD-6205',cat:'repuestos',icon:'⚙️',price:12.50,stock:45,max:60},
+  {id:2,name:'Correa dentada 5M-500',ref:'COR-5M500',cat:'repuestos',icon:'🔩',price:8.75,stock:30,max:50},
+  {id:3,name:'Sello de aceite 40x55',ref:'SEL-4055',cat:'repuestos',icon:'🔧',price:3.20,stock:80,max:100},
+  {id:4,name:'Filtro hidráulico HF10',ref:'FIL-HF10',cat:'repuestos',icon:'🛠️',price:18.00,stock:5,max:50},
+  {id:5,name:'Retenedor 25x40x7',ref:'RET-254007',cat:'repuestos',icon:'⚙️',price:2.50,stock:0,max:40},
+  {id:6,name:'Bomba de agua 1HP',ref:'BOM-1HP',cat:'maquinaria',icon:'🏭',price:285.00,stock:8,max:20},
+  {id:7,name:'Motor eléctrico 2HP',ref:'MOT-2HP',cat:'maquinaria',icon:'⚡',price:420.00,stock:3,max:10},
+  {id:8,name:'Compresor 50L 2HP',ref:'COM-50L',cat:'maquinaria',icon:'🏭',price:580.00,stock:2,max:5},
+  {id:9,name:'Soldadora inversora 160A',ref:'SOL-160A',cat:'maquinaria',icon:'🔥',price:195.00,stock:6,max:15},
+  {id:10,name:'Taladro industrial 1/2"',ref:'TAL-12',cat:'herramientas',icon:'🔩',price:95.00,stock:12,max:20},
+  {id:11,name:'Amoladora 4.5" 850W',ref:'AMO-45',cat:'herramientas',icon:'⚙️',price:68.00,stock:15,max:25},
+  {id:12,name:'Llave de impacto 1/2"',ref:'IMP-12',cat:'herramientas',icon:'🔧',price:145.00,stock:0,max:10},
+];
+let cart={};
+let currentCat='todos';
+
+function filterCat(cat,el){
+  currentCat=cat;
+  document.querySelectorAll('.cat-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderProds();
+}
+
+function renderProds(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const filtered=products.filter(p=>{
+    const mc=currentCat==='todos'||p.cat===currentCat;
+    const mq=!q||p.name.toLowerCase().includes(q)||p.ref.toLowerCase().includes(q);
+    return mc&&mq;
+  });
+  const grid=document.getElementById('grid');
+  const noRes=document.getElementById('no-results');
+  if(!filtered.length){grid.innerHTML='';noRes.classList.remove('hidden');return;}
+  noRes.classList.add('hidden');
+  grid.innerHTML=filtered.map(p=>{
+    const pct=Math.round((p.stock/p.max)*100);
+    const low=p.stock>0&&p.stock<=5;
+    const out=p.stock===0;
+    return `<div class="prod-card${out?' out':''}">
+      <div class="prod-cat-tag">${p.cat}</div>
+      <span class="prod-emoji">${p.icon}</span>
+      <div class="prod-name">${p.name}</div>
+      <div class="prod-ref">Ref: ${p.ref}</div>
+      <div class="prod-price">$${p.price.toFixed(2)} <small>USD</small></div>
+      <div class="stock-info">
+        <div class="stock-top"><span>${out?'Sin stock':low?'Stock bajo':'En stock'}</span><span>${p.stock} uds</span></div>
+        <div class="stock-bar"><div class="stock-fill ${low||out?'s-low':'s-ok'}" style="width:${pct}%"></div></div>
+      </div>
+      ${out?'<div class="out-tag">No disponible</div>':`<button class="add-btn" onclick="addCart(${p.id})">+ Agregar al pedido</button>`}
+    </div>`;
+  }).join('');
+}
+
+function addCart(id){
+  cart[id]=(cart[id]||0)+1;
+  updateBadge();
+}
+
+function updateBadge(){
+  const total=Object.values(cart).reduce((a,b)=>a+b,0);
+  const badge=document.getElementById('cart-badge');
+  badge.textContent=total;
+  badge.style.display=total>0?'flex':'none';
+}
+
+function openCart(){
+  const items=Object.entries(cart).filter(([,q])=>q>0);
+  let html='';
+  let total=0;
+  if(!items.length){
+    html='<div class="modal-empty">Tu carrito está vacío 🛒</div>';
+  } else {
+    items.forEach(([id,qty])=>{
+      const p=products.find(x=>x.id==id);
+      if(!p)return;
+      const sub=p.price*qty;
+      total+=sub;
+      html+=`<div class="modal-item">
+        <div><div class="modal-item-name">${p.name}</div><div class="modal-item-ref">${p.ref}</div></div>
+        <div class="modal-item-right">
+          <button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button>
+          <span class="qty-num">${qty}</span>
+          <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
+          <span class="modal-item-price">$${sub.toFixed(2)}</span>
+        </div>
+      </div>`;
+    });
+    html+=`<div class="modal-total">Total: $${total.toFixed(2)}</div>`;
+  }
+  document.getElementById('modal-body').innerHTML=html;
+  document.getElementById('modal').classList.add('open');
+}
+
+function changeQty(id,delta){
+  cart[id]=(cart[id]||0)+delta;
+  if(cart[id]<=0)delete cart[id];
+  updateBadge();
+  openCart();
+}
+
+function closeCart(){document.getElementById('modal').classList.remove('open');}
+
+function sendCartWA(){
+  const items=Object.entries(cart).filter(([,q])=>q>0);
+  if(!items.length)return;
+  let msg='Hola! Quisiera hacer el siguiente pedido:%0A%0A';
+  let total=0;
+  items.forEach(([id,qty])=>{
+    const p=products.find(x=>x.id==id);
+    if(!p)return;
+    const sub=p.price*qty;
+    total+=sub;
+    msg+=`▪ ${p.name} (${p.ref}) x${qty} = $${sub.toFixed(2)}%0A`;
+  });
+  msg+=`%0A*Total: $${total.toFixed(2)}*%0A%0APor favor confirmar disponibilidad y forma de pago.`;
+  window.open(`https://wa.me/${WA}?text=${msg}`,'_blank');
+}
+
+function sendWA(){
+  const nombre=document.querySelector('.contact-form input[type=text]').value||'Cliente';
+  const tel=document.querySelector('.contact-form input[type=tel]').value||'No indicado';
+  const msg=document.querySelector('.contact-form textarea').value||'Consulta general';
+  const text=`Hola! Mi nombre es ${nombre}, mi teléfono es ${tel}.%0A%0AMensaje: ${msg}`;
+  window.open(`https://wa.me/${WA}?text=${text}`,'_blank');
+}
+
+renderProds();
+</script>
+</body>
+</html>
