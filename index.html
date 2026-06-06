@@ -269,7 +269,7 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
 
 <script>
 const WA = '593969889751';
-const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSu8VHZs3aPKJ6OZ9Y--sRX0v-vk3hXJwXDq5DgyluuSLdckO4GWQQRwfruwMQ3_01yESbgiksEZrdy/pub?gid=0&single=true&output=csv';
+const SHEET_CSV = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vSu8VHZs3aPKJ6OZ9Y--sRX0v-vk3hXJwXDq5DgyluuSLdckO4GWQQRwfruwMQ3_01yESbgiksEZrdy/pub?gid=0&single=true&output=csv');
 
 const CAT_ICONS = {
   repuestos:'⚙️', maquinaria:'🏭', herramientas:'🛠️',
@@ -420,7 +420,7 @@ function sendCartWA(){
     if(!p)return;
     const sub=p.price*qty;
     total+=sub;
-    msg+=`▪ ${p.name}${p.ref?' ('+p.ref+')'：''} x${qty} = $${sub.toFixed(2)}%0A`;
+    msg+=`▪ ${p.name}${p.ref?' ('+p.ref+')':''} x${qty} = $${sub.toFixed(2)}%0A`;
   });
   msg+=`%0A*Total: $${total.toFixed(2)}*%0A%0APor favor confirmar disponibilidad y forma de pago.`;
   window.open(`https://wa.me/${WA}?text=${msg}`,'_blank');
