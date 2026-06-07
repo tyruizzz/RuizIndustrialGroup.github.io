@@ -552,6 +552,75 @@ async function loadPedidos(){
   renderPedidos();
 }
 
+function renderPedidos(){
+  const filtro=document.getElementById('filtro-estado').value;
+  let filtered=filtro?allPedidos.filter(p=>p.estado===filtro):allPedidos;
+  filtered=[...filtered].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  if(!filtered.length){document.getElementById('pedidos-tbody').innerHTML='<tr><td colspan="9" class="empty-state">No hay pedidos</td></tr>';return;}
+  document.getElementById('pedidos-tbody').innerHTML=filtered.map(p=>{
+    const fecha=new Date(p.created_at).toLocaleDateString('es-EC',{day:'2-digit',month:'2-digit',year:'numeric'});
+    const hora=new Date(p.created_at).toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit'});
+    const prods=(p.productos||[]).map(i=>`${i.nombre} x${i.cantidad}`).join(', ');
+    return `<tr>
+      <td><input type="checkbox" class="pedido-check" value="${p.id}" style="cursor:pointer"></td>
+      <td style="font-family:monospace;color:var(--gold);font-size:12px">${p.codigo}</td>
+      <td style="color:var(--white)">${p.cliente_nombre}</td>
+      <td style="color:var(--muted);font-size:12px">${p.cliente_telefono}</td>
+      <td style="font-size:11px;color:var(--muted);max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prods}</td>
+      <td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.total).toFixed(2)}</td>
+      <td><span class="estado-badge e-${p.estado}">${p.estado}</span></td>
+      <td style="font-size:11px;color:var(--muted)">${fecha}<br><span style="font-size:10px;opacity:0.6">${hora}</span></td>
+      <td><div class="actions-wrap">
+        ${p.estado==='pendiente'?`<button class="btn-green" onclick="updatePedido('${p.id}','confirmado')">✅</button><button class="btn-red" onclick="updatePedido('${p.id}','cancelado')">❌</button>`:p.estado==='confirmado'?`<button class="btn-red" onclick="updatePedido('${p.id}','anulado')" style="font-size:11px;padding:5px 10px">🚫 Anular</button>`:''}
+        <button class="btn-sm" onclick="waCliente('${p.cliente_telefono}','${p.codigo}')">💬</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function toggleAllPedidos(cb){
+  document.querySelectorAll('.pedido-check').forEach(c=>c.checked=cb.checked);
+}
+
+async function eliminarPedidosSeleccionados(){
+  const selected=[...document.querySelectorAll('.pedido-check:checked')].map(c=>c.value);
+  if(!selected.length){alert('Selecciona al menos un pedido para eliminar');return;}
+  const pin=prompt('🔐 Ingresa la clave para eliminar '+selected.length+' pedido(s):');
+  if(pin!=='2468'){alert('❌ Clave incorrecta');return;}
+  if(!confirm('¿Eliminar '+selected.length+' pedido(s) permanentemente?\nEsta acción NO se puede deshacer.'))return;
+  let eliminados=0;
+  for(const id of selected){
+    const{error}=await db.from('pedidos').delete().eq('id',id);
+    if(!error)eliminados++;
+  }
+  allPedidos=allPedidos.filter(p=>!selected.includes(p.id));
+  renderPedidos();
+  renderDashboard();
+  const checkAll=document.getElementById('check-all');
+  if(checkAll)checkAll.checked=false;
+  alert('✅ '+eliminados+' pedido(s) eliminado(s) correctamente');
+}
+
+function exportarExcel(){
+  const filtro=document.getElementById('filtro-estado').value;
+  const filtered=filtro?allPedidos.filter(p=>p.estado===filtro):[...allPedidos];
+  if(!filtered.length){alert('No hay pedidos para exportar');return;}
+  filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  const rows=[['Código','Cliente','Teléfono','Productos','Total','Estado','Fecha','Hora']];
+  filtered.forEach(p=>{
+    const fecha=new Date(p.created_at).toLocaleDateString('es-EC');
+    const hora=new Date(p.created_at).toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit'});
+    const prods=(p.productos||[]).map(i=>i.nombre+' x'+i.cantidad).join(' | ');
+    rows.push([p.codigo,p.cliente_nombre,p.cliente_telefono,prods,'$'+parseFloat(p.total).toFixed(2),p.estado,fecha,hora]);
+  });
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='pedidos_ruizpsm_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();URL.revokeObjectURL(url);
+}
+
 async function loadConfig(){
   const{data}=await db.from('configuracion').select('*').eq('id','main').single();
   if(data){
@@ -666,75 +735,6 @@ function renderProductsTable(){
     const sc=p.stock===0?'stock-out':p.stock<=5?'stock-low':'stock-ok';
     return `<tr><td>${imgUrl?`<img src="${imgUrl}" class="prod-thumb" onerror="this.style.display='none'">`:`<div class="prod-thumb-ph">🔩</div>`}</td><td><div style="font-weight:500;color:var(--white)">${p.nombre}</div><div style="font-size:10px;color:var(--muted);font-family:monospace">${p.referencia||''}</div></td><td style="color:var(--muted);font-size:12px;text-transform:uppercase">${p.categoria||''}</td><td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.precio).toFixed(2)}</td><td><span class="stock-badge ${sc}">${p.stock===0?'Sin stock':p.stock<=5?p.stock+' ⚠️':p.stock+' uds'}</span></td><td style="color:${p.destacado?'var(--gold)':'var(--muted)'}">${p.destacado?'⭐':'No'}</td><td><div class="actions-wrap"><button class="btn-sm" onclick="editProduct('${p.id}')">✏️</button><button class="btn-green" onclick="agregarStock('${p.id}','${p.nombre}',${p.stock})" style="font-size:10px;padding:5px 8px">+ Stock</button><button class="btn-red" onclick="deleteProduct('${p.id}','${p.nombre}')">🗑️</button></div></td></tr>`;
   }).join('');
-}
-
-function renderPedidos(){
-  const filtro=document.getElementById('filtro-estado').value;
-  const filtered=filtro?allPedidos.filter(p=>p.estado===filtro):allPedidos;
-  if(!filtered.length){document.getElementById('pedidos-tbody').innerHTML='<tr><td colspan="9" class="empty-state">No hay pedidos</td></tr>';return;}
-  document.getElementById('pedidos-tbody').innerHTML=filtered.map(p=>{
-    const dt=new Date(p.created_at);
-    const fecha=dt.toLocaleDateString('es-EC',{day:'2-digit',month:'2-digit',year:'numeric'});
-    const hora=dt.toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit'});
-    const prods=(p.productos||[]).map(i=>`${i.nombre} x${i.cantidad}`).join(', ');
-    return `<tr>
-      <td><input type="checkbox" class="pedido-check" value="${p.id}" style="cursor:pointer"></td>
-      <td style="font-family:monospace;color:var(--gold);font-size:12px">${p.codigo}</td>
-      <td style="color:var(--white)">${p.cliente_nombre}</td>
-      <td style="color:var(--muted);font-size:12px">${p.cliente_telefono}</td>
-      <td style="font-size:11px;color:var(--muted);max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prods}</td>
-      <td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.total).toFixed(2)}</td>
-      <td><span class="estado-badge e-${p.estado}">${p.estado}</span></td>
-      <td style="font-size:11px;color:var(--muted)">${fecha}<br><span style="color:var(--steel)">${hora}</span></td>
-      <td><div class="actions-wrap">
-        ${p.estado==='pendiente'?`<button class="btn-green" onclick="updatePedido('${p.id}','confirmado')">✅</button><button class="btn-red" onclick="updatePedido('${p.id}','cancelado')">❌</button>`:p.estado==='confirmado'?`<button class="btn-red" onclick="updatePedido('${p.id}','anulado')" style="font-size:11px;padding:5px 10px">🚫 Anular</button>`:''}
-        <button class="btn-sm" onclick="waCliente('${p.cliente_telefono}','${p.codigo}')">💬</button>
-      </div></td>
-    </tr>`;
-  }).join('');
-}
-
-function toggleAllPedidos(cb){
-  document.querySelectorAll('.pedido-check').forEach(c=>c.checked=cb.checked);
-}
-
-async function eliminarPedidosSeleccionados(){
-  const selected=[...document.querySelectorAll('.pedido-check:checked')].map(c=>c.value);
-  if(!selected.length){alert('Selecciona al menos un pedido para eliminar');return;}
-  const pin=prompt('🔐 Ingresa la clave para eliminar '+selected.length+' pedido(s):');
-  if(pin!=='2468'){alert('❌ Clave incorrecta');return;}
-  if(!confirm('¿Eliminar '+selected.length+' pedido(s) permanentemente? Esta acción no se puede deshacer.'))return;
-  let eliminados=0;
-  for(const id of selected){
-    const{error}=await db.from('pedidos').delete().eq('id',id);
-    if(!error)eliminados++;
-  }
-  await loadPedidos();
-  renderDashboard();
-  document.getElementById('check-all').checked=false;
-  alert('✅ '+eliminados+' pedido(s) eliminado(s) correctamente');
-}
-
-function exportarExcel(){
-  const filtro=document.getElementById('filtro-estado').value;
-  const filtered=filtro?allPedidos.filter(p=>p.estado===filtro):allPedidos;
-  if(!filtered.length){alert('No hay pedidos para exportar');return;}
-  const rows=[['Código','Cliente','Teléfono','Productos','Total USD','Estado','Fecha','Hora']];
-  filtered.forEach(p=>{
-    const dt=new Date(p.created_at);
-    const fecha=dt.toLocaleDateString('es-EC');
-    const hora=dt.toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit'});
-    const prods=(p.productos||[]).map(i=>i.nombre+' x'+i.cantidad).join(' | ');
-    rows.push([p.codigo,p.cliente_nombre,p.cliente_telefono,prods,parseFloat(p.total).toFixed(2),p.estado,fecha,hora]);
-  });
-  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
-  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download='pedidos_ruizpsm_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 function previewImgs(input){
