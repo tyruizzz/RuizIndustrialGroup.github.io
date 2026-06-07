@@ -146,11 +146,17 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
     <div class="admin-tabs">
       <button class="tab-btn active" onclick="showTab('dashboard',this)">📊 Dashboard</button>
       <button class="tab-btn" onclick="showTab('productos',this)">📦 Productos</button>
-      <button class="tab-btn" onclick="showTab('pedidos',this)">📋 Pedidos</button>
+      <button class="tab-btn" onclick="showTab('pedidos',this)">📋 Pedidos <span id="pedidos-badge" style="display:none;background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-left:4px">0</span></button>
       <button class="tab-btn" onclick="showTab('configuracion',this)">⚙️ Configuración</button>
       <button class="tab-btn" onclick="showTab('seguridad',this)">🔐 Seguridad</button>
     </div>
-    <button class="logout-btn" onclick="doLogout()">Salir</button>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div id="notif-bell" style="position:relative;cursor:pointer" onclick="showTab('pedidos',document.querySelectorAll('.tab-btn')[2])">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span id="notif-count" style="display:none;position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;align-items:center;justify-content:center">0</span>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Salir</button>
+    </div>
   </nav>
 
   <div class="admin-content">
@@ -193,6 +199,21 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
           </div>
           <div class="fg"><label>Precio (USD) *</label><input type="number" id="p-precio" placeholder="0.00" min="0" step="0.01"></div>
           <div class="fg"><label>Stock *</label><input type="number" id="p-stock" placeholder="0" min="0"></div>
+          <div class="fg">
+            <label>Descuento</label>
+            <select id="p-descuento">
+              <option value="0">Sin descuento</option>
+              <option value="2">2% OFF</option>
+              <option value="5">5% OFF</option>
+              <option value="7">7% OFF</option>
+              <option value="8">8% OFF</option>
+              <option value="10">10% OFF</option>
+              <option value="15">15% OFF</option>
+              <option value="20">20% OFF</option>
+              <option value="25">25% OFF</option>
+              <option value="30">30% OFF</option>
+            </select>
+          </div>
           <div class="fg"><label>¿Destacado?</label>
             <select id="p-dest"><option value="false">No</option><option value="true">⭐ Sí</option></select>
           </div>
@@ -251,7 +272,11 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
     <div class="tab-content" id="tab-pedidos">
       <div class="section-hdr">
         <h2>Pedidos</h2>
-        <div style="display:flex;gap:8px;align-items:center">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:8px;background:var(--dark);border:1px solid var(--steel);border-radius:6px;padding:7px 12px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="pedido-search" placeholder="Buscar código o cliente..." oninput="renderPedidos()" style="background:transparent;border:none;outline:none;color:var(--light);font-size:13px;font-family:'Barlow',sans-serif;width:180px">
+          </div>
           <select id="filtro-estado" onchange="renderPedidos()" style="background:var(--navy);border:1px solid var(--steel);color:var(--light);padding:6px 10px;border-radius:4px;font-size:12px">
             <option value="">Todos</option>
             <option value="pendiente">Pendientes</option>
@@ -560,12 +585,15 @@ async function loadPedidos(){
 
 function renderPedidos(){
   const filtro=document.getElementById('filtro-estado').value;
-  let filtered=filtro?allPedidos.filter(p=>p.estado===filtro):allPedidos;
-  filtered=[...filtered].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  const q=(document.getElementById('pedido-search')?.value||'').toLowerCase();
+  let filtered=filtro?allPedidos.filter(p=>p.estado===filtro):[...allPedidos];
+  if(q)filtered=filtered.filter(p=>(p.codigo&&p.codigo.toLowerCase().includes(q))||(p.cliente_nombre&&p.cliente_nombre.toLowerCase().includes(q))||(p.cliente_telefono&&p.cliente_telefono.includes(q)));
+  filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
   if(!filtered.length){document.getElementById('pedidos-tbody').innerHTML='<tr><td colspan="9" class="empty-state">No hay pedidos</td></tr>';return;}
   document.getElementById('pedidos-tbody').innerHTML=filtered.map(p=>{
-    const fecha=new Date(p.created_at).toLocaleDateString('es-EC',{day:'2-digit',month:'2-digit',year:'numeric'});
-    const hora=new Date(p.created_at).toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit'});
+    const dt=new Date(p.created_at);
+    const fecha=dt.toLocaleDateString('es-EC',{timeZone:'America/Guayaquil',day:'2-digit',month:'2-digit',year:'numeric'});
+    const hora=dt.toLocaleTimeString('es-EC',{timeZone:'America/Guayaquil',hour:'2-digit',minute:'2-digit'});
     const prods=(p.productos||[]).map(i=>`${i.nombre} x${i.cantidad}`).join(', ');
     return `<tr>
       <td><input type="checkbox" class="pedido-check" value="${p.id}" style="cursor:pointer"></td>
@@ -614,8 +642,8 @@ function exportarExcel(){
   filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
   const rows=[['Código','Cliente','Teléfono','Productos','Total','Estado','Fecha','Hora']];
   filtered.forEach(p=>{
-    const fecha=new Date(p.created_at).toLocaleDateString('es-EC');
-    const hora=new Date(p.created_at).toLocaleTimeString('es-EC',{hour:'2-digit',minute:'2-digit'});
+    const fecha=new Date(p.created_at).toLocaleDateString('es-EC',{timeZone:'America/Guayaquil'});
+    const hora=new Date(p.created_at).toLocaleTimeString('es-EC',{timeZone:'America/Guayaquil',hour:'2-digit',minute:'2-digit'});
     const prods=(p.productos||[]).map(i=>i.nombre+' x'+i.cantidad).join(' | ');
     rows.push([p.codigo,p.cliente_nombre,p.cliente_telefono,prods,'$'+parseFloat(p.total).toFixed(2),p.estado,fecha,hora]);
   });
@@ -774,6 +802,7 @@ async function saveProduct(){
   const precio=parseFloat(document.getElementById('p-precio').value);
   const stock=parseInt(document.getElementById('p-stock').value);
   const destacado=document.getElementById('p-dest').value==='true';
+  const descuento=parseInt(document.getElementById('p-descuento').value)||0;
   const imgFiles=Array.from(document.getElementById('p-img').files).slice(0,5);
   if(!nombre||!categoria||isNaN(precio)||isNaN(stock)){showProdAlert('Completa todos los campos requeridos','error');return;}
   const btn=document.querySelector('[onclick="saveProduct()"]');
@@ -800,7 +829,7 @@ async function saveProduct(){
   const specs={};
   const specFields={marca:'s-marca',modelo:'s-modelo',material:'s-material',dimensiones:'s-dimensiones',peso:'s-peso',potencia:'s-potencia',voltaje:'s-voltaje',rpm:'s-rpm',presion:'s-presion',temperatura:'s-temp',origen:'s-origen',garantia:'s-garantia',descripcion:'s-descripcion'};
   Object.entries(specFields).forEach(([key,id])=>{const v=document.getElementById(id).value.trim();if(v)specs[key]=v;});
-  const data={nombre,referencia,categoria,precio,stock,destacado,especificaciones:specs,imagenes};
+  const data={nombre,referencia,categoria,precio,stock,destacado,descuento,especificaciones:specs,imagenes};
   if(imagen)data.imagen=imagen;
   let error;
   if(id){({error}=await db.from('productos').update(data).eq('id',id));}
@@ -826,6 +855,7 @@ function editProduct(id){
   document.getElementById('p-precio').value=p.precio;
   document.getElementById('p-stock').value=p.stock;
   document.getElementById('p-dest').value=p.destacado?'true':'false';
+  document.getElementById('p-descuento').value=p.descuento||0;
   const wrap=document.getElementById('img-previews');
   wrap.innerHTML='';
   const imgs=p.imagenes&&p.imagenes.length>0?p.imagenes:(p.imagen?[p.imagen]:[]);
@@ -983,12 +1013,52 @@ function showSecAlert(id,msg,type){
   setTimeout(()=>el.textContent='',4000);
 }
 
+function updateNotifBadge(){
+  const pendientes=allPedidos.filter(p=>p.estado==='pendiente').length;
+  const badge=document.getElementById('notif-count');
+  const pedBadge=document.getElementById('pedidos-badge');
+  if(pendientes>0){
+    if(badge){badge.textContent=pendientes;badge.style.display='flex';}
+    if(pedBadge){pedBadge.textContent=pendientes;pedBadge.style.display='inline-flex';}
+  } else {
+    if(badge)badge.style.display='none';
+    if(pedBadge)pedBadge.style.display='none';
+  }
+}
+
+function startRealtimePedidos(){
+  db.channel('pedidos-realtime')
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'pedidos'},payload=>{
+      allPedidos.unshift(payload.new);
+      renderPedidos();
+      renderDashboard();
+      updateNotifBadge();
+      const audio=new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq4JIPEBtpuXtpH5WPEJ2ruTwpX9WQEd7tuzysYxiQkqGvO7/uZNlRk2Rx/H/u5ZnSFKXzfX/vppmSFWh1vj/wZ9sS1qn2Pn/xKFuT1+u3Pr/x6NwU2Sz3vr/yqZzVWi33vr/zKh2WGy63vr/z6t4Wm+83fr/0q16XHO+3fr/1a99XXbA3vr/2LCBXnnC3vr/2rKCX3zE3vr/3LSDYoDF3fr/37eFZIPH3fr/4bmHZobI3fr/4ruIaIjK3fr/5LyJaorL3fr/5r6KbIzM3fr/6L+Lb47O3fr/6sGMcZDP3fr/7MKNc5LQ3fr/7cOOdZTS3fr/7sSOd5bT3fr/8MWPepjU3fr/8cWQfJrV3fr/8saRfpzW3fr/88eRgJ7X3fr/88iSgqDY3fr/9MmTg6LZ3fr/9MmUhaTa3fr/9cqVh6bb3fr/9sqWiajc3fr/98uXiqrd3fr/+MyYjKze3fr/+MyZjq7f3fr/+c2ajrDg3fr/+c6bkLHh3fr/+s6ckLPi3fr/+s+dkrTj3fr/+8+elLXk3fr/+9CflrXl3fr//NGglrbn3fr//NGhl7fo3fr//dKimLjp3fr//tKimbno3fr//tOjmrrq3fr//tOkm7vr3fr//9Slm7zs3fr//9SmncDs3fr//9Snnb3t3fr//9Wonr7u3fr//9Wpp8Dv3fr//9Wqqr/w3fr//9arqsDx3fr//9arrMHz3fr//9esrMLy3fr//9esrcP03fr//9iusMX13fr//9ivr8b23fr//9iwr8f33fr//9mxscj43fr//9mysr743fr//9mys8r63fr//9qzt8v73fr//9q0uMz83fr//9q1u87+3fr//9q2vND/3fr//9u3v9EA3fr//9u4v9IB3fr//9u4wdMC3fr//9u5w9QE3fr//9y6xNUF3fr//9y7xdYG3fr//9y8x9cI3fr//9y9yNgK3fr//9y9ydkL3fr//9y+y9oM3fr//9y/zdsO3fr//9zA0NwP3fr//9zA0t0R3fr//93B1N4S3fr//93C1t8T3fr//93C1+AU3fr//93D2eEV3fr//97E2uIX3fr//97E2+MY3fr//97F3OQZ3fr//97F3eUa3fr//97G3+Yb3fr//97H4Ogc3fr//97H4Okd3fr//9/I4+sf3fr//9/J4+wg3fr//9/J5O0h3fr//9/K5u4i3fr//9/L5+8j3fr//+DL5/Ak3fr//+DM6fEl3fr//+DM6fIm3fr//+DN6/Mn3fr//+DO7PQo3fr//+DO7PUq3fr//+DP7vYr3fr//+DP7/cs3fr//+DQ8Pgt3fr//+DR8Pku3fr//+DR8fov3fr//+DS8/sw3fr//+DS8/wx3fr//+DT9f0y3fr//+DU9f4z3fr//+DU9v80');
+      audio.volume=0.3;
+      audio.play().catch(()=>{});
+      showToastAdmin('🔔 Nuevo pedido de '+payload.new.cliente_nombre+' — $'+parseFloat(payload.new.total).toFixed(2));
+    })
+    .subscribe();
+}
+
+function showToastAdmin(msg){
+  let t=document.getElementById('admin-toast');
+  if(!t){
+    t=document.createElement('div');
+    t.id='admin-toast';
+    t.style.cssText='position:fixed;bottom:2rem;right:2rem;background:var(--navy);border:1px solid var(--gold);color:var(--white);padding:14px 20px;border-radius:8px;font-size:13px;z-index:9999;max-width:300px;box-shadow:0 8px 24px rgba(0,0,0,0.4);animation:slideIn 0.3s ease';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;t.style.display='block';
+  setTimeout(()=>t.style.display='none',5000);
+}
+
 if(checkSession()){
   updateActivity();
   document.getElementById('login-screen').style.display='none';
   document.getElementById('admin-panel').style.display='block';
   updateSecurityInfo();
-  loadAll();
+  loadAll().then(()=>{updateNotifBadge();startRealtimePedidos();});
   startActivityWatcher();
 }
 </script>
