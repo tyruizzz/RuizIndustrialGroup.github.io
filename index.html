@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="favicon.png">
 <meta name="description" content="Ruiz PSM - Purchases, Sale & Manufacturing.">
-<title>Ruiz PSM | Purchases, Sale & Manufacturing</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Ruiz PSM</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -23,7 +23,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);border-bott
 .lang-option:hover{background:rgba(201,168,76,0.1);color:var(--white)}
 .lang-option.active{color:var(--gold);font-weight:600}
 .nav-brand span{color:var(--white)}
-.nav-logo{height:40px;width:auto;object-fit:contain;display:none}
+.nav-logo{height:48px;width:auto;max-width:160px;object-fit:contain;display:none}
 .nav-links{display:flex;gap:2rem}
 .nav-link{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:color 0.2s;display:flex;align-items:center;gap:5px;cursor:pointer}
 .nav-link:hover{color:var(--gold)}
@@ -42,7 +42,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);border-bott
 .hero{background:linear-gradient(135deg,#0A0C10 0%,#0D1B2A 60%,#0A1628 100%);padding:5rem 2rem 4rem;text-align:center;border-bottom:1px solid var(--steel);position:relative;overflow:hidden}
 .hero-gear{position:absolute;font-size:250px;opacity:0.03;pointer-events:none;line-height:1}
 .hero-badge{display:inline-block;background:rgba(201,168,76,0.1);border:1px solid var(--gold);color:var(--gold);font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:5px 16px;border-radius:2px;margin-bottom:1.5rem}
-.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(32px,6vw,68px);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:3px;line-height:1}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,6vw,68px);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:3px;line-height:1}
 .hero h1 span{color:var(--gold)}
 .hero-slogan{font-size:13px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:6px}
 .hero-sub{font-size:15px;color:var(--muted);margin-top:1rem;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7}
@@ -966,7 +966,15 @@ async function loadConfig(){
   if(data.instagram)socials.push(`<a href="https://instagram.com/${data.instagram.replace('@','')}" target="_blank" class="social-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>${data.instagram}</a>`);
   if(data.facebook)socials.push(`<a href="https://facebook.com/${data.facebook}" target="_blank" class="social-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>${data.facebook}</a>`);
   if(socials.length){document.getElementById('social-wrap').innerHTML=socials.join('');document.getElementById('social-wrap').style.display='flex';}
-  if(data.logo){const logoEl=document.getElementById('nav-logo');logoEl.src=SUPABASE_URL+'/storage/v1/object/public/productos/'+data.logo;logoEl.style.display='block';}
+  if(data.logo){
+    const logoEl=document.getElementById('nav-logo');
+    const brandEl=document.getElementById('nav-brand');
+    const logoUrl=SUPABASE_URL+'/storage/v1/object/public/productos/'+data.logo+'?t='+Date.now();
+    logoEl.src=logoUrl;
+    logoEl.style.display='block';
+    logoEl.onerror=()=>{logoEl.style.display='none';if(brandEl)brandEl.style.display='flex';};
+    logoEl.onload=()=>{if(brandEl)brandEl.style.display='none';};
+  }
 }
 
 /* ===== PRODUCTS ===== */
