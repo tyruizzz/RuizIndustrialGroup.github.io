@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<script>
+const db = supabase.createClient('https://iwbjzffwpijbeqyavtkd.supabase.co','sb_publishable_6tONcb7KYIxWPyIW5OTP7w_pZuXiUzu');
+
+async function generateFeed(){
+  const{data:productos}=await db.from('productos').select('*').gt('stock',0).order('created_at',{ascending:false});
+  
+  let items='';
+  if(productos){
+    for(const p of productos){
+      const imgs=p.imagenes||[];
+      const imgUrl=imgs.length>0
+        ?`https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/${imgs[0]}`
+        :'https://ruizpsm.com/favicon.png';
+      const specs=p.especificaciones||{};
+      let desc=specs.descripcion||p.nombre;
+      if(specs.marca)desc+=` Marca: ${specs.marca}.`;
+      if(specs.modelo)desc+=` Modelo: ${specs.modelo}.`;
+      desc+=' Disponible en Ecuador. Cotiza por WhatsApp.';
+      const categoria=p.categoria||'repuestos';
+      const googleCat=categoria.toLowerCase().includes('maquinaria')?'Maquinaria industrial':'Repuestos industriales';
+      const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      items+=`<item>
+<g:id>${esc(p.id)}</g:id>
+<g:title><![CDATA[${p.nombre}]]></g:title>
+<g:description><![CDATA[${desc}]]></g:description>
+<g:link>https://ruizpsm.com</g:link>
+<g:image_link>${esc(imgUrl)}</g:image_link>
+<g:price>${parseFloat(p.precio).toFixed(2)} USD</g:price>
+<g:availability>in_stock</g:availability>
+<g:condition>new</g:condition>
+<g:brand><![CDATA[${specs.marca||'Ruiz PSM'}]]></g:brand>
+<g:google_product_category>${esc(googleCat)}</g:google_product_category>
+<g:product_type><![CDATA[${categoria}]]></g:product_type>
+${p.referencia?`<g:mpn><![CDATA[${p.referencia}]]></g:mpn>`:''}
+<g:shipping>
+<g:country>EC</g:country>
+<g:service>Env&#237;o est&#225;ndar</g:service>
+<g:price>0 USD</g:price>
+</g:shipping>
+</item>\n`;
+    }
+  }
+
+  const xml=`<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+<channel>
+<title>Ruiz PSM - Repuestos y Maquinaria Industrial Ecuador</title>
+<link>https://ruizpsm.com</link>
+<description>Proveedor de repuestos industriales, maquinaria y equipos en Ecuador.</description>
+${items}
+</channel>
+</rss>`;
+
+  // Reemplazar el contenido de la pagina con XML puro
+  document.documentElement.innerHTML='';
+  const pre=document.createElement('pre');
+  pre.style.cssText='white-space:pre;font-family:monospace;font-size:12px';
+  pre.textContent=xml;
+  document.body?document.body.appendChild(pre):document.documentElement.appendChild(pre);
+
+  // Cambiar content-type via meta
+  const meta=document.createElement('meta');
+  meta.httpEquiv='Content-Type';
+  meta.content='application/xml; charset=utf-8';
+}
+
+generateFeed();
+</script>
+</body>
+</html>
