@@ -181,6 +181,36 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
         <div class="stat-card"><div class="stat-num" id="s-stock-bajo">0</div><div class="stat-label">Stock Bajo</div></div>
         <div class="stat-card"><div class="stat-num" id="s-sin-stock">0</div><div class="stat-label">Sin Stock</div></div>
       </div>
+
+      <!-- VISITAS -->
+      <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-title">👁️ Visitas a la tienda</div>
+        <div class="stats-grid" style="margin-bottom:1.5rem">
+          <div class="stat-card"><div class="stat-num" id="v-hoy">...</div><div class="stat-label">Hoy</div></div>
+          <div class="stat-card"><div class="stat-num" id="v-semana">...</div><div class="stat-label">Esta semana</div></div>
+          <div class="stat-card"><div class="stat-num" id="v-mes">...</div><div class="stat-label">Este mes</div></div>
+          <div class="stat-card gold"><div class="stat-num" id="v-total">...</div><div class="stat-label">Total visitas</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem">
+          <div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">🌍 Top Países</div>
+            <div id="v-paises"><div class="empty-state">Cargando...</div></div>
+          </div>
+          <div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">📱 Dispositivos</div>
+            <div id="v-dispositivos"><div class="empty-state">Cargando...</div></div>
+          </div>
+          <div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">🌐 Navegadores</div>
+            <div id="v-navegadores"><div class="empty-state">Cargando...</div></div>
+          </div>
+        </div>
+        <div style="margin-top:1rem">
+          <div style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">📈 Últimas 24 horas por hora</div>
+          <div id="v-chart" style="display:flex;align-items:flex-end;gap:3px;height:60px;padding:0 4px"></div>
+        </div>
+      </div>
+
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
         <div class="card"><div class="card-title">📦 Más vendidos</div><div id="chart-vendidos"><div class="empty-state">Sin datos aún</div></div></div>
         <div class="card"><div class="card-title">⚠️ Alertas de stock</div><div id="stock-alerts"><div class="empty-state">Todo en orden ✅</div></div></div>
@@ -623,7 +653,70 @@ function showTab(tab,el){
   if(tab==='configuracion')loadConfig();
 }
 
-async function loadAll(){await loadProducts();await loadPedidos();await loadConfig();renderDashboard();}
+async function loadAll(){await loadProducts();await loadPedidos();await loadConfig();await loadVisitas();renderDashboard();}
+
+async function loadVisitas(){
+  try{
+    const ahora=new Date();
+    const hoyStr=new Date(ahora.getFullYear(),ahora.getMonth(),ahora.getDate()).toISOString();
+    const semanaStr=new Date(ahora.getTime()-7*24*60*60*1000).toISOString();
+    const mesStr=new Date(ahora.getFullYear(),ahora.getMonth(),1).toISOString();
+
+    const{data:todas}=await db.from('visitas').select('*').order('fecha',{ascending:false}).limit(2000);
+    if(!todas)return;
+
+    const hoy=todas.filter(v=>v.fecha>=hoyStr).length;
+    const semana=todas.filter(v=>v.fecha>=semanaStr).length;
+    const mes=todas.filter(v=>v.fecha>=mesStr).length;
+    const total=todas.length;
+
+    document.getElementById('v-hoy').textContent=hoy;
+    document.getElementById('v-semana').textContent=semana;
+    document.getElementById('v-mes').textContent=mes;
+    document.getElementById('v-total').textContent=total;
+
+    // Top países
+    const paises={};
+    todas.forEach(v=>{if(v.pais)paises[v.pais]=(paises[v.pais]||0)+1;});
+    const topPaises=Object.entries(paises).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    document.getElementById('v-paises').innerHTML=topPaises.length
+      ?topPaises.map(([p,n])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(30,58,95,0.4);font-size:12px"><span style="color:var(--white)">${p}</span><span style="font-family:'Rajdhani',sans-serif;color:var(--gold);font-weight:700">${n}</span></div>`).join('')
+      :'<div class="empty-state">Sin datos aún</div>';
+
+    // Dispositivos
+    const disps={};
+    todas.forEach(v=>{if(v.dispositivo)disps[v.dispositivo]=(disps[v.dispositivo]||0)+1;});
+    document.getElementById('v-dispositivos').innerHTML=Object.entries(disps).sort((a,b)=>b[1]-a[1])
+      .map(([d,n])=>{
+        const pct=Math.round((n/total)*100);
+        const ico=d==='Móvil'?'📱':'🖥️';
+        return `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span style="color:var(--white)">${ico} ${d}</span><span style="color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700">${n} (${pct}%)</span></div><div style="height:4px;background:var(--steel);border-radius:2px"><div style="height:100%;width:${pct}%;background:var(--gold);border-radius:2px"></div></div></div>`;
+      }).join('')||'<div class="empty-state">Sin datos</div>';
+
+    // Navegadores
+    const navs={};
+    todas.forEach(v=>{if(v.navegador)navs[v.navegador]=(navs[v.navegador]||0)+1;});
+    document.getElementById('v-navegadores').innerHTML=Object.entries(navs).sort((a,b)=>b[1]-a[1])
+      .map(([n,c])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(30,58,95,0.4);font-size:12px"><span style="color:var(--white)">${n}</span><span style="font-family:'Rajdhani',sans-serif;color:var(--gold);font-weight:700">${c}</span></div>`).join('')
+      ||'<div class="empty-state">Sin datos</div>';
+
+    // Gráfico últimas 24h por hora
+    const hace24=new Date(ahora.getTime()-24*60*60*1000);
+    const porHora=Array(24).fill(0);
+    todas.filter(v=>new Date(v.fecha)>=hace24).forEach(v=>{
+      const h=new Date(v.fecha).getHours();
+      porHora[h]++;
+    });
+    const maxH=Math.max(...porHora,1);
+    const chart=document.getElementById('v-chart');
+    chart.innerHTML=porHora.map((c,h)=>`
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px" title="${h}:00 — ${c} visitas">
+        <div style="font-size:8px;color:var(--muted)">${c||''}</div>
+        <div style="width:100%;background:${c>0?'var(--gold)':'var(--steel)'};height:${Math.max(2,Math.round((c/maxH)*50))}px;border-radius:2px 2px 0 0;opacity:${c>0?1:0.3}"></div>
+        <div style="font-size:7px;color:var(--muted)">${h}</div>
+      </div>`).join('');
+  }catch(e){console.log('Error cargando visitas',e);}
+}
 
 async function loadProducts(){
   const{data}=await db.from('productos').select('*').order('created_at',{ascending:false});
