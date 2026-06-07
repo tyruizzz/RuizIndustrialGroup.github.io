@@ -14,7 +14,14 @@
 body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif}
 a{text-decoration:none;color:inherit}
 nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);border-bottom:1px solid var(--gold);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;backdrop-filter:blur(8px)}
-.nav-brand{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;cursor:pointer}
+.lang-selector{position:relative;display:flex;align-items:center}
+.lang-btn{background:transparent;border:1px solid var(--steel);color:var(--muted);padding:5px 10px;border-radius:4px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Barlow',sans-serif;transition:all 0.2s}
+.lang-btn:hover{border-color:var(--gold);color:var(--gold)}
+.lang-dropdown{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--navy);border:1px solid var(--gold);border-radius:6px;overflow:hidden;z-index:200;min-width:120px}
+.lang-dropdown.open{display:block}
+.lang-option{padding:10px 16px;font-size:13px;cursor:pointer;color:var(--muted);display:flex;align-items:center;gap:8px;transition:background 0.2s}
+.lang-option:hover{background:rgba(201,168,76,0.1);color:var(--white)}
+.lang-option.active{color:var(--gold);font-weight:600}
 .nav-brand span{color:var(--white)}
 .nav-logo{height:40px;width:auto;object-fit:contain;display:none}
 .nav-links{display:flex;gap:2rem}
@@ -253,35 +260,46 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
   <div class="nav-links">
     <span class="nav-link" onclick="showPage('home');setTimeout(()=>document.getElementById('productos').scrollIntoView({behavior:'smooth'}),100)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-      Productos
+      <span data-t="nav_products">Productos</span>
     </span>
     <span class="nav-link" onclick="showPage('home');setTimeout(()=>document.getElementById('nosotros').scrollIntoView({behavior:'smooth'}),100)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-      Nosotros
+      <span data-t="nav_about">Nosotros</span>
     </span>
     <span class="nav-link" onclick="showPage('home');setTimeout(()=>document.getElementById('contacto').scrollIntoView({behavior:'smooth'}),100)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-      Contacto
+      <span data-t="nav_contact">Contacto</span>
     </span>
   </div>
   <div class="nav-right">
     <div id="nav-guest" style="display:flex;align-items:center;gap:8px">
       <button class="nav-login-btn" onclick="openAuth('login')">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Iniciar sesión
+        <span data-t="nav_login">Iniciar sesión</span>
       </button>
-      <button class="nav-login-btn" onclick="openAuth('register')" style="border-color:var(--gold);color:var(--gold)">Registrarse</button>
+      <button class="nav-login-btn" onclick="openAuth('register')" style="border-color:var(--gold);color:var(--gold)"><span data-t="nav_register">Registrarse</span></button>
     </div>
     <div id="nav-user" style="display:none" class="nav-user-info">
       <div class="nav-avatar" id="nav-avatar">U</div>
       <span class="nav-username" id="nav-username"></span>
-      <button class="nav-login-btn" onclick="showPage('mispedidos')" style="border-color:var(--steel);color:var(--muted)">Mis pedidos</button>
-      <button class="nav-logout" onclick="doLogout()">Salir</button>
+      <button class="nav-login-btn" onclick="showPage('mispedidos')" style="border-color:var(--steel);color:var(--muted)"><span data-t="nav_mypedidos">Mis pedidos</span></button>
+      <button class="nav-logout" onclick="doLogout()"><span data-t="nav_logout">Salir</span></button>
     </div>
     <a id="nav-wa-btn" href="https://wa.me/593969889751" target="_blank" class="nav-wa">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
       WhatsApp
     </a>
+    <div class="lang-selector">
+      <button class="lang-btn" onclick="toggleLangDropdown()">
+        <span id="lang-flag">🇪🇸</span>
+        <span id="lang-code">ES</span>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="lang-dropdown" id="lang-dropdown">
+        <div class="lang-option active" onclick="setLang('es')">🇪🇸 Español</div>
+        <div class="lang-option" onclick="setLang('en')">🇺🇸 English</div>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -616,6 +634,134 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
 <div class="toast" id="toast"></div>
 
 <script>
+/* ===== LANGUAGE SYSTEM ===== */
+const TRANSLATIONS={
+  es:{
+    nav_products:'Productos',nav_about:'Nosotros',nav_contact:'Contacto',
+    nav_login:'Iniciar sesión',nav_register:'Registrarse',nav_mypedidos:'Mis pedidos',nav_logout:'Salir',
+    hero_btn_catalog:'Ver Catálogo',hero_btn_contact:'Contactar ahora',
+    cats_title:'Categorías',cats_all:'Todos',
+    prods_title:'Nuestros Productos',search_placeholder:'Buscar producto o referencia...',
+    about_title:'Sobre Nosotros',contact_title:'Contacto',
+    about_p1:'Ruiz PSM nace con el compromiso de ofrecer repuestos y maquinaria de alta calidad para el sector industrial y agrícola.',
+    about_p2:'Contamos con un amplio catálogo de productos para mantener tu maquinaria funcionando al máximo rendimiento.',
+    feat_quality:'Calidad',feat_quality_desc:'Productos certificados',
+    feat_speed:'Rapidez',feat_speed_desc:'Entrega ágil',
+    feat_price:'Precios',feat_price_desc:'Los mejores precios',
+    feat_support:'Soporte',feat_support_desc:'Asesoría técnica',
+    contact_find:'Encuéntranos',contact_send:'Enviar mensaje',
+    contact_name:'Nombre',contact_phone:'Teléfono',contact_msg:'Mensaje',
+    contact_name_ph:'Tu nombre completo',contact_phone_ph:'Tu número de contacto',contact_msg_ph:'¿En qué podemos ayudarte?',
+    btn_send_wa:'Enviar por WhatsApp',btn_write_wa:'Escribir por WhatsApp',
+    auth_login_title:'Bienvenido de vuelta',auth_login_sub:'Inicia sesión con tu correo para guardar tu carrito y ver tus pedidos.',
+    auth_register_title:'Crear cuenta',auth_register_sub:'Regístrate con tu correo para guardar tu carrito y seguir tus pedidos.',
+    auth_name:'Nombre completo',auth_email:'Correo electrónico',auth_pass:'Contraseña',auth_tel:'Teléfono de contacto',
+    auth_name_ph:'Tu nombre completo',auth_email_ph:'tu@correo.com',auth_pass_ph_login:'Tu contraseña',auth_pass_ph_reg:'Mínimo 6 caracteres',
+    btn_login:'Iniciar sesión',btn_register:'Crear cuenta',btn_forgot:'¿Olvidaste tu contraseña?',
+    tab_login:'Iniciar sesión',tab_register:'Registrarse',
+    cart_title:'Tu Pedido',cart_empty:'Tu carrito está vacío',cart_empty_sub:'Agrega productos para continuar',
+    cart_order_data:'Datos del pedido',cart_your_name:'Tu nombre',cart_your_phone:'Tu teléfono',
+    btn_cancel:'Cancelar',btn_confirm:'Confirmar Compra',
+    btn_view_detail:'Ver detalles',btn_add_order:'Agregar al pedido',btn_added:'Añadido al pedido',
+    btn_cotizar:'Cotizar por WhatsApp',btn_consult:'Consultar por WhatsApp',
+    spec_title:'Especificaciones',spec_cat:'Categoría',spec_ref:'Referencia',spec_price:'Precio unitario',spec_stock:'Stock disponible',spec_status:'Estado',
+    status_available:'Disponible',status_low:'Stock bajo',status_out:'No disponible',
+    stock_ok:'En stock',stock_low:'Stock bajo',stock_out:'Sin stock',
+    in_stock:'En stock',units_available:'unidades disponibles',only:'Solo',available:'disponibles',
+    price_label:'Precio unitario en USD · Impuestos incluidos',
+    mypedidos_title:'Mis Pedidos',mypedidos_empty:'No tienes pedidos aún.',btn_see_products:'Ver productos',
+    success_title:'¡Pedido Realizado!',success_notify:'¿Deseas notificar al vendedor sobre tu compra por WhatsApp?',
+    btn_skip:'Omitir',btn_notify:'Notificar al vendedor',btn_continue_shopping:'Continuar con más pedidos',
+    breadcrumb_home:'Inicio',breadcrumb_products:'Productos',
+    hero_stat_quality:'Calidad',hero_stat_attention:'Atención',
+    login_require:'Inicia sesión para confirmar tu pedido y guardarlo',
+    btn_cotizar_wa:'Cotizar por WhatsApp',no_ref:'Sin referencia',
+    loading:'Cargando productos...',no_products:'No se encontraron productos',
+    footer_rights:'Todos los derechos reservados',
+  },
+  en:{
+    nav_products:'Products',nav_about:'About Us',nav_contact:'Contact',
+    nav_login:'Sign In',nav_register:'Sign Up',nav_mypedidos:'My Orders',nav_logout:'Sign Out',
+    hero_btn_catalog:'View Catalog',hero_btn_contact:'Contact Now',
+    cats_title:'Categories',cats_all:'All',
+    prods_title:'Our Products',search_placeholder:'Search product or reference...',
+    about_title:'About Us',contact_title:'Contact',
+    about_p1:'Ruiz PSM was born with the commitment to offer high-quality spare parts and machinery for the industrial and agricultural sectors.',
+    about_p2:'We have an extensive catalog of products to keep your machinery running at peak performance.',
+    feat_quality:'Quality',feat_quality_desc:'Certified products',
+    feat_speed:'Speed',feat_speed_desc:'Fast delivery',
+    feat_price:'Pricing',feat_price_desc:'Best prices on the market',
+    feat_support:'Support',feat_support_desc:'Specialized technical advice',
+    contact_find:'Find Us',contact_send:'Send Message',
+    contact_name:'Name',contact_phone:'Phone',contact_msg:'Message',
+    contact_name_ph:'Your full name',contact_phone_ph:'Your contact number',contact_msg_ph:'How can we help you?',
+    btn_send_wa:'Send via WhatsApp',btn_write_wa:'Write on WhatsApp',
+    auth_login_title:'Welcome Back',auth_login_sub:'Sign in with your email to save your cart and view your orders.',
+    auth_register_title:'Create Account',auth_register_sub:'Register with your email to save your cart and track your orders.',
+    auth_name:'Full name',auth_email:'Email address',auth_pass:'Password',auth_tel:'Contact phone',
+    auth_name_ph:'Your full name',auth_email_ph:'you@email.com',auth_pass_ph_login:'Your password',auth_pass_ph_reg:'Minimum 6 characters',
+    btn_login:'Sign In',btn_register:'Create Account',btn_forgot:'Forgot your password?',
+    tab_login:'Sign In',tab_register:'Sign Up',
+    cart_title:'Your Order',cart_empty:'Your cart is empty',cart_empty_sub:'Add products to continue',
+    cart_order_data:'Order Details',cart_your_name:'Your name',cart_your_phone:'Your phone',
+    btn_cancel:'Cancel',btn_confirm:'Confirm Purchase',
+    btn_view_detail:'View details',btn_add_order:'Add to order',btn_added:'Added to order',
+    btn_cotizar:'Quote via WhatsApp',btn_consult:'Inquire via WhatsApp',
+    spec_title:'Specifications',spec_cat:'Category',spec_ref:'Reference',spec_price:'Unit price',spec_stock:'Available stock',spec_status:'Status',
+    status_available:'Available',status_low:'Low stock',status_out:'Not available',
+    stock_ok:'In stock',stock_low:'Low stock',stock_out:'Out of stock',
+    in_stock:'In stock',units_available:'units available',only:'Only',available:'available',
+    price_label:'Unit price in USD · Taxes included',
+    mypedidos_title:'My Orders',mypedidos_empty:'You have no orders yet.',btn_see_products:'View products',
+    success_title:'Order Placed!',success_notify:'Would you like to notify the seller about your purchase via WhatsApp?',
+    btn_skip:'Skip',btn_notify:'Notify seller',btn_continue_shopping:'Continue shopping',
+    breadcrumb_home:'Home',breadcrumb_products:'Products',
+    hero_stat_quality:'Quality',hero_stat_attention:'Support',
+    login_require:'Sign in to confirm and save your order',
+    btn_cotizar_wa:'Quote via WhatsApp',no_ref:'No reference',
+    loading:'Loading products...',no_products:'No products found',
+    footer_rights:'All rights reserved',
+  }
+};
+
+let currentLang=localStorage.getItem('ruizpsm_lang')||'es';
+
+function t(key){return TRANSLATIONS[currentLang][key]||TRANSLATIONS['es'][key]||key;}
+
+function applyTranslations(){
+  document.querySelectorAll('[data-t]').forEach(el=>{
+    const key=el.getAttribute('data-t');
+    el.textContent=t(key);
+  });
+  document.querySelectorAll('[data-t-ph]').forEach(el=>{
+    el.placeholder=t(el.getAttribute('data-t-ph'));
+  });
+  document.getElementById('lang-flag').textContent=currentLang==='es'?'🇪🇸':'🇺🇸';
+  document.getElementById('lang-code').textContent=currentLang.toUpperCase();
+  document.querySelectorAll('.lang-option').forEach(o=>{
+    o.classList.toggle('active',o.getAttribute('onclick').includes("'"+currentLang+"'"));
+  });
+  const searchEl=document.getElementById('search');
+  if(searchEl)searchEl.placeholder=t('search_placeholder');
+  document.documentElement.lang=currentLang;
+}
+
+function setLang(lang){
+  currentLang=lang;
+  localStorage.setItem('ruizpsm_lang',lang);
+  applyTranslations();
+  renderProds();
+  document.getElementById('lang-dropdown').classList.remove('open');
+}
+
+function toggleLangDropdown(){
+  document.getElementById('lang-dropdown').classList.toggle('open');
+}
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.lang-selector'))document.getElementById('lang-dropdown').classList.remove('open');
+});
+
 const SUPABASE_URL='https://iwbjzffwpijbeqyavtkd.supabase.co';
 const SUPABASE_KEY='sb_publishable_6tONcb7KYIxWPyIW5OTP7w_pZuXiUzu';
 const{createClient}=supabase;
@@ -867,7 +1013,8 @@ function renderProds(){
   const filtered=products.filter(p=>{
     const mc=currentCat==='todos'||p.categoria===currentCat;
     const mq=!q||(p.nombre&&p.nombre.toLowerCase().includes(q))||(p.referencia&&p.referencia.toLowerCase().includes(q));
-    return mc&&mq;
+    const visible=p.stock>0;
+    return mc&&mq&&visible;
   });
   const grid=document.getElementById('grid');
   if(!filtered.length){grid.innerHTML='<div class="loading-msg">No se encontraron productos</div>';return;}
@@ -1201,7 +1348,8 @@ async function confirmarPedido(){
   if(error){showToast('Error al procesar. Intenta de nuevo.','error');btn.innerHTML='Confirmar Compra';btn.disabled=false;return;}
   for(const[id,qty]of items){
     const p=products.find(x=>x.id===id);
-    await db.from('productos').update({stock:p.stock-qty}).eq('id',id);
+    const nuevoStock=Math.max(0,p.stock-qty);
+    await db.from('productos').update({stock:nuevoStock}).eq('id',id);
   }
   if(currentUser)await db.from('carritos').update({productos:[]}).eq('usuario_id',currentUser.id);
   let waMsg='';
@@ -1276,6 +1424,7 @@ db.auth.onAuthStateChange((_event,session)=>{
   else{currentUser=null;updateNavUser(null);}
 });
 
+applyTranslations();
 loadConfig();
 loadProducts();
 </script>
