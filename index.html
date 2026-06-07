@@ -1425,9 +1425,27 @@ db.auth.onAuthStateChange((_event,session)=>{
   else{currentUser=null;updateNavUser(null);}
 });
 
+async function registrarVisita(){
+  try{
+    const geo=await fetch('https://ipapi.co/json/').then(r=>r.json());
+    const ua=navigator.userAgent;
+    const dispositivo=/Mobile|Android|iPhone|iPad/i.test(ua)?'Móvil':'Escritorio';
+    const navegador=/Chrome/i.test(ua)?'Chrome':/Firefox/i.test(ua)?'Firefox':/Safari/i.test(ua)?'Safari':/Edge/i.test(ua)?'Edge':'Otro';
+    await db.from('visitas').insert({
+      pagina:window.location.pathname||'/',
+      pais:geo.country_name||'Desconocido',
+      ciudad:geo.city||'',
+      dispositivo,
+      navegador,
+      referrer:document.referrer||'Directo'
+    });
+  }catch(e){console.log('Visita no registrada',e);}
+}
+
 applyTranslations();
 loadConfig();
 loadProducts();
+registrarVisita();
 </script>
 </body>
 </html>
