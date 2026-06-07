@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+<channel>
+<title>Ruiz PSM - Repuestos y Maquinaria Industrial Ecuador</title>
+<link>https://ruizpsm.com</link>
+<description>Proveedor de repuestos industriales, maquinaria y equipos en Ecuador.</description>
+<item>
+  <g:id>prod-001</g:id>
+  <g:title>Friction Lining Brakes Disc Fits Komatsu 500 WA 420-1WA-470WA-1</g:title>
+  <g:description>Disco de freno de friccion para Komatsu 500 WA. Referencia 420-1WA-470WA-1. Compatible con modelos: HD205-3, HD255-5, HD325-5, HD405-6, WA400-1, WA470-1, WA500-1, WA600-1, WD600-1H, WF600T-1. Disponible en Ecuador. Cotiza por WhatsApp.</g:description>
+  <g:link>https://ruizpsm.com</g:link>
+  <g:image_link>https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/prod_1293f7d1-2513-47ac-8e3e-c4076e0a09da_img0_1780847384775.png</g:image_link>
+  <g:price>48.00 USD</g:price>
+  <g:availability>in_stock</g:availability>
+  <g:condition>new</g:condition>
+  <g:brand>Komatsu</g:brand>
+  <g:mpn>420-1WA-470WA-1</g:mpn>
+  <g:google_product_category>Repuestos industriales</g:google_product_category>
+  <g:product_type>Repuestos</g:product_type>
+  <g:shipping>
+    <g:country>EC</g:country>
+    <g:service>Envio estandar</g:service>
+    <g:price>0 USD</g:price>
+  </g:shipping>
+</item>
+</channel>
+</rss>
