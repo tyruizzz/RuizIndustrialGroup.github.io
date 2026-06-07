@@ -313,36 +313,36 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
     <p class="hero-slogan" id="hero-slogan">Purchases, Sale & Manufacturing</p>
     <p class="hero-sub" id="hero-sub">Tu proveedor de confianza en repuestos y maquinaria industrial.</p>
     <div class="hero-stats">
-      <div><div class="hero-stat-num" id="stat-prods">...</div><div class="hero-stat-label">Productos</div></div>
-      <div><div class="hero-stat-num">100%</div><div class="hero-stat-label">Calidad</div></div>
-      <div><div class="hero-stat-num">24h</div><div class="hero-stat-label">Atención</div></div>
+      <div><div class="hero-stat-num" id="stat-prods">...</div><div class="hero-stat-label" data-t="nav_products">Productos</div></div>
+      <div><div class="hero-stat-num">100%</div><div class="hero-stat-label" data-t="hero_stat_quality">Calidad</div></div>
+      <div><div class="hero-stat-num">24h</div><div class="hero-stat-label" data-t="hero_stat_attention">Atención</div></div>
     </div>
     <div class="hero-btns">
       <button class="btn-gold" onclick="document.getElementById('productos').scrollIntoView({behavior:'smooth'})">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-        Ver Catálogo
+        <span data-t="hero_btn_catalog">Ver Catálogo</span>
       </button>
       <a id="hero-wa-btn" href="https://wa.me/593969889751" target="_blank" class="btn-out">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        Contactar ahora
+        <span data-t="hero_btn_contact">Contactar ahora</span>
       </a>
     </div>
   </section>
 
   <section style="padding:3rem 2rem;background:var(--dark)">
-    <div class="sec-title">Categorías</div>
+    <div class="sec-title" data-t="cats_title">Categorías</div>
     <div class="sec-line"></div>
     <div class="cats-wrap" id="cats-wrap">
       <button class="cat-btn active" onclick="filterCat('todos',this)">
         <div class="cat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-        <div class="cat-name">Todos</div>
+        <div class="cat-name" data-t="cats_all">Todos</div>
         <div class="cat-count" id="count-todos">...</div>
       </button>
     </div>
   </section>
 
   <section class="prods-section" id="productos">
-    <div class="sec-title">Nuestros Productos</div>
+    <div class="sec-title" data-t="prods_title">Nuestros Productos</div>
     <div class="sec-line"></div>
     <div class="search-wrap">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -352,33 +352,33 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
   </section>
 
   <section id="nosotros" style="background:var(--dark)">
-    <div class="sec-title">Sobre Nosotros</div>
+    <div class="sec-title" data-t="about_title">Sobre Nosotros</div>
     <div class="sec-line"></div>
     <div class="about-grid">
       <div class="about-text">
-        <p>Ruiz PSM nace con el compromiso de ofrecer repuestos y maquinaria de alta calidad para el sector industrial y agrícola.</p>
-        <p>Contamos con un amplio catálogo de productos para mantener tu maquinaria funcionando al máximo rendimiento.</p>
+        <p data-t="about_p1">Ruiz PSM nace con el compromiso de ofrecer repuestos y maquinaria de alta calidad para el sector industrial y agrícola.</p>
+        <p data-t="about_p2">Contamos con un amplio catálogo de productos para mantener tu maquinaria funcionando al máximo rendimiento.</p>
         <div class="about-feats">
-          <div class="feat"><div class="feat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="feat-title">Calidad</div><div class="feat-desc">Productos certificados</div></div></div>
-          <div class="feat"><div class="feat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="feat-title">Rapidez</div><div class="feat-desc">Entrega ágil</div></div></div>
-          <div class="feat"><div class="feat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div><div class="feat-title">Precios</div><div class="feat-desc">Los mejores precios</div></div></div>
-          <div class="feat"><div class="feat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="feat-title">Soporte</div><div class="feat-desc">Asesoría técnica</div></div></div>
+          <div class="feat"><div class="feat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="feat-title" data-t="feat_quality">Calidad</div><div class="feat-desc" data-t="feat_quality_desc">Productos certificados</div></div></div>
+          <div class="feat"><div class="feat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="feat-title" data-t="feat_speed">Rapidez</div><div class="feat-desc" data-t="feat_speed_desc">Entrega ágil</div></div></div>
+          <div class="feat"><div class="feat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div><div class="feat-title" data-t="feat_price">Precios</div><div class="feat-desc" data-t="feat_price_desc">Los mejores precios</div></div></div>
+          <div class="feat"><div class="feat-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><div class="feat-title" data-t="feat_support">Soporte</div><div class="feat-desc" data-t="feat_support_desc">Asesoría técnica</div></div></div>
         </div>
       </div>
       <div style="background:var(--navy);border:1px solid var(--steel);padding:2rem;text-align:center;border-radius:8px">
         <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1" style="opacity:0.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <div style="font-family:'Rajdhani',sans-serif;font-size:48px;font-weight:700;color:var(--gold);margin-top:1rem">100%</div>
-        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:8px">Compromiso con la calidad</div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-top:8px" data-t="feat_quality_desc">Compromiso con la calidad</div>
       </div>
     </div>
   </section>
 
   <section class="contact-sec" id="contacto">
-    <div class="sec-title">Contacto</div>
+    <div class="sec-title" data-t="contact_title">Contacto</div>
     <div class="sec-line"></div>
     <div class="contact-grid">
       <div class="contact-info">
-        <h3>Encuéntranos</h3>
+        <h3 data-t="contact_find">Encuéntranos</h3>
         <div class="c-item"><div class="c-ico-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="c-label">Dirección</div><div class="c-val" id="c-direccion">53 South St, Newark, NJ 07102</div></div></div>
         <div class="c-item"><div class="c-ico-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><div><div class="c-label">WhatsApp</div><div class="c-val" id="c-whatsapp">+593 969 889 751</div></div></div>
         <div class="c-item" id="c-tel-wrap" style="display:none"><div class="c-ico-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><div><div class="c-label">Teléfono</div><div class="c-val" id="c-telefono"></div></div></div>
@@ -387,17 +387,17 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
         <div id="social-wrap" style="display:none" class="social-links"></div>
         <a id="contact-wa-btn" href="https://wa.me/593969889751" target="_blank" class="wa-btn">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          Escribir por WhatsApp
+          <span data-t="btn_write_wa">Escribir por WhatsApp</span>
         </a>
       </div>
       <div class="contact-form">
-        <h3>Enviar mensaje</h3>
-        <div class="fg"><label>Nombre</label><input type="text" id="f-nombre" placeholder="Tu nombre completo"></div>
-        <div class="fg"><label>Teléfono</label><input type="tel" id="f-tel" placeholder="Tu número de contacto"></div>
-        <div class="fg"><label>Mensaje</label><textarea id="f-msg" placeholder="¿En qué podemos ayudarte?" style="width:100%;background:var(--navy);border:1px solid var(--steel);border-radius:6px;padding:10px 14px;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif;outline:none;height:100px;resize:vertical"></textarea></div>
+        <h3 data-t="contact_send">Enviar mensaje</h3>
+        <div class="fg"><label data-t="contact_name">Nombre</label><input type="text" id="f-nombre" data-t-ph="contact_name_ph" placeholder="Tu nombre completo"></div>
+        <div class="fg"><label data-t="contact_phone">Teléfono</label><input type="tel" id="f-tel" data-t-ph="contact_phone_ph" placeholder="Tu número de contacto"></div>
+        <div class="fg"><label data-t="contact_msg">Mensaje</label><textarea id="f-msg" data-t-ph="contact_msg_ph" placeholder="¿En qué podemos ayudarte?" style="width:100%;background:var(--navy);border:1px solid var(--steel);border-radius:6px;padding:10px 14px;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif;outline:none;height:100px;resize:vertical"></textarea></div>
         <button class="f-submit" onclick="sendWA()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          Enviar por WhatsApp
+          <span data-t="btn_send_wa">Enviar por WhatsApp</span>
         </button>
       </div>
     </div>
@@ -989,7 +989,8 @@ function buildCats(){
   const cats=[...new Set(products.map(p=>p.categoria).filter(Boolean))];
   const wrap=document.getElementById('cats-wrap');
   wrap.querySelectorAll('.cat-btn:not(:first-child)').forEach(b=>b.remove());
-  document.getElementById('count-todos').textContent=products.length+' productos';
+  document.getElementById('count-todos').textContent=products.length+' '+(currentLang==='en'?'products':'productos');
+  document.querySelector('[data-t="cats_all"]').textContent=t('cats_all');
   cats.forEach(cat=>{
     const count=products.filter(p=>p.categoria===cat).length;
     const btn=document.createElement('button');
@@ -1017,7 +1018,7 @@ function renderProds(){
     return mc&&mq&&visible;
   });
   const grid=document.getElementById('grid');
-  if(!filtered.length){grid.innerHTML='<div class="loading-msg">No se encontraron productos</div>';return;}
+  if(!filtered.length){grid.innerHTML=`<div class="loading-msg">${t('no_products')}</div>`;return;}
   grid.innerHTML=filtered.map(p=>{
     const out=p.stock===0;const low=p.stock>0&&p.stock<=5;
     const pct=Math.min(100,Math.round((p.stock/Math.max(p.stock,50))*100));
