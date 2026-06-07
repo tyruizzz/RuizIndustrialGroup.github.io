@@ -1061,6 +1061,16 @@ async function updatePedido(id,estado){
       if(prod)await db.from('productos').update({stock:Math.max(0,prod.stock)+item.cantidad}).eq('id',item.id);
     }
   }
+  if(estado==='cancelado'){
+    const pedido=allPedidos.find(p=>p.id===id);
+    if(!pedido)return;
+    if(!confirm('¿Cancelar el pedido '+pedido.codigo+'?\n\nEl stock se reintegrará automáticamente.'))return;
+    const prods=pedido.productos||[];
+    for(const item of prods){
+      const{data:prod}=await db.from('productos').select('stock').eq('id',item.id).single();
+      if(prod)await db.from('productos').update({stock:Math.max(0,prod.stock)+item.cantidad}).eq('id',item.id);
+    }
+  }
   await db.from('pedidos').update({estado}).eq('id',id);
   await loadPedidos();
   await loadProducts();
