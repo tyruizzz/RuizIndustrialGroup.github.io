@@ -1297,7 +1297,7 @@ async function loadMisPedidos(){
     const dt=new Date(p.created_at);
     const fecha=dt.toLocaleDateString('es-EC',{timeZone:'America/Guayaquil',day:'2-digit',month:'2-digit',year:'numeric'});
     const hora=dt.toLocaleTimeString('es-EC',{timeZone:'America/Guayaquil',hour:'2-digit',minute:'2-digit'});
-    const prods=(p.productos||[]).map(i=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(30,58,95,0.3);font-size:13px"><span style="color:var(--white)">${i.nombre} <span style="color:var(--muted)">x${i.cantidad}</span></span><span style="color:var(--gold);font-family:'Rajdhani',sans-serif">$${parseFloat(i.subtotal).toFixed(2)}</span></div>`).join('');
+    const prods=(p.productos||[]).map(i=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(30,58,95,0.3);font-size:13px"><span style="color:var(--white)">${i.nombre} <span style="color:var(--muted)">x${i.cantidad}</span></span><span style="color:var(--gold);font-family:'Rajdhani',sans-serif">$${fmtPrice(i.subtotal)}</span></div>`).join('');
     return `<div style="background:var(--navy);border:1px solid var(--steel);border-radius:12px;padding:1.5rem;margin-bottom:1.25rem">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
         <div>
@@ -1309,7 +1309,7 @@ async function loadMisPedidos(){
       <div style="margin-bottom:1rem">${prods}</div>
       <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--steel)">
         <span style="font-size:12px;color:var(--muted)">${(p.productos||[]).length} producto(s)</span>
-        <span style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold)">Total: $${parseFloat(p.total).toFixed(2)}</span>
+        <span style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--gold)">Total: $${fmtPrice(p.total)}</span>
       </div>
     </div>`;
   }).join('');
@@ -1501,7 +1501,7 @@ function renderProds(){
         </div>
         <div class="prod-name">${p.nombre}</div>
         ${p.referencia?`<div class="prod-ref">REF: ${p.referencia}</div>`:''}
-        <div class="prod-price">$${parseFloat(p.precio).toFixed(2)} <small>USD</small></div>
+        <div class="prod-price">$${fmtPrice(p.precio)} <small>USD</small></div>
         <div class="stk-top" style="margin-bottom:5px">
           <span style="color:${out?'var(--red)':'var(--muted)'};font-size:11px">${out?'Sin stock':'En stock'}</span>
           <span style="font-size:11px;color:var(--muted)">${p.stock} uds</span>
@@ -1550,7 +1550,7 @@ function openDetail(pid){
   document.getElementById('detail-cat').innerHTML=(CAT_ICONS[p.categoria]||CAT_ICONS.default)+'&nbsp;&nbsp;'+(p.categoria||'');
   document.getElementById('detail-name').textContent=p.nombre;
   document.getElementById('detail-ref').innerHTML=p.referencia?`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> REF: ${p.referencia}`:'Sin referencia';
-  document.getElementById('detail-price').textContent='$'+parseFloat(p.precio).toFixed(2);
+  document.getElementById('detail-price').textContent='$'+fmtPrice(p.precio);
   document.getElementById('detail-qty').textContent='1';
   const sbox=document.getElementById('detail-stock-box');
   const addWrap=document.getElementById('detail-add-wrap');
@@ -1590,7 +1590,7 @@ function openDetail(pid){
   const specs=[
     {k:'Categoría',v:p.categoria||'—'},
     {k:'Referencia',v:p.referencia||'—'},
-    {k:'Precio unitario',v:'$'+parseFloat(p.precio).toFixed(2)+' USD'},
+    {k:'Precio unitario',v:'$'+fmtPrice(p.precio)+' USD'},
     {k:'Stock disponible',v:p.stock+' unidades'},
     {k:'Estado',v:p.stock===0?'No disponible':p.stock<=5?'Stock bajo':'Disponible'},
   ];
@@ -1713,7 +1713,7 @@ function cotizarWA(){
   msg+=`*Producto:* ${detailProduct.nombre}%0A`;
   if(detailProduct.referencia)msg+=`*Referencia:* ${detailProduct.referencia}%0A`;
   msg+=`*Categoría:* ${detailProduct.categoria||'—'}%0A`;
-  msg+=`*Precio unitario:* $${parseFloat(detailProduct.precio).toFixed(2)} USD%0A`;
+  msg+=`*Precio unitario:* $${fmtPrice(detailProduct.precio)} USD%0A`;
   msg+=`*Cantidad requerida:* ${qty} unidad${qty>1?'es':''}%0A`;
   msg+=`*Total estimado:* $${total} USD%0A%0A`;
   msg+=`Por favor confirmar disponibilidad, tiempo de entrega y forma de pago. Gracias!`;
@@ -1766,11 +1766,11 @@ function openCart(){
         🏪 <span id="vendor-label-${key}">${isRuiz?'RUIZ PSM':'Cargando...'}</span>
       </div>`;
     grupo.productos.forEach(p=>{
-      html+=`<div class="m-item"><div class="m-item-info"><div class="m-item-name">${p.nombre}</div><div class="m-item-ref">${p.referencia||''}</div></div><div class="m-item-right"><button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button><span class="qty-num">${p.qty}</span><button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button><span class="m-item-price">$${p.sub.toFixed(2)}</span></div></div>`;
+      html+=`<div class="m-item"><div class="m-item-info"><div class="m-item-name">${p.nombre}</div><div class="m-item-ref">${p.referencia||''}</div></div><div class="m-item-right"><button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button><span class="qty-num">${p.qty}</span><button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button><span class="m-item-price">$${p.fmtPrice(sub)}</span></div></div>`;
     });
-    html+=`<div style="padding:8px 12px;text-align:right;font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold);font-weight:700;border-top:1px solid rgba(30,58,95,0.5)">Subtotal: $${grupo.total.toFixed(2)}</div></div>`;
+    html+=`<div style="padding:8px 12px;text-align:right;font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold);font-weight:700;border-top:1px solid rgba(30,58,95,0.5)">Subtotal: $${grupo.fmtPrice(total)}</div></div>`;
   });
-  html+=`<div class="m-total">Total general: $${totalGeneral.toFixed(2)}</div>`;
+  html+=`<div class="m-total">Total general: $${fmtPrice(totalGeneral)}</div>`;
   document.getElementById('modal-body').innerHTML=html;
   // Cargar nombres de vendedores async
   Object.entries(grupos).forEach(([key,grupo])=>{
@@ -1833,9 +1833,9 @@ function cotizarCarritoWA(){
   items.forEach(([id,qty])=>{
     const p=products.find(x=>x.id===id);if(!p)return;
     const sub=p.precio*qty;total+=sub;
-    msg+='▪ '+p.nombre+(p.referencia?' ('+p.referencia+')':'')+' x'+qty+' = $'+sub.toFixed(2)+'%0A';
+    msg+='▪ '+p.nombre+(p.referencia?' ('+p.referencia+')':'')+' x'+qty+' = $'+fmtPrice(sub)+'%0A';
   });
-  msg+='%0A*Total estimado: $'+total.toFixed(2)+'*%0A%0APor favor confirmar disponibilidad y forma de pago.';
+  msg+='%0A*Total estimado: $'+fmtPrice(total)+'*%0A%0APor favor confirmar disponibilidad y forma de pago.';
   closeCart();
   window.open('https://wa.me/'+WA+'?text='+msg,'_blank');
 }
@@ -1883,15 +1883,15 @@ async function confirmarPedido(){
         }
         // Mensaje para vendedor
         let msg=`🛒 *Nuevo pedido - ${vend.nombre_tienda}*%0A%0A📋 Código: ${pedidoData.codigo}%0A👤 Cliente: ${nombre}%0A📱 Tel: ${tel}%0A%0A*Productos:*%0A`;
-        grupo.productos.forEach(p=>{msg+=`▪ ${p.nombre} x${p.cantidad} = $${p.subtotal.toFixed(2)}%0A`;});
-        msg+=`%0A💰 *Total: $${grupo.total.toFixed(2)}*`;
+        grupo.productos.forEach(p=>{msg+=`▪ ${p.nombre} x${p.cantidad} = $${p.fmtPrice(subtotal)}%0A`;});
+        msg+=`%0A💰 *Total: $${grupo.fmtPrice(total)}*`;
         waMensajes.push({tel:vend.telefono.replace(/[^0-9]/g,''),msg,nombre_tienda:vend.nombre_tienda});
       }
     } else {
       // Mensaje para Ruiz PSM
       let msg=`🏭 *RUIZ PSM - Nuevo Pedido*%0A%0A📋 Código: ${pedidoData.codigo}%0A👤 Cliente: ${nombre}%0A📱 Tel: ${tel}%0A%0A*Productos:*%0A`;
-      grupo.productos.forEach(p=>{msg+=`▪ ${p.nombre} x${p.cantidad} = $${p.subtotal.toFixed(2)}%0A`;});
-      msg+=`%0A💰 *Total: $${grupo.total.toFixed(2)}*`;
+      grupo.productos.forEach(p=>{msg+=`▪ ${p.nombre} x${p.cantidad} = $${p.fmtPrice(subtotal)}%0A`;});
+      msg+=`%0A💰 *Total: $${grupo.fmtPrice(total)}*`;
       waMensajes.push({tel:WA,msg,nombre_tienda:'Ruiz PSM'});
     }
   }
@@ -1915,7 +1915,7 @@ function showSuccessModal(codigo,nombre,total,productos,waMensajes){
   document.getElementById('success-resumen').innerHTML=
     '<strong style="color:var(--white)">'+nombre+'</strong><br>'+
     productos.map(p=>'▪ '+p.nombre+' x'+p.cantidad).join('<br>')+'<br><br>'+
-    '<span style="font-family:Rajdhani,sans-serif;font-size:20px;color:var(--gold);font-weight:700">Total: $'+total.toFixed(2)+'</span>'+
+    '<span style="font-family:Rajdhani,sans-serif;font-size:20px;color:var(--gold);font-weight:700">Total: $'+fmtPrice(total)+'</span>'+
     '<div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.1)">'+
     '<div style="font-size:12px;color:var(--muted);margin-bottom:10px;text-align:left">📲 Envía tu pedido por WhatsApp a cada vendedor:</div>'+
     btnsWA+'</div>';
@@ -1994,6 +1994,11 @@ loadProducts();
 registrarVisita();
 
 
+/* ===== PRICE FORMAT ===== */
+function fmtPrice(n){
+  return parseFloat(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
 /* ===== PHONE VALIDATION ===== */
 function validatePhoneField(numId){
   const el=document.getElementById(numId);
@@ -2019,7 +2024,7 @@ async function contactarVendedor(p){
   let msg=`Hola ${data.nombre_tienda}! Me interesa el siguiente producto:%0A%0A`;
   msg+=`*${p.nombre}*%0A`;
   if(p.referencia)msg+=`REF: ${p.referencia}%0A`;
-  msg+=`Precio: $${parseFloat(p.precio).toFixed(2)} USD%0A`;
+  msg+=`Precio: $${fmtPrice(p.precio)} USD%0A`;
   msg+=`%0APor favor, ¿me puede dar más información?`;
   window.open(`https://wa.me/${tel}?text=${msg}`,'_blank');
 }
@@ -2065,9 +2070,9 @@ async function loadVendorStats(){
   const totalCom=coms?coms.reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
   const pendiente=coms?coms.filter(c=>c.estado==='pendiente').reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
   document.getElementById('v-stat-prods').textContent=totalProds;
-  document.getElementById('v-stat-ventas').textContent='$'+totalVentas.toFixed(2);
-  document.getElementById('v-stat-comisiones').textContent='$'+totalCom.toFixed(2);
-  document.getElementById('v-stat-pendiente').textContent='$'+pendiente.toFixed(2);
+  document.getElementById('v-stat-ventas').textContent='$'+fmtPrice(totalVentas);
+  document.getElementById('v-stat-comisiones').textContent='$'+fmtPrice(totalCom);
+  document.getElementById('v-stat-pendiente').textContent='$'+fmtPrice(pendiente);
 }
 
 async function loadVendorProducts(){
@@ -2083,7 +2088,7 @@ async function loadVendorProducts(){
       ${imgUrl?`<img class="vendor-prod-img" src="${imgUrl}" alt="${p.nombre}" onerror="this.style.display='none'">`:'<div class="vendor-prod-img" style="display:flex;align-items:center;justify-content:center;color:var(--muted)">Sin imagen</div>'}
       <div class="vendor-prod-info">
         <div class="vendor-prod-name">${p.nombre}</div>
-        <div class="vendor-prod-price">$${parseFloat(p.precio).toFixed(2)}</div>
+        <div class="vendor-prod-price">$${fmtPrice(p.precio)}</div>
         <div class="vendor-prod-stock">Stock: ${p.stock} unidades ${p.stock===0?'<span style="color:var(--red)">· Sin stock</span>':''}</div>
         <div class="vendor-prod-actions">
           <button class="vendor-btn-sm vendor-btn-edit" onclick="editarProductoVendedor('${p.id}')">✏️ Editar</button>
@@ -2215,9 +2220,9 @@ async function loadVendorComisiones(){
   tbody.innerHTML=data.map(c=>`<tr>
     <td>${c.pedidos?.codigo||'-'}</td>
     <td>-</td>
-    <td>$${parseFloat(c.monto_venta).toFixed(2)}</td>
+    <td>$${fmtPrice(c.monto_venta)}</td>
     <td>${c.pct_comision}%</td>
-    <td style="color:var(--gold);font-weight:700">$${parseFloat(c.monto_comision).toFixed(2)}</td>
+    <td style="color:var(--gold);font-weight:700">$${fmtPrice(c.monto_comision)}</td>
     <td><span class="vendor-badge ${c.estado}">${c.estado}</span></td>
     <td>${new Date(c.created_at).toLocaleDateString('es-EC')}</td>
   </tr>`).join('');
