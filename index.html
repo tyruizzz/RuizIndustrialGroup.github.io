@@ -401,6 +401,11 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
 .vendor-stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
 .vendor-prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
 .vendor-prod-card{background:var(--navy);border:1px solid var(--steel);border-radius:8px;overflow:hidden}
+.bank-search-wrap{position:relative}
+.bank-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--navy);border:1px solid var(--gold);border-radius:6px;z-index:100;max-height:220px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+.bank-option{padding:10px 14px;font-size:13px;color:var(--light);cursor:pointer;border-bottom:1px solid rgba(30,58,95,0.3);transition:background 0.15s}
+.bank-option:hover{background:var(--steel)}
+.bank-option:last-child{border-bottom:none}
 .vendor-prod-img{width:100%;height:140px;object-fit:cover;background:var(--dark)}
 .vendor-prod-info{padding:1rem}
 .vendor-prod-name{font-size:14px;font-weight:600;color:var(--white);margin-bottom:4px;line-height:1.3}
@@ -717,46 +722,15 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
 
         <div class="vendor-form-grid">
           <div class="vendor-fg">
-            <label data-t="bank_name">Banco</label>
-            <select id="vr-banco" onchange="checkOtrosBanco('vr-banco','vr-banco-otro')"><option value="">Seleccionar banco...</option>
-<option>Banco Pichincha</option>
-<option>Banco del Pacífico</option>
-<option>Banco Guayaquil</option>
-<option>Banco Internacional</option>
-<option>Banco Produbanco</option>
-<option>Banco Bolivariano</option>
-<option>Banco de Machala</option>
-<option>Banco Solidario</option>
-<option>Banco General Rumiñahui</option>
-<option>Banco ProCredit</option>
-<option>Banco D-MIRO</option>
-<option>Banco Coopnacional</option>
-<option>Banco Amazonas</option>
-<option>Banco Comercial de Manabí</option>
-<option>Banco Capital</option>
-<option>Banco Litoral</option>
-<option>Banco Cofiec</option>
-<option>BanEcuador</option>
-<option>CFN (Corporación Financiera Nacional)</option>
-<option>Mutualista Pichincha</option>
-<option>Mutualista Azuay</option>
-<option>Mutualista Ambato</option>
-<option>Mutualista Imbabura</option>
-<option>Cooperativa JEP</option>
-<option>Cooperativa Jardín Azuayo</option>
-<option>Cooperativa Juventud Ecuatoriana Progresista</option>
-<option>Cooperativa 29 de Octubre</option>
-<option>Cooperativa Oscus</option>
-<option>Cooperativa Mushuc Runa</option>
-<option>Cooperativa Cacpeco</option>
-<option>Cooperativa Andina</option>
-<option>Cooperativa San Francisco</option>
-<option>Cooperativa Codesarrollo</option>
-<option>Cooperativa El Sagrario</option>
-<option>Cooperativa Tulcán</option>
-<option>Otro</option></select>
-            <input id="vr-banco-otro" placeholder="Escribe el nombre de tu banco" style="display:none;margin-top:6px;background:var(--dark);border:1px solid var(--steel);color:var(--white);padding:10px 12px;border-radius:6px;font-size:14px;width:100%;outline:none">
-          </div>
+            <label data-t="bank_name">Banco *</label>
+            <div class="bank-search-wrap">
+              <input type="text" id="vr-banco" placeholder="Escribe para buscar tu banco..." autocomplete="off"
+                style="width:100%" 
+                onfocus="initBankSearch('vr-banco','vr-banco-dd','vr-banco-val')">
+              <input type="hidden" id="vr-banco-val">
+              <div id="vr-banco-dd" class="bank-dropdown" style="display:none"></div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">Escribe el nombre de tu banco para buscar</div>
           <div class="vendor-fg">
             <label data-t="bank_type">Tipo de cuenta</label>
             <select id="vr-tipocuenta">
@@ -1054,7 +1028,15 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
           </div>
           <div class="vendor-section-title">🏦 Datos bancarios</div>
           <div class="vendor-form-grid">
-            <div class="vendor-fg"><label>Banco</label><input id="vperf-banco" placeholder="Banco"></div>
+            <div class="vendor-fg">
+              <label>Banco</label>
+              <div class="bank-search-wrap">
+                <input type="text" id="vperf-banco" placeholder="Escribe para buscar tu banco..." autocomplete="off" style="width:100%" onfocus="initBankSearch('vperf-banco','vperf-banco-dd','vperf-banco-val')">
+                <input type="hidden" id="vperf-banco-val">
+                <div id="vperf-banco-dd" class="bank-dropdown" style="display:none"></div>
+              </div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">Escribe el nombre de tu banco para buscar</div>
+            </div>
             <div class="vendor-fg"><label>Tipo de cuenta</label>
               <select id="vperf-tipocuenta"><option value="">Seleccionar...</option><option>Ahorros</option><option>Corriente</option></select>
             </div>
@@ -2274,6 +2256,116 @@ function fmtPrice(n){
   return parseFloat(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 
+
+/* ===== BANK SEARCH ===== */
+const BANCOS_MUNDO = [
+  // Ecuador
+  "Banco Pichincha","Banco del Pacífico","Banco Guayaquil","Banco Internacional",
+  "Produbanco","Banco Bolivariano","Banco de Machala","Banco Solidario",
+  "Banco General Rumiñahui","Banco ProCredit","Banco D-MIRO","Banco Coopnacional",
+  "Banco Amazonas","Banco Comercial de Manabí","Banco Capital","Banco Litoral",
+  "BanEcuador","CFN Corporación Financiera Nacional",
+  "Mutualista Pichincha","Mutualista Azuay","Mutualista Ambato","Mutualista Imbabura",
+  "Cooperativa JEP","Cooperativa Jardín Azuayo","Cooperativa 29 de Octubre",
+  "Cooperativa Oscus","Cooperativa Mushuc Runa","Cooperativa Cacpeco",
+  "Cooperativa Andina","Cooperativa San Francisco","Cooperativa Codesarrollo",
+  "Cooperativa El Sagrario","Cooperativa Tulcán","Cooperativa Mego",
+  "Cooperativa Alianza del Valle","Cooperativa Policía Nacional",
+  "Cooperativa Atuntaqui","Cooperativa Riobamba","Cooperativa Fernando Daquilema",
+  // Latinoamérica
+  "Banco de Bogotá","Bancolombia","Davivienda","BBVA Colombia","Banco Popular Colombia",
+  "Banco de la Nación Perú","BCP Banco de Crédito Perú","Interbank Perú","Scotiabank Perú",
+  "Banco Estado Chile","Banco de Chile","Santander Chile","BCI Chile","Falabella Chile",
+  "Banco Nación Argentina","Banco Galicia","BBVA Argentina","Santander Argentina",
+  "Itaú Brasil","Bradesco","Banco do Brasil","Caixa Econômica Federal","Nubank",
+  "Banesco Venezuela","Banco de Venezuela","Mercantil Venezuela",
+  "Banco Nacional Bolivia","Banco Mercantil Santa Cruz","BNB Bolivia",
+  "BROU Uruguay","Banco Santander Uruguay","HSBC Uruguay",
+  "Banco Continental Paraguay","Itaú Paraguay","Sudameris Paraguay",
+  "Banco Nacional Panama","Banco General Panama","Banistmo",
+  "Banco de Costa Rica","BCR Costa Rica","BAC San José",
+  "Banco Agrícola El Salvador","Davivienda El Salvador","Banco Cuscatlan",
+  "Banco Industrial Guatemala","Banrural Guatemala","BAM Guatemala",
+  "Banpais Honduras","BAC Honduras","Banco Atlántida",
+  "Banco de América Central Nicaragua","BAC Nicaragua","LAFISE Nicaragua",
+  "Banco Popular Dominican Republic","BHD León","Scotiabank RD",
+  // América del Norte
+  "Bank of America","JPMorgan Chase","Wells Fargo","Citibank","Goldman Sachs",
+  "Morgan Stanley","US Bank","Capital One","TD Bank","PNC Bank",
+  "Banco Nacional de México BANAMEX","BBVA México","Santander México",
+  "HSBC México","Banorte","Inbursa","Scotiabank México",
+  "Royal Bank of Canada RBC","TD Canada Trust","Scotiabank Canada","CIBC","BMO",
+  // Europa
+  "Santander España","BBVA España","CaixaBank","Banco Sabadell","Bankinter",
+  "BNP Paribas","Société Générale","Crédit Agricole","LCL","Natixis",
+  "Deutsche Bank","Commerzbank","DZ Bank","ING Deutschland","Sparkasse",
+  "Barclays","HSBC UK","Lloyds Bank","NatWest","Standard Chartered",
+  "UniCredit","Intesa Sanpaolo","Mediobanca","Banco BPM",
+  "UBS","Credit Suisse","Julius Baer","Raiffeisen Switzerland",
+  "ING Bank","Rabobank","ABN AMRO","SNS Bank",
+  "Nordea","SEB","Swedbank","Handelsbanken",
+  // Asia y Medio Oriente
+  "ICBC China","Bank of China","China Construction Bank","Agricultural Bank of China",
+  "Bank of Japan","Mitsubishi UFJ","Sumitomo Mitsui","Mizuho Bank",
+  "Kookmin Bank","Shinhan Bank","Woori Bank","Hana Bank",
+  "DBS Bank Singapore","OCBC Singapore","UOB Singapore",
+  "Emirates NBD","Abu Dhabi Commercial Bank","First Abu Dhabi Bank",
+  "National Commercial Bank Saudi Arabia","Al Rajhi Bank","Riyad Bank",
+  "Bank Mellat Iran","Bank Saderat","Melli Bank",
+  "Bank of India","State Bank of India","HDFC Bank","ICICI Bank","Axis Bank",
+  // África y Oceanía
+  "Standard Bank South Africa","FNB South Africa","Absa","Nedbank",
+  "Commonwealth Bank Australia","ANZ","Westpac","NAB Australia",
+  "ASB New Zealand","BNZ New Zealand","ANZ New Zealand",
+  "Equity Bank Kenya","KCB Kenya","Co-operative Bank Kenya",
+  "Zenith Bank Nigeria","GTBank Nigeria","Access Bank Nigeria",
+  // Global / Digital
+  "Wise (TransferWise)","Revolut","N26","Monzo","Chime",
+  "PayPal","Stripe","Square","Venmo","CashApp"
+];
+
+function initBankSearch(inputId, dropdownId, hiddenId) {
+  const input = document.getElementById(inputId);
+  const dropdown = document.getElementById(dropdownId);
+  const hidden = document.getElementById(hiddenId);
+  if(!input||!dropdown)return;
+  
+  input.addEventListener('input', function(){
+    const q = this.value.toLowerCase().trim();
+    if(q.length < 1){dropdown.style.display='none';return;}
+    const matches = BANCOS_MUNDO.filter(b => b.toLowerCase().includes(q)).slice(0,8);
+    if(!matches.length){dropdown.style.display='none';return;}
+    dropdown.innerHTML = matches.map(b => 
+      `<div class="bank-option" onclick="selectBank('${inputId}','${dropdownId}','${hiddenId}','${b.replace(/'/g,"\'")}')">
+        ${b.replace(new RegExp(q,'gi'), m=>`<strong style="color:var(--gold)">${m}</strong>`)}
+      </div>`
+    ).join('');
+    dropdown.style.display='block';
+  });
+  
+  input.addEventListener('blur', function(){
+    setTimeout(()=>dropdown.style.display='none', 200);
+  });
+}
+
+function selectBank(inputId, dropdownId, hiddenId, banco){
+  const input = document.getElementById(inputId);
+  const dropdown = document.getElementById(dropdownId);
+  const hidden = document.getElementById(hiddenId);
+  if(input)input.value = banco;
+  if(hidden)hidden.value = banco;
+  if(dropdown)dropdown.style.display='none';
+}
+
+function getBancoValue(selectId, otroId){
+  // Ahora selectId es el input de búsqueda
+  const inp = document.getElementById(selectId);
+  if(inp&&inp.tagName==='INPUT')return inp.value.trim();
+  const sel = document.getElementById(selectId);
+  if(!sel)return'';
+  return sel.value==='Otro'?(document.getElementById(otroId)?document.getElementById(otroId).value.trim():'Otro'):sel.value;
+}
+
 /* ===== PHONE VALIDATION ===== */
 function checkOtrosBanco(selectId, inputId){
   const sel=document.getElementById(selectId);
@@ -2283,12 +2375,7 @@ function checkOtrosBanco(selectId, inputId){
   if(sel.value!=='Otro')inp.value='';
 }
 
-function getBancoValue(selectId, otroId){
-  const sel=document.getElementById(selectId);
-  const otro=document.getElementById(otroId);
-  if(!sel)return'';
-  return sel.value==='Otro'?(otro?otro.value.trim():'Otro'):sel.value;
-}
+
 
 function verificarCuenta(){
   const cuenta=document.getElementById('vr-cuenta').value.trim();
@@ -3109,7 +3196,7 @@ function cargarPerfilVendedor(){
   document.getElementById('vperf-desc').value=vendorData.descripcion||'';
   document.getElementById('vperf-tel').value=vendorData.telefono||'';
   document.getElementById('vperf-email').value=vendorData.email||'';
-  document.getElementById('vperf-banco').value=vendorData.banco||'';
+  const vbanco=document.getElementById('vperf-banco');if(vbanco)vbanco.value=vendorData.banco||'';
   document.getElementById('vperf-tipocuenta').value=vendorData.tipo_cuenta||'';
   document.getElementById('vperf-cuenta').value=vendorData.cuenta_bancaria||'';
 }
