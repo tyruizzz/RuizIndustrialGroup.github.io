@@ -844,23 +844,40 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
       </div>
 
       <div class="vendor-tabs">
-        <div class="vendor-tab active" onclick="showVendorTab('productos',this)">📦 Mis Productos</div>
-        <div class="vendor-tab" onclick="showVendorTab('agregar',this)">➕ Agregar Producto</div>
-        <div class="vendor-tab" onclick="showVendorTab('comisiones',this)">💰 Mis Comisiones</div>
-        <div class="vendor-tab" onclick="showVendorTab('perfil',this)">⚙️ Mi Perfil</div>
+        <div class="vendor-tab active" onclick="showVendorTab('productos',this)">📦 Productos</div>
+        <div class="vendor-tab" onclick="showVendorTab('agregar',this)">➕ Agregar</div>
+        <div class="vendor-tab" onclick="showVendorTab('pedidos',this)">🛒 Pedidos</div>
+        <div class="vendor-tab" onclick="showVendorTab('finanzas',this)">💰 Finanzas</div>
+        <div class="vendor-tab" onclick="showVendorTab('estadisticas',this)">📊 Estadísticas</div>
+        <div class="vendor-tab" onclick="showVendorTab('perfil',this)">🏪 Mi Tienda</div>
+        <div class="vendor-tab" onclick="showVendorTab('seguridad',this)">🔐 Seguridad</div>
       </div>
 
       <!-- MIS PRODUCTOS -->
       <div id="vtab-productos" class="vendor-tab-content active">
-        <div id="vendor-notif-banner" style="display:none;background:rgba(201,168,76,0.1);border:1px solid var(--gold);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem">
-          <div style="display:flex;align-items:center;gap:10px">
-            <span style="font-size:20px">🔔</span>
-            <div>
-              <div style="font-size:14px;font-weight:600;color:var(--white)" id="vendor-notif-text">Tienes nuevas notificaciones</div>
-              <div style="font-size:12px;color:var(--muted)">El administrador está gestionando pedidos de tus productos</div>
-            </div>
+        <div id="vendor-notif-banner" style="display:none;background:rgba(201,168,76,0.1);border:1px solid var(--gold);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1rem;align-items:center;justify-content:space-between;gap:1rem">
+          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">🔔</span>
+            <div><div style="font-size:14px;font-weight:600;color:var(--white)" id="vendor-notif-text">Tienes nuevas notificaciones</div>
+            <div style="font-size:12px;color:var(--muted)">El administrador está gestionando pedidos de tus productos</div></div>
           </div>
           <button onclick="document.getElementById('vendor-notif-banner').style.display='none'" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:18px">✕</button>
+        </div>
+        <!-- Filtros y ordenar -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;align-items:center;justify-content:space-between">
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="vendor-btn-sm vendor-btn-edit" onclick="filtrarProdsVendedor('todos')" id="vfp-todos" style="padding:6px 12px;font-size:11px">Todos</button>
+            <button class="vendor-btn-sm" onclick="filtrarProdsVendedor('activo')" id="vfp-activo" style="padding:6px 12px;font-size:11px;background:rgba(37,211,102,0.15);color:var(--green);border:1px solid var(--green)">✅ Activos</button>
+            <button class="vendor-btn-sm" onclick="filtrarProdsVendedor('inactivo')" id="vfp-inactivo" style="padding:6px 12px;font-size:11px;background:rgba(226,75,74,0.15);color:var(--red);border:1px solid var(--red)">⏸ Inactivos</button>
+            <button class="vendor-btn-sm" onclick="filtrarProdsVendedor('oferta')" id="vfp-oferta" style="padding:6px 12px;font-size:11px;background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid var(--gold)">🏷️ Ofertas</button>
+          </div>
+          <select onchange="ordenarProdsVendedor(this.value)" style="background:var(--dark);border:1px solid var(--steel);color:var(--light);padding:6px 10px;border-radius:6px;font-size:12px">
+            <option value="reciente">Más recientes</option>
+            <option value="precio_asc">Precio ↑</option>
+            <option value="precio_desc">Precio ↓</option>
+            <option value="stock_asc">Menor stock</option>
+            <option value="stock_desc">Mayor stock</option>
+            <option value="destacado">Destacados</option>
+          </select>
         </div>
         <div id="vendor-prods-list" class="vendor-prod-grid"></div>
       </div>
@@ -897,9 +914,26 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
             <div class="vendor-fg"><label>Modelo</label><input id="vp-modelo" placeholder="Ej: WA500"></div>
           </div>
           <div class="vendor-fg"><label>Descripción</label><textarea id="vp-desc" placeholder="Describe el producto, compatibilidades, etc."></textarea></div>
-          <div class="vendor-section-title">🖼️ Imágenes (hasta 3)</div>
-          <div class="vendor-fg"><label>Imágenes del producto</label><input type="file" id="vp-imgs" multiple accept="image/*" style="color:var(--muted)"></div>
+          <div class="vendor-section-title">🏷️ Descuento temporal</div>
+          <div class="vendor-form-grid">
+            <div class="vendor-fg"><label>Descuento %</label><input id="vp-descuento" type="number" min="0" max="90" placeholder="0" oninput="previewDescuento()"><div style="font-size:11px;color:var(--muted);margin-top:3px" id="vp-descuento-preview"></div></div>
+            <div class="vendor-fg"><label>Válido hasta</label><input id="vp-descuento-expira" type="date"><div style="font-size:11px;color:var(--muted);margin-top:3px">Dejar vacío = sin expiración</div></div>
+          </div>
+          <div class="vendor-form-grid">
+            <div class="vendor-fg" style="display:flex;align-items:center;gap:10px;padding-top:1.5rem">
+              <input type="checkbox" id="vp-destacado" style="width:18px;height:18px;accent-color:var(--gold)">
+              <label for="vp-destacado" style="font-size:13px;color:var(--light);cursor:pointer">⭐ Producto destacado (aparece primero)</label>
+            </div>
+            <div class="vendor-fg" style="display:flex;align-items:center;gap:10px;padding-top:1.5rem">
+              <input type="checkbox" id="vp-activo" checked style="width:18px;height:18px;accent-color:var(--green)">
+              <label for="vp-activo" style="font-size:13px;color:var(--light);cursor:pointer">✅ Producto activo (visible en tienda)</label>
+            </div>
+          </div>
+          <div class="vendor-section-title">🖼️ Imágenes y video</div>
+          <div class="vendor-fg"><label>Imágenes del producto (hasta 5)</label><input type="file" id="vp-imgs" multiple accept="image/*" style="color:var(--muted)" onchange="previewVendorImgs(this)"><div style="font-size:11px;color:var(--muted);margin-top:3px">Las imágenes se adaptan automáticamente al formato de la tienda</div></div>
           <div id="vp-imgs-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+          <div id="vp-imgs-existentes" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+          <div class="vendor-fg" style="margin-top:1rem"><label>🎥 Video del producto (YouTube)</label><input id="vp-video" placeholder="https://www.youtube.com/watch?v=..."><div style="font-size:11px;color:var(--muted);margin-top:3px">Pega el link de YouTube — se mostrará en el detalle del producto</div></div>
           <div style="margin-top:1.5rem;display:flex;gap:1rem">
             <button class="register-vendor-btn" onclick="guardarProductoVendedor()" style="flex:1;padding:14px">💾 Guardar producto</button>
             <button onclick="cancelarEditVendor()" style="padding:14px 20px;background:transparent;border:1px solid var(--steel);color:var(--muted);border-radius:6px;cursor:pointer">Cancelar</button>
@@ -907,15 +941,58 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
         </div>
       </div>
 
-      <!-- COMISIONES -->
-      <div id="vtab-comisiones" class="vendor-tab-content">
+      <!-- PEDIDOS -->
+      <div id="vtab-pedidos" class="vendor-tab-content">
         <div style="overflow-x:auto">
           <table class="vendor-com-table">
-            <thead><tr><th>Pedido</th><th>Producto</th><th>Venta</th><th>Comisión %</th><th>Monto</th><th>Estado</th><th>Fecha</th></tr></thead>
-            <tbody id="vendor-com-list"><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem">Cargando...</td></tr></tbody>
+            <thead><tr><th>Código</th><th>Productos</th><th>Cliente</th><th>Ciudad</th><th>Total</th><th>Estado</th><th>Guía</th><th>Fecha</th></tr></thead>
+            <tbody id="vendor-pedidos-list"><tr><td colspan="8" style="text-align:center;color:var(--muted);padding:2rem">Cargando...</td></tr></tbody>
           </table>
         </div>
       </div>
+
+      <!-- FINANZAS -->
+      <div id="vtab-finanzas" class="vendor-tab-content">
+        <!-- Aviso de corte mensual -->
+        <div id="vendor-corte-aviso" style="display:none;background:rgba(226,75,74,0.1);border:1px solid var(--red);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.5rem">
+          <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:4px">⚠️ Comisión pendiente de pago</div>
+          <div style="font-size:13px;color:var(--light)" id="vendor-corte-msg">Tienes comisiones pendientes de este mes.</div>
+        </div>
+        <!-- Stats finanzas -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.5rem">
+          <div class="vendor-stat"><div class="vendor-stat-num" id="vf-semana">$0</div><div class="vendor-stat-label">Esta semana</div></div>
+          <div class="vendor-stat"><div class="vendor-stat-num" id="vf-mes">$0</div><div class="vendor-stat-label">Este mes</div></div>
+          <div class="vendor-stat"><div class="vendor-stat-num" id="vf-com-mes" style="color:var(--red)">$0</div><div class="vendor-stat-label">Comisión a pagar</div></div>
+          <div class="vendor-stat"><div class="vendor-stat-num" id="vf-neto-mes" style="color:var(--green)">$0</div><div class="vendor-stat-label">Tu ganancia neta</div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--white)">Historial de comisiones</div>
+          <button class="register-vendor-btn" onclick="exportarFinanzasVendedor()" style="padding:8px 16px;font-size:12px">📥 Exportar Excel</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="vendor-com-table">
+            <thead><tr><th>Mes</th><th>Ventas</th><th>Comisión (2%)</th><th>Tu ganancia</th><th>Estado</th></tr></thead>
+            <tbody id="vendor-finanzas-list"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem">Cargando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ESTADÍSTICAS -->
+      <div id="vtab-estadisticas" class="vendor-tab-content">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.5rem">
+          <div class="vendor-stat"><div class="vendor-stat-num" id="ve-visitas">0</div><div class="vendor-stat-label">Visitas totales</div></div>
+          <div class="vendor-stat"><div class="vendor-stat-num" id="ve-cotizaciones">0</div><div class="vendor-stat-label">Cotizaciones mes</div></div>
+          <div class="vendor-stat"><div class="vendor-stat-num" id="ve-top-prod">-</div><div class="vendor-stat-label">Producto top</div></div>
+          <div class="vendor-stat"><div class="vendor-stat-num" id="ve-conversion">0%</div><div class="vendor-stat-label">Conversión</div></div>
+        </div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--white);margin-bottom:1rem">Ventas por semana</div>
+        <canvas id="vendor-chart" height="120" style="width:100%;max-width:600px"></canvas>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--white);margin:1.5rem 0 1rem">Mis productos más vistos</div>
+        <div id="ve-prods-list" style="display:flex;flex-direction:column;gap:8px"></div>
+      </div>
+
+      <!-- PERFIL TIENDA -->
+      <div id="vtab-perfil" class="vendor-tab-content">
 
       <!-- PERFIL -->
       <div id="vtab-perfil" class="vendor-tab-content">
@@ -983,11 +1060,58 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
             </div>
           </div>
           <div class="vendor-fg"><label>Número de cuenta</label><input id="vperf-cuenta" placeholder="Número de cuenta"></div>
+          <div class="vendor-section-title">🖼️ Imagen de tienda</div>
+          <div class="vendor-form-grid">
+            <div class="vendor-fg"><label>Logo de la tienda</label>
+              <div style="display:flex;align-items:center;gap:12px">
+                <div id="vperf-logo-preview" style="width:60px;height:60px;border-radius:50%;background:var(--steel);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden">🏪</div>
+                <input type="file" id="vperf-logo" accept="image/*" style="color:var(--muted);flex:1" onchange="previewLogoTienda()">
+              </div>
+            </div>
+            <div class="vendor-fg"><label>Color de acento de tu tienda</label>
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="color" id="vperf-color" value="#C9A84C" style="width:50px;height:40px;border:none;background:none;cursor:pointer">
+                <span style="font-size:12px;color:var(--muted)">Color que se usará en tu página de tienda</span>
+              </div>
+            </div>
+          </div>
+          <div class="vendor-section-title">📅 Horario y redes</div>
+          <div class="vendor-fg"><label>Horario de atención</label><input id="vperf-horario" placeholder="Ej: Lunes a Viernes 8:00-18:00"></div>
+          <div class="vendor-form-grid">
+            <div class="vendor-fg"><label>WhatsApp comercial</label><input id="vperf-wa" placeholder="+593 999 999 999"></div>
+            <div class="vendor-fg"><label>Instagram</label><input id="vperf-instagram" placeholder="@tunegocio"></div>
+          </div>
+          <div class="vendor-form-grid">
+            <div class="vendor-fg"><label>Facebook</label><input id="vperf-facebook" placeholder="facebook.com/tunegocio"></div>
+            <div class="vendor-fg"><label>Sitio web</label><input id="vperf-web" placeholder="https://tunegocio.com"></div>
+          </div>
+          <div class="vendor-section-title">🔔 Notificaciones</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem">
+            <input type="checkbox" id="vperf-notif-wa" checked style="width:18px;height:18px;accent-color:var(--gold)">
+            <label for="vperf-notif-wa" style="font-size:13px;color:var(--light);cursor:pointer">Recibir notificaciones de pedidos por WhatsApp</label>
+          </div>
           <div style="margin-top:1.5rem">
             <button class="register-vendor-btn" onclick="guardarPerfilVendedor()" style="padding:14px 30px">💾 Guardar perfil</button>
           </div>
         </div>
       </div>
+
+      <!-- SEGURIDAD -->
+      <div id="vtab-seguridad" class="vendor-tab-content">
+        <div class="vendor-form">
+          <div id="vendor-sec-alert" class="vendor-alert"></div>
+          <div class="vendor-section-title">🔐 Cambiar contraseña</div>
+          <div class="vendor-fg"><label>Nueva contraseña</label><input type="password" id="vsec-pass" placeholder="Mínimo 8 caracteres"></div>
+          <div class="vendor-fg"><label>Confirmar contraseña</label><input type="password" id="vsec-pass2" placeholder="Repite la contraseña"></div>
+          <button class="register-vendor-btn" onclick="cambiarPassVendedor()" style="padding:10px 24px">💾 Cambiar contraseña</button>
+          <div class="vendor-section-title" style="margin-top:2rem">📱 Últimos accesos</div>
+          <div id="vsec-accesos" style="font-size:13px;color:var(--muted)">Cargando...</div>
+          <div style="margin-top:1.5rem">
+            <button onclick="cerrarSesionTodos()" style="background:rgba(226,75,74,0.15);border:1px solid var(--red);color:var(--red);padding:10px 20px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600">🚪 Cerrar sesión en todos los dispositivos</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -2234,6 +2358,508 @@ async function contactarVendedor(p){
 
 /* ===== VENDOR PANEL ===== */
 let vendorData=null;
+let vendorProdsAll=[];
+let vendorProdsFiltro='todos';
+let vendorOrden='reciente';
+let vendorImgsNuevas=[];
+let vendorImgsUrls=[];
+
+// ── TABS ──────────────────────────────────────────────────────────────────
+function showVendorTab(tab,el){
+  document.querySelectorAll('.vendor-tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.vendor-tab').forEach(b=>b.classList.remove('active'));
+  const el2=document.getElementById('vtab-'+tab);
+  if(el2)el2.classList.add('active');
+  if(el)el.classList.add('active');
+  if(tab==='pedidos')loadVendorPedidos();
+  if(tab==='finanzas')loadVendorFinanzas();
+  if(tab==='estadisticas')loadVendorEstadisticas();
+  if(tab==='productos')loadVendorProducts();
+  if(tab==='seguridad')loadVendorAccesos();
+}
+
+// ── PANEL PRINCIPAL ───────────────────────────────────────────────────────
+async function loadVendorPanel(){
+  if(!currentUser){showPage('home');openAuth('login');return;}
+  document.getElementById('vendor-pending').style.display='none';
+  document.getElementById('vendor-register').style.display='none';
+  document.getElementById('vendor-panel-active').style.display='none';
+  const{data}=await db.from('vendedores').select('*').eq('usuario_id',currentUser.id).single();
+  vendorData=data;
+  if(!data){
+    document.getElementById('vendor-register').style.display='block';
+    const userMeta=currentUser.user_metadata||{};
+    if(document.getElementById('vr-email'))document.getElementById('vr-email').value=userMeta.email||currentUser.email||'';
+    if(document.getElementById('vr-tel')&&userMeta.telefono){document.getElementById('vr-tel').value=String(userMeta.telefono).replace(/[^0-9]/g,'');}
+  } else if(data.estado==='pendiente'){
+    document.getElementById('vendor-pending').style.display='block';
+  } else if(data.cuenta_bloqueada){
+    document.getElementById('vendor-pending').style.display='block';
+    document.getElementById('vendor-pending').querySelector('.vendor-pending-icon').textContent='🔒';
+    document.getElementById('vendor-pending').querySelector('div[style*="font-size:22px"]').textContent='Cuenta suspendida';
+    document.getElementById('vendor-pending').querySelector('div[style*="font-size:14px"]').textContent='Tu cuenta ha sido temporalmente suspendida. Contacta al administrador de Ruiz PSM para más información.';
+  } else if(data.estado==='aprobado'){
+    document.getElementById('vendor-store-name').textContent=data.nombre_tienda||'Mi Tienda';
+    document.getElementById('vendor-panel-active').style.display='block';
+    loadVendorStats();
+    loadVendorProducts();
+    verificarCorteComision();
+  }
+}
+
+// ── STATS ─────────────────────────────────────────────────────────────────
+async function loadVendorStats(){
+  if(!vendorData)return;
+  const{data:prods}=await db.from('productos').select('id,stock').eq('vendedor_id',vendorData.id);
+  const{data:coms}=await db.from('comisiones').select('monto_comision,monto_venta,estado').eq('vendedor_id',vendorData.id);
+  document.getElementById('v-stat-prods').textContent=prods?prods.length:0;
+  const totalVentas=coms?coms.reduce((a,c)=>a+parseFloat(c.monto_venta),0):0;
+  const totalCom=coms?coms.reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
+  const pendiente=coms?coms.filter(c=>c.estado==='pendiente').reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
+  document.getElementById('v-stat-ventas').textContent='$'+fmtPrice(totalVentas);
+  document.getElementById('v-stat-comisiones').textContent='$'+fmtPrice(totalCom);
+  document.getElementById('v-stat-pendiente').textContent='$'+fmtPrice(pendiente);
+  // Alerta stock bajo
+  if(prods){const bajos=prods.filter(p=>p.stock>0&&p.stock<=5);if(bajos.length>0){const nb=document.getElementById('vendor-notif-banner');nb.style.display='flex';document.getElementById('vendor-notif-text').textContent=`⚠️ ${bajos.length} producto(s) con stock bajo (5 o menos unidades)`;}}
+}
+
+// ── PRODUCTOS ─────────────────────────────────────────────────────────────
+async function loadVendorProducts(){
+  if(!vendorData)return;
+  const{data:prods}=await db.from('productos').select('*').eq('vendedor_id',vendorData.id).order('created_at',{ascending:false});
+  vendorProdsAll=prods||[];
+  renderVendorProds();
+}
+
+function filtrarProdsVendedor(filtro){
+  vendorProdsFiltro=filtro;renderVendorProds();
+}
+function ordenarProdsVendedor(orden){
+  vendorOrden=orden;renderVendorProds();
+}
+
+function renderVendorProds(){
+  let lista=vendorProdsAll.slice();
+  if(vendorProdsFiltro==='activo')lista=lista.filter(p=>p.activo!==false);
+  else if(vendorProdsFiltro==='inactivo')lista=lista.filter(p=>p.activo===false);
+  else if(vendorProdsFiltro==='oferta')lista=lista.filter(p=>p.descuento_pct>0);
+  if(vendorOrden==='precio_asc')lista.sort((a,b)=>a.precio-b.precio);
+  else if(vendorOrden==='precio_desc')lista.sort((a,b)=>b.precio-a.precio);
+  else if(vendorOrden==='stock_asc')lista.sort((a,b)=>a.stock-b.stock);
+  else if(vendorOrden==='stock_desc')lista.sort((a,b)=>b.stock-a.stock);
+  else if(vendorOrden==='destacado')lista.sort((a,b)=>(b.destacado?1:0)-(a.destacado?1:0));
+  const list=document.getElementById('vendor-prods-list');
+  if(!lista.length){list.innerHTML='<div style="text-align:center;color:var(--muted);padding:3rem;grid-column:1/-1">No hay productos. <br><br><button class="register-vendor-btn" onclick="showVendorTab('agregar',document.querySelectorAll('.vendor-tab')[1])" style="margin-top:1rem">+ Agregar producto</button></div>';return;}
+  const ahora=new Date();
+  list.innerHTML=lista.map(p=>{
+    const imgs=p.imagenes||[];
+    const imgUrl=imgs.length>0?`https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/${imgs[0]}`:'';
+    const esNuevo=(ahora-new Date(p.created_at))<7*24*60*60*1000;
+    const tieneOferta=p.descuento_pct>0&&(!p.descuento_expira||new Date(p.descuento_expira)>ahora);
+    const precioFinal=tieneOferta?p.precio*(1-p.descuento_pct/100):p.precio;
+    const inactivo=p.activo===false;
+    return `<div class="vendor-prod-card" style="${inactivo?'opacity:0.5':''}">
+      <div style="position:relative">
+        ${imgUrl?`<img class="vendor-prod-img" src="${imgUrl}" alt="${p.nombre}" onerror="this.style.display='none'">`:'<div class="vendor-prod-img" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:30px">📦</div>'}
+        ${esNuevo?'<span style="position:absolute;top:6px;left:6px;background:#4A90D9;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:0.5px">NUEVO</span>':''}
+        ${tieneOferta?`<span style="position:absolute;top:6px;right:6px;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px">-${p.descuento_pct}%</span>`:''}
+        ${p.destacado?'<span style="position:absolute;bottom:6px;left:6px;font-size:14px">⭐</span>':''}
+        ${inactivo?'<div style="position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700">INACTIVO</div>':''}
+      </div>
+      <div class="vendor-prod-info">
+        <div class="vendor-prod-name">${p.nombre}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="vendor-prod-price" style="${tieneOferta?'color:var(--red)':''}">$${fmtPrice(precioFinal)}</div>
+          ${tieneOferta?`<div style="font-size:11px;color:var(--muted);text-decoration:line-through">$${fmtPrice(p.precio)}</div>`:''}
+        </div>
+        <div class="vendor-prod-stock" style="color:${p.stock===0?'var(--red)':p.stock<=5?'var(--gold)':'var(--muted)'}">Stock: ${p.stock} ${p.stock<=5&&p.stock>0?'⚠️':''}</div>
+        <div class="vendor-prod-actions" style="flex-wrap:wrap">
+          <button class="vendor-btn-sm vendor-btn-edit" onclick="editarProductoVendedor('${p.id}')" style="flex:0 0 auto">✏️</button>
+          <button class="vendor-btn-sm" onclick="agregarStockVendedor('${p.id}','${p.nombre.replace(/'/g,'')}')" style="background:rgba(37,211,102,0.15);color:var(--green);border:1px solid var(--green);flex:0 0 auto">+Stock</button>
+          <button class="vendor-btn-sm" onclick="duplicarProductoVendedor('${p.id}')" style="background:rgba(74,144,217,0.15);color:#4A90D9;border:1px solid #4A90D9;flex:0 0 auto">📋</button>
+          <button class="vendor-btn-sm" onclick="toggleActivoVendedor('${p.id}',${p.activo!==false})" style="background:${p.activo!==false?'rgba(226,75,74,0.15)':'rgba(37,211,102,0.15)'};color:${p.activo!==false?'var(--red)':'var(--green)'};border:1px solid ${p.activo!==false?'var(--red)':'var(--green)'};flex:0 0 auto">${p.activo!==false?'⏸':'▶'}</button>
+          <button class="vendor-btn-sm vendor-btn-del" onclick="eliminarProductoVendedor('${p.id}')" style="flex:0 0 auto">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── ACCIONES PRODUCTO ─────────────────────────────────────────────────────
+async function agregarStockVendedor(id,nombre){
+  const qty=prompt(`¿Cuántas unidades agregar a "${nombre}"?`);
+  if(!qty||isNaN(parseInt(qty))||parseInt(qty)<=0)return;
+  const{data:p}=await db.from('productos').select('stock').eq('id',id).single();
+  if(!p)return;
+  await db.from('productos').update({stock:p.stock+parseInt(qty)}).eq('id',id);
+  loadVendorProducts();
+}
+
+async function duplicarProductoVendedor(id){
+  const{data:p}=await db.from('productos').select('*').eq('id',id).single();
+  if(!p)return;
+  const{id:_,created_at:_2,...rest}=p;
+  await db.from('productos').insert({...rest,nombre:p.nombre+' (copia)',activo:false});
+  loadVendorProducts();
+}
+
+async function toggleActivoVendedor(id,activo){
+  await db.from('productos').update({activo:!activo}).eq('id',id);
+  loadVendorProducts();
+}
+
+// ── GUARDAR PRODUCTO ──────────────────────────────────────────────────────
+async function guardarProductoVendedor(){
+  const nombre=document.getElementById('vp-nombre').value.trim();
+  const precio=parseFloat(document.getElementById('vp-precio').value);
+  const stock=parseInt(document.getElementById('vp-stock').value);
+  const alrt=document.getElementById('vendor-prod-alert');
+  if(!nombre||!precio||isNaN(stock)){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Completa nombre, precio y stock';return;}
+  const editId=document.getElementById('vp-edit-id').value;
+  const specs={marca:document.getElementById('vp-marca').value.trim(),modelo:document.getElementById('vp-modelo').value.trim(),descripcion:document.getElementById('vp-desc').value.trim()};
+  const descPct=parseFloat(document.getElementById('vp-descuento').value)||0;
+  const descExpira=document.getElementById('vp-descuento-expira').value||null;
+  const videoUrl=document.getElementById('vp-video').value.trim()||null;
+  const destacado=document.getElementById('vp-destacado').checked;
+  const activo=document.getElementById('vp-activo').checked;
+  // Subir imágenes nuevas
+  let imagenes=[];
+  if(vendorImgsNuevas.length>0){
+    for(let i=0;i<Math.min(vendorImgsNuevas.length,5);i++){
+      const f=vendorImgsNuevas[i];
+      const fname=`prod_${vendorData.id}_img${i}_${Date.now()}.${f.name.split('.').pop()}`;
+      const{error:upErr}=await db.storage.from('productos').upload(fname,f,{upsert:true});
+      if(!upErr)imagenes.push(fname);
+    }
+  }
+  // Si editando, mantener imágenes existentes si no hay nuevas
+  if(editId&&imagenes.length===0){
+    const{data:existing}=await db.from('productos').select('imagenes').eq('id',editId).single();
+    if(existing)imagenes=existing.imagenes||[];
+  }
+  const prodData={nombre,precio,stock,categoria:document.getElementById('vp-categoria').value,referencia:document.getElementById('vp-ref').value.trim(),especificaciones:specs,precio_minimo:parseFloat(document.getElementById('vp-precio-min').value)||0,acepta_rebaja:document.getElementById('vp-rebaja-si').checked,descuento_pct:descPct,descuento_expira:descExpira,video_url:videoUrl,destacado,activo,vendedor_id:vendorData.id};
+  if(imagenes.length>0)prodData.imagenes=imagenes;
+  let error;
+  if(editId){({error}=await db.from('productos').update(prodData).eq('id',editId).eq('vendedor_id',vendorData.id));}
+  else{({error}=await db.from('productos').insert(prodData));}
+  if(error){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Error: '+error.message;return;}
+  alrt.style.display='block';alrt.className='vendor-alert success';alrt.textContent='✅ Producto guardado correctamente';
+  cancelarEditVendor();
+  setTimeout(()=>{alrt.style.display='none';showVendorTab('productos',document.querySelectorAll('.vendor-tab')[0]);},1500);
+}
+
+function previewVendorImgs(input){
+  const files=Array.from(input.files).slice(0,5);
+  vendorImgsNuevas=files;
+  vendorImgsUrls=[];
+  const preview=document.getElementById('vp-imgs-preview');
+  preview.innerHTML='';
+  let loaded=0;
+  if(!files.length)return;
+  files.forEach((f,i)=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      vendorImgsUrls[i]=e.target.result;
+      loaded++;
+      if(loaded===files.length){
+        preview.innerHTML=vendorImgsUrls.map((url,i)=>`<div style="position:relative;width:72px;height:72px;border-radius:6px;overflow:hidden;border:2px solid ${i===0?'var(--gold)':'var(--steel)'}"><img src="${url}" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);font-size:8px;text-align:center;padding:2px;color:${i===0?'var(--gold)':'#fff'}">${i===0?'Principal':'Img '+(i+1)}</div></div>`).join('');
+      }
+    };
+    r.readAsDataURL(f);
+  });
+}
+
+function previewDescuento(){
+  const pct=parseFloat(document.getElementById('vp-descuento').value)||0;
+  const precio=parseFloat(document.getElementById('vp-precio').value)||0;
+  const prev=document.getElementById('vp-descuento-preview');
+  if(pct>0&&precio>0){prev.style.color='var(--green)';prev.textContent=`Precio con descuento: $${fmtPrice(precio*(1-pct/100))}`;}
+  else prev.textContent='';
+}
+
+async function editarProductoVendedor(id){
+  const{data:p}=await db.from('productos').select('*').eq('id',id).single();
+  if(!p)return;
+  document.getElementById('vp-edit-id').value=id;
+  document.getElementById('vp-nombre').value=p.nombre||'';
+  document.getElementById('vp-precio').value=p.precio||'';
+  document.getElementById('vp-stock').value=p.stock||'';
+  document.getElementById('vp-categoria').value=p.categoria||'repuestos';
+  document.getElementById('vp-ref').value=p.referencia||'';
+  document.getElementById('vp-precio-min').value=p.precio_minimo||'';
+  document.getElementById('vp-descuento').value=p.descuento_pct||'';
+  document.getElementById('vp-descuento-expira').value=p.descuento_expira?p.descuento_expira.substring(0,10):'';
+  document.getElementById('vp-video').value=p.video_url||'';
+  document.getElementById('vp-destacado').checked=p.destacado||false;
+  document.getElementById('vp-activo').checked=p.activo!==false;
+  if(p.acepta_rebaja===false)document.getElementById('vp-rebaja-no').checked=true;
+  else document.getElementById('vp-rebaja-si').checked=true;
+  const s=p.especificaciones||{};
+  document.getElementById('vp-marca').value=s.marca||'';
+  document.getElementById('vp-modelo').value=s.modelo||'';
+  document.getElementById('vp-desc').value=s.descripcion||'';
+  // Mostrar imágenes existentes
+  const existBox=document.getElementById('vp-imgs-existentes');
+  if(existBox&&p.imagenes&&p.imagenes.length>0){
+    existBox.innerHTML='<div style="font-size:11px;color:var(--muted);margin-bottom:6px">Imágenes actuales:</div>'+p.imagenes.map(img=>`<img src="https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/${img}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--steel)">`).join('');
+  }
+  previewDescuento();
+  showVendorTab('agregar',document.querySelectorAll('.vendor-tab')[1]);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function cancelarEditVendor(){
+  document.getElementById('vp-edit-id').value='';
+  ['vp-nombre','vp-precio','vp-stock','vp-ref','vp-marca','vp-modelo','vp-desc','vp-precio-min','vp-descuento','vp-video'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('vp-rebaja-si').checked=true;
+  document.getElementById('vp-destacado').checked=false;
+  document.getElementById('vp-activo').checked=true;
+  document.getElementById('vp-imgs').value='';
+  document.getElementById('vp-imgs-preview').innerHTML='';
+  const ex=document.getElementById('vp-imgs-existentes');if(ex)ex.innerHTML='';
+  document.getElementById('vendor-prod-alert').style.display='none';
+  const prev=document.getElementById('vp-descuento-preview');if(prev)prev.textContent='';
+  vendorImgsNuevas=[];vendorImgsUrls=[];
+}
+
+async function eliminarProductoVendedor(id){
+  if(!confirm('¿Eliminar este producto?'))return;
+  await db.from('productos').delete().eq('id',id).eq('vendedor_id',vendorData.id);
+  loadVendorProducts();loadVendorStats();
+}
+
+// ── PEDIDOS DEL VENDEDOR ──────────────────────────────────────────────────
+async function loadVendorPedidos(){
+  if(!vendorData)return;
+  const{data:pedidos}=await db.from('pedidos').select('*').order('created_at',{ascending:false});
+  const misPedidos=(pedidos||[]).filter(p=>(p.productos||[]).some(x=>x.vendedor_id===vendorData.id));
+  const tbody=document.getElementById('vendor-pedidos-list');
+  if(!misPedidos.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:2rem">Sin pedidos aún</td></tr>';return;}
+  tbody.innerHTML=misPedidos.map(p=>{
+    const misProd=(p.productos||[]).filter(x=>x.vendedor_id===vendorData.id);
+    const subTotal=misProd.reduce((a,x)=>a+parseFloat(x.subtotal||0),0);
+    return `<tr>
+      <td style="font-size:11px;color:var(--gold)">${p.codigo}</td>
+      <td style="font-size:12px">${misProd.map(x=>x.nombre+' x'+x.cantidad).join(', ')}</td>
+      <td style="font-size:12px">${p.cliente_nombre}</td>
+      <td style="font-size:12px;color:var(--muted)">${p.ciudad_destino||'-'}</td>
+      <td style="color:var(--gold);font-family:'Rajdhani',sans-serif;font-size:15px">$${fmtPrice(subTotal)}</td>
+      <td><span class="vendor-badge ${p.estado}">${p.estado}</span></td>
+      <td style="font-size:11px">
+        ${p.despachado?`<span style="color:var(--green)">✅ ${p.numero_guia||'Despachado'}</span>`:`<div style="display:flex;gap:4px"><input id="guia-${p.id}" placeholder="N° guía" style="width:90px;background:var(--dark);border:1px solid var(--steel);color:var(--white);padding:4px 6px;border-radius:4px;font-size:11px"><button onclick="marcarDespachado('${p.id}')" style="background:var(--green);border:none;color:#fff;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:10px;font-weight:700">✓</button></div>`}
+      </td>
+      <td style="font-size:11px;color:var(--muted)">${new Date(p.created_at).toLocaleDateString('es-EC')}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function marcarDespachado(pedidoId){
+  const guia=document.getElementById('guia-'+pedidoId)?.value.trim()||'';
+  await db.from('pedidos').update({despachado:true,numero_guia:guia}).eq('id',pedidoId);
+  loadVendorPedidos();
+}
+
+// ── FINANZAS ──────────────────────────────────────────────────────────────
+async function loadVendorFinanzas(){
+  if(!vendorData)return;
+  const{data:coms}=await db.from('comisiones').select('*').eq('vendedor_id',vendorData.id).order('created_at',{ascending:false});
+  const ahora=new Date();
+  const inicioSemana=new Date(ahora);inicioSemana.setDate(ahora.getDate()-7);
+  const inicioMes=new Date(ahora.getFullYear(),ahora.getMonth(),1);
+  const semana=(coms||[]).filter(c=>new Date(c.created_at)>=inicioSemana).reduce((a,c)=>a+parseFloat(c.monto_venta),0);
+  const mes=(coms||[]).filter(c=>new Date(c.created_at)>=inicioMes).reduce((a,c)=>a+parseFloat(c.monto_venta),0);
+  const comMes=(coms||[]).filter(c=>new Date(c.created_at)>=inicioMes).reduce((a,c)=>a+parseFloat(c.monto_comision),0);
+  document.getElementById('vf-semana').textContent='$'+fmtPrice(semana);
+  document.getElementById('vf-mes').textContent='$'+fmtPrice(mes);
+  document.getElementById('vf-com-mes').textContent='$'+fmtPrice(comMes);
+  document.getElementById('vf-neto-mes').textContent='$'+fmtPrice(mes-comMes);
+  // Agrupar por mes
+  const porMes={};
+  (coms||[]).forEach(c=>{
+    const d=new Date(c.created_at);
+    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    if(!porMes[key])porMes[key]={ventas:0,comisiones:0,estado:'pendiente'};
+    porMes[key].ventas+=parseFloat(c.monto_venta);
+    porMes[key].comisiones+=parseFloat(c.monto_comision);
+    if(c.estado==='pagado')porMes[key].estado='pagado';
+  });
+  const tbody=document.getElementById('vendor-finanzas-list');
+  const meses=Object.entries(porMes).sort((a,b)=>b[0].localeCompare(a[0]));
+  if(!meses.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem">Sin movimientos aún</td></tr>';return;}
+  tbody.innerHTML=meses.map(([key,m])=>`<tr>
+    <td style="font-weight:600">${key}</td>
+    <td style="color:var(--gold)">$${fmtPrice(m.ventas)}</td>
+    <td style="color:var(--red)">$${fmtPrice(m.comisiones)}</td>
+    <td style="color:var(--green)">$${fmtPrice(m.ventas-m.comisiones)}</td>
+    <td><span class="vendor-badge ${m.estado}">${m.estado}</span></td>
+  </tr>`).join('');
+}
+
+async function exportarFinanzasVendedor(){
+  if(!vendorData)return;
+  const{data:coms}=await db.from('comisiones').select('*').eq('vendedor_id',vendorData.id).order('created_at',{ascending:false});
+  if(!coms||!coms.length){alert('Sin datos para exportar');return;}
+  const rows=[['Fecha','Venta USD','Comision %','Comision USD','Ganancia Neta','Estado'],...coms.map(c=>[new Date(c.created_at).toLocaleDateString('es-EC'),c.monto_venta,c.pct_comision,c.monto_comision,(c.monto_venta-c.monto_comision).toFixed(2),c.estado])];
+  const csv=rows.map(r=>r.join(',')).join('
+');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,﻿'+encodeURIComponent(csv);a.download=`finanzas_${vendorData.nombre_tienda}_${new Date().toISOString().substring(0,10)}.csv`;a.click();
+}
+
+// ── CORTE MENSUAL ─────────────────────────────────────────────────────────
+async function verificarCorteComision(){
+  if(!vendorData)return;
+  if(!vendorData.fecha_primera_venta)return;
+  const inicio=new Date(vendorData.fecha_primera_venta);
+  const ahora=new Date();
+  const mesesTranscurridos=Math.floor((ahora-inicio)/(30*24*60*60*1000));
+  if(mesesTranscurridos<1)return;
+  const{data:coms}=await db.from('comisiones').select('monto_comision,estado').eq('vendedor_id',vendorData.id).eq('estado','pendiente');
+  if(!coms||!coms.length)return;
+  const pendiente=coms.reduce((a,c)=>a+parseFloat(c.monto_comision),0);
+  if(pendiente>0){
+    const aviso=document.getElementById('vendor-corte-aviso');
+    if(aviso){aviso.style.display='block';document.getElementById('vendor-corte-msg').textContent=`Tienes $${fmtPrice(pendiente)} en comisiones pendientes de pago a Ruiz PSM por este mes. Por favor coordina el pago para mantener tu cuenta activa.`;}
+  }
+}
+
+// ── ESTADÍSTICAS ─────────────────────────────────────────────────────────
+async function loadVendorEstadisticas(){
+  if(!vendorData)return;
+  const{data:coms}=await db.from('comisiones').select('monto_venta,created_at,producto_id').eq('vendedor_id',vendorData.id);
+  const total=coms?coms.length:0;
+  document.getElementById('ve-cotizaciones').textContent=total;
+  // Ventas últimas 6 semanas para gráfico
+  const semanas={};
+  (coms||[]).forEach(c=>{
+    const d=new Date(c.created_at);
+    const sem=`S${Math.ceil(d.getDate()/7)}-${d.getMonth()+1}`;
+    semanas[sem]=(semanas[sem]||0)+parseFloat(c.monto_venta);
+  });
+  const canvas=document.getElementById('vendor-chart');
+  if(canvas&&Object.keys(semanas).length>0){
+    const ctx=canvas.getContext('2d');
+    const labels=Object.keys(semanas).slice(-6);
+    const vals=labels.map(k=>semanas[k]);
+    const max=Math.max(...vals)||1;
+    canvas.width=canvas.parentElement.offsetWidth||400;
+    canvas.height=120;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const bw=canvas.width/labels.length*0.6;
+    const gap=canvas.width/labels.length*0.4/2;
+    labels.forEach((lbl,i)=>{
+      const x=i*(canvas.width/labels.length)+gap;
+      const h=(vals[i]/max)*(canvas.height-30);
+      const y=canvas.height-h-20;
+      ctx.fillStyle='rgba(201,168,76,0.7)';
+      ctx.fillRect(x,y,bw,h);
+      ctx.fillStyle='#8A9BB0';
+      ctx.font='10px Arial';
+      ctx.fillText(lbl,x,canvas.height-4);
+      ctx.fillStyle='#C9A84C';
+      ctx.font='bold 10px Arial';
+      ctx.fillText('$'+Math.round(vals[i]),x,y-4);
+    });
+  }
+}
+
+// ── PERFIL / LOGO ─────────────────────────────────────────────────────────
+function previewLogoTienda(){
+  const input=document.getElementById('vperf-logo');
+  const preview=document.getElementById('vperf-logo-preview');
+  if(!input.files[0])return;
+  const r=new FileReader();
+  r.onload=e=>{preview.innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`};
+  r.readAsDataURL(input.files[0]);
+}
+
+function cargarPerfilVendedor(){
+  if(!vendorData)return;
+  document.getElementById('vperf-tienda').value=vendorData.nombre_tienda||'';
+  document.getElementById('vperf-ciudad').value=vendorData.ciudad||'';
+  document.getElementById('vperf-desc').value=vendorData.descripcion||'';
+  document.getElementById('vperf-tel').value=(vendorData.telefono||'').replace(/^\+\d+/,'');
+  document.getElementById('vperf-email').value=vendorData.email||'';
+  document.getElementById('vperf-horario').value=vendorData.horario||'';
+  document.getElementById('vperf-color').value=vendorData.color_acento||'#C9A84C';
+  if(document.getElementById('vperf-notif-wa'))document.getElementById('vperf-notif-wa').checked=vendorData.notif_whatsapp!==false;
+  const redes=vendorData.redes||{};
+  if(document.getElementById('vperf-instagram'))document.getElementById('vperf-instagram').value=redes.instagram||'';
+  if(document.getElementById('vperf-facebook'))document.getElementById('vperf-facebook').value=redes.facebook||'';
+  if(document.getElementById('vperf-web'))document.getElementById('vperf-web').value=redes.web||'';
+  if(document.getElementById('vperf-wa'))document.getElementById('vperf-wa').value=redes.whatsapp||'';
+  if(vendorData.logo_tienda){const prev=document.getElementById('vperf-logo-preview');if(prev)prev.innerHTML=`<img src="https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/${vendorData.logo_tienda}" style="width:100%;height:100%;object-fit:cover">`;}
+}
+
+async function guardarPerfilVendedor(){
+  const alrt=document.getElementById('vendor-perfil-alert');
+  let logoName=vendorData.logo_tienda||'';
+  const logoFile=document.getElementById('vperf-logo')?.files[0];
+  if(logoFile){
+    const fname=`logo_${vendorData.id}_${Date.now()}.${logoFile.name.split('.').pop()}`;
+    await db.storage.from('productos').upload(fname,logoFile,{upsert:true});
+    logoName=fname;
+  }
+  const redes={instagram:document.getElementById('vperf-instagram')?.value.trim()||'',facebook:document.getElementById('vperf-facebook')?.value.trim()||'',web:document.getElementById('vperf-web')?.value.trim()||'',whatsapp:document.getElementById('vperf-wa')?.value.trim()||''};
+  const{error}=await db.from('vendedores').update({
+    nombre_tienda:document.getElementById('vperf-tienda').value.trim(),
+    ciudad:document.getElementById('vperf-ciudad').value.trim(),
+    descripcion:document.getElementById('vperf-desc').value.trim(),
+    telefono:(document.getElementById('vperf-tel-code')?document.getElementById('vperf-tel-code').value:'')+document.getElementById('vperf-tel').value.replace(/[^0-9]/g,''),
+    banco:getBancoValue('vperf-banco','vperf-banco-otro'),
+    tipo_cuenta:document.getElementById('vperf-tipocuenta').value,
+    cuenta_bancaria:document.getElementById('vperf-cuenta').value.trim(),
+    email:document.getElementById('vperf-email').value.trim(),
+    horario:document.getElementById('vperf-horario')?.value.trim()||'',
+    color_acento:document.getElementById('vperf-color')?.value||'#C9A84C',
+    notif_whatsapp:document.getElementById('vperf-notif-wa')?.checked!==false,
+    logo_tienda:logoName,
+    redes,
+    updated_at:new Date().toISOString()
+  }).eq('id',vendorData.id);
+  if(error){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Error: '+error.message;return;}
+  const{data:fresh}=await db.from('vendedores').select('*').eq('id',vendorData.id).single();
+  if(fresh)vendorData=fresh;
+  alrt.style.display='block';alrt.className='vendor-alert success';alrt.textContent='✅ Perfil actualizado correctamente';
+  setTimeout(()=>alrt.style.display='none',3000);
+}
+
+// ── SEGURIDAD ─────────────────────────────────────────────────────────────
+async function cambiarPassVendedor(){
+  const pass=document.getElementById('vsec-pass').value;
+  const pass2=document.getElementById('vsec-pass2').value;
+  const alrt=document.getElementById('vendor-sec-alert');
+  if(pass.length<8){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Mínimo 8 caracteres';return;}
+  if(pass!==pass2){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Las contraseñas no coinciden';return;}
+  const{error}=await db.auth.updateUser({password:pass});
+  if(error){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Error: '+error.message;return;}
+  alrt.style.display='block';alrt.className='vendor-alert success';alrt.textContent='✅ Contraseña actualizada';
+  document.getElementById('vsec-pass').value='';document.getElementById('vsec-pass2').value='';
+  setTimeout(()=>alrt.style.display='none',3000);
+}
+
+function loadVendorAccesos(){
+  const el=document.getElementById('vsec-accesos');
+  if(!el)return;
+  const ultimos=[{cuando:'Ahora mismo',dispositivo:navigator.userAgent.includes('Mobile')?'📱 Móvil':'💻 Escritorio',lugar:'Sesión actual'}];
+  el.innerHTML=ultimos.map(a=>`<div style="padding:10px;background:var(--dark);border-radius:6px;margin-bottom:6px;font-size:12px"><div style="color:var(--white)">${a.dispositivo} — ${a.lugar}</div><div style="color:var(--muted);margin-top:2px">${a.cuando}</div></div>`).join('');
+}
+
+async function cerrarSesionTodos(){
+  if(!confirm('¿Cerrar sesión en todos los dispositivos?'))return;
+  await db.auth.signOut({scope:'global'});
+  location.reload();
+}
+
+// ── CHECK VENDOR STATUS ───────────────────────────────────────────────────
+async function checkVendorStatus(){
+  if(!currentUser)return;
+  const{data}=await db.from('vendedores').select('estado,cuenta_bloqueada').eq('usuario_id',currentUser.id).single();
+  const btn=document.getElementById('btn-mi-tienda');
+  if(btn){
+    if(data){btn.style.display='inline-flex';btn.textContent=data.estado==='aprobado'?(data.cuenta_bloqueada?'🔒 Suspendido':'🏪 Mi Tienda'):data.estado==='pendiente'?'⏳ Solicitud':'🏪 Ser Vendedor';}
+    else{btn.style.display='inline-flex';btn.textContent='🏪 Ser Vendedor';}
+  }
+}
 
 function showVendorTab(tab,el){
   document.querySelectorAll('.vendor-tab-content').forEach(t=>t.classList.remove('active'));
