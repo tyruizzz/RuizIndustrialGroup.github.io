@@ -2002,8 +2002,9 @@ function openCart(){
       <div style="background:${isRuiz?'rgba(201,168,76,0.1)':'rgba(30,58,95,0.3)'};padding:8px 12px;font-size:11px;font-weight:700;color:${isRuiz?'var(--gold)':'var(--muted)'};text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:6px">
         🏪 <span id="vendor-label-${key}">${isRuiz?'RUIZ PSM':'Cargando...'}</span>
       </div>`;
-    grupo.productos.forEach(p=>{
-      html+=`<div class="m-item"><div class="m-item-info"><div class="m-item-name">${p.nombre}</div><div class="m-item-ref">${p.referencia||''}</div></div><div class="m-item-right"><button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button><span class="qty-num">${p.qty}</span><button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button><span class="m-item-price">$${fmtPrice(p.sub)}</span></div></div>`;
+    grupo.productos.forEach(prod=>{
+      const prodSub=prod.precio*prod.qty;
+      html+=`<div class="m-item"><div class="m-item-info"><div class="m-item-name">${prod.nombre}</div><div class="m-item-ref">${prod.referencia||''}</div></div><div class="m-item-right"><button class="qty-btn" onclick="changeQty('${prod.id}',-1)">−</button><span class="qty-num">${prod.qty}</span><button class="qty-btn" onclick="changeQty('${prod.id}',1)">+</button><span class="m-item-price">$${fmtPrice(prodSub)}</span></div></div>`;
     });
     html+=`<div style="padding:8px 12px;text-align:right;font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold);font-weight:700;border-top:1px solid rgba(30,58,95,0.5)">Subtotal: $${fmtPrice(grupo.total)}</div></div>`;
   });
@@ -2120,15 +2121,15 @@ async function confirmarPedido(){
         }
         // Mensaje para vendedor
         let msg=`🛒 *Nuevo pedido - ${vend.nombre_tienda}*%0A%0A📋 Código: ${pedidoData.codigo}%0A👤 Cliente: ${nombre}%0A📱 Tel: ${tel}%0A%0A*Productos:*%0A`;
-        grupo.productos.forEach(p=>{msg+=`▪ ${p.nombre} x${p.cantidad} = $${p.fmtPrice(subtotal)}%0A`;});
-        msg+=`%0A💰 *Total: $${grupo.fmtPrice(total)}*`;
+        grupo.productos.forEach(px=>{msg+=`▪ ${px.nombre} x${px.cantidad} = $${fmtPrice(px.subtotal)}%0A`;});
+        msg+=`%0A💰 *Total: $${fmtPrice(grupo.total)}*`;
         waMensajes.push({tel:vend.telefono.replace(/[^0-9]/g,''),msg,nombre_tienda:vend.nombre_tienda});
       }
     } else {
       // Mensaje para Ruiz PSM
       let msg=`🏭 *RUIZ PSM - Nuevo Pedido*%0A%0A📋 Código: ${pedidoData.codigo}%0A👤 Cliente: ${nombre}%0A📱 Tel: ${tel}%0A%0A*Productos:*%0A`;
-      grupo.productos.forEach(p=>{msg+=`▪ ${p.nombre} x${p.cantidad} = $${p.fmtPrice(subtotal)}%0A`;});
-      msg+=`%0A💰 *Total: $${grupo.fmtPrice(total)}*`;
+      grupo.productos.forEach(px=>{msg+=`▪ ${px.nombre} x${px.cantidad} = $${fmtPrice(px.subtotal)}%0A`;});
+      msg+=`%0A💰 *Total: $${fmtPrice(grupo.total)}*`;
       waMensajes.push({tel:WA,msg,nombre_tienda:'Ruiz PSM'});
     }
   }
