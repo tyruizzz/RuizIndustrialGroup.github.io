@@ -2434,13 +2434,24 @@ async function loadVendorProducts(){
 }
 
 function filtrarProdsVendedor(filtro){
-  vendorProdsFiltro=filtro;renderVendorProds();
+  vendorProdsFiltro=filtro;
+  // Resaltar botón activo
+  ['todos','activo','inactivo','oferta'].forEach(f=>{
+    const btn=document.getElementById('vfp-'+f);
+    if(btn)btn.style.fontWeight=f===filtro?'900':'400';
+  });
+  renderVendorProds();
 }
 function ordenarProdsVendedor(orden){
   vendorOrden=orden;renderVendorProds();
 }
 
 function renderVendorProds(){
+  if(!vendorProdsAll||vendorProdsAll.length===0){
+    const list=document.getElementById('vendor-prods-list');
+    if(list)list.innerHTML='<div style="text-align:center;color:var(--muted);padding:3rem;grid-column:1/-1">No hay productos aún.</div>';
+    return;
+  }
   let lista=vendorProdsAll.slice();
   if(vendorProdsFiltro==='activo')lista=lista.filter(p=>p.activo!==false);
   else if(vendorProdsFiltro==='inactivo')lista=lista.filter(p=>p.activo===false);
