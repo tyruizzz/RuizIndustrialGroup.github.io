@@ -476,6 +476,16 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
           </div>
         </div>
         <div class="sec-card">
+          <div class="sec-card-title">🔐 PIN de Seguridad</div>
+          <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.3);border-radius:4px;padding:12px;margin-bottom:1rem;font-size:13px;color:var(--muted);line-height:1.6">ℹ️ Este PIN se usa para anular pedidos y eliminar registros. Cámbialo regularmente.</div>
+          <div class="current-info" style="margin-bottom:1rem"><div class="current-info-label">PIN actual</div><div class="current-info-val">••••</div></div>
+          <div id="alert-pin" style="margin-bottom:0.5rem"></div>
+          <div class="fg"><label>PIN actual</label><input type="password" id="pin-current" placeholder="PIN actual" maxlength="10" inputmode="numeric"></div>
+          <div class="fg"><label>Nuevo PIN</label><input type="password" id="pin-new" placeholder="Mínimo 4 dígitos" maxlength="10" inputmode="numeric"></div>
+          <div class="fg"><label>Confirmar nuevo PIN</label><input type="password" id="pin-confirm" placeholder="Repite el nuevo PIN" maxlength="10" inputmode="numeric"></div>
+          <button class="btn-gold" onclick="changePin()">💾 Cambiar PIN</button>
+        </div>
+        <div class="sec-card">
           <div class="sec-card-title">🛡️ Sesión actual</div>
           <div class="current-info" style="margin-bottom:1rem"><div class="current-info-label">Sesión como</div><div class="current-info-val" id="session-user">admin</div></div>
           <div class="current-info" style="margin-bottom:1rem"><div class="current-info-label">Último acceso</div><div class="current-info-val" id="last-access">-</div></div>
@@ -583,13 +593,16 @@ function showSessionExpired(){
   document.getElementById('login-err').style.display='block';
 }
 
-let allProducts=[],allPedidos=[],configData={};
+let allProducts=[],allPedidos=[],configData={},adminPIN='2468';
 
-function doLogin(){
+async function doLogin(){
   const u=document.getElementById('l-user').value.trim();
   const p=document.getElementById('l-pass').value.trim();
-  const creds=getCreds();
-  if(u===creds.user&&p===creds.pass){
+  const{data,error}=await db.from('configuracion').select('admin_user,admin_pass,admin_pin').eq('id','main').single();
+  const adminUser=(data&&data.admin_user)||'admin';
+  const adminPass=(data&&data.admin_pass)||'admin123';
+  if(data&&data.admin_pin)adminPIN=data.admin_pin;
+  if(u===adminUser&&p===adminPass){
     localStorage.setItem(SESSION_KEY,Date.now().toString());
     localStorage.setItem('ruizpsm_last',new Date().toLocaleString('es-EC'));
     updateActivity();
@@ -607,6 +620,25 @@ function doLogin(){
   }
 }
 
+async function changePin(){
+  const cur=document.getElementById('pin-current').value.trim();
+  const np=document.getElementById('pin-new').value.trim();
+  const cp=document.getElementById('pin-confirm').value.trim();
+  const alrt=document.getElementById('alert-pin');
+  if(cur!==adminPIN){alrt.style.color='var(--red)';alrt.textContent='❌ PIN actual incorrecto';return;}
+  if(np.length<4){alrt.style.color='var(--red)';alrt.textContent='❌ El nuevo PIN debe tener mínimo 4 dígitos';return;}
+  if(np!==cp){alrt.style.color='var(--red)';alrt.textContent='❌ Los PINs no coinciden';return;}
+  const{error}=await db.from('configuracion').update({admin_pin:np}).eq('id','main');
+  if(error){alrt.style.color='var(--red)';alrt.textContent='❌ Error al guardar: '+error.message;return;}
+  adminPIN=np;
+  configData.admin_pin=np;
+  document.getElementById('pin-current').value='';
+  document.getElementById('pin-new').value='';
+  document.getElementById('pin-confirm').value='';
+  alrt.style.color='var(--green)';
+  alrt.textContent='✅ PIN cambiado en todos los dispositivos';
+  setTimeout(()=>alrt.textContent='',3000);
+}
 function doLogout(){
   localStorage.removeItem(SESSION_KEY);
   localStorage.removeItem(ACTIVITY_KEY);
@@ -768,7 +800,7 @@ async function eliminarPedidosSeleccionados(){
   const selected=[...document.querySelectorAll('.pedido-check:checked')].map(c=>c.value);
   if(!selected.length){alert('Selecciona al menos un pedido para eliminar');return;}
   const pin=prompt('🔐 Ingresa la clave para eliminar '+selected.length+' pedido(s):');
-  if(pin!=='2468'){alert('❌ Clave incorrecta');return;}
+  if(pin!==adminPIN){alert('❌ Clave incorrecta');return;}
   if(!confirm('¿Eliminar '+selected.length+' pedido(s) permanentemente?\nEsta acción NO se puede deshacer.'))return;
   let eliminados=0;
   for(const id of selected){
@@ -807,6 +839,7 @@ async function loadConfig(){
   const{data}=await db.from('configuracion').select('*').eq('id','main').single();
   if(data){
     configData=data;
+    if(data.admin_pin)adminPIN=data.admin_pin;
     document.getElementById('c-nombre').value=data.negocio_nombre||'';
     document.getElementById('c-slogan').value=data.negocio_slogan||'';
     document.getElementById('c-wa').value=data.whatsapp||'';
@@ -1053,7 +1086,7 @@ async function updatePedido(id,estado){
     const pedido=allPedidos.find(p=>p.id===id);
     if(!pedido)return;
     const pin=prompt('🔐 Ingresa la clave para anular el pedido '+pedido.codigo+':');
-    if(pin!=='2468'){alert('❌ Clave incorrecta. No se puede anular el pedido.');return;}
+    if(pin!==adminPIN){alert('❌ Clave incorrecta. No se puede anular el pedido.');return;}
     if(!confirm('¿Confirmas anular el pedido '+pedido.codigo+'?\n\nEl stock de los productos se devolverá automáticamente.'))return;
     const prods=pedido.productos||[];
     for(const item of prods){
@@ -1124,9 +1157,11 @@ function saveNewUser(){
   document.getElementById('ud-dot2').className='step-dot done';
 }
 
-function verifyForPass(){
+async function verifyForPass(){
   const pass=document.getElementById('pd-current').value;
-  if(pass===getCreds().pass){
+  const{data}=await db.from('configuracion').select('admin_pass').eq('id','main').single();
+  const currentPass=(data&&data.admin_pass)||getCreds().pass;
+  if(pass===currentPass){
     document.getElementById('pd-step1').style.display='none';
     document.getElementById('pd-step2').classList.add('show');
     document.getElementById('pd-dot1').className='step-dot done';
@@ -1135,15 +1170,18 @@ function verifyForPass(){
   } else showSecAlert('alert-pass','❌ Contraseña incorrecta','error');
 }
 
-function saveNewPass(){
+async function saveNewPass(){
   const np=document.getElementById('pd-new').value;
   const cp=document.getElementById('pd-confirm').value;
-  const creds=getCreds();
+  const{data}=await db.from('configuracion').select('admin_pass').eq('id','main').single();
+  const currentPass=(data&&data.admin_pass)||getCreds().pass;
   if(np.length<8){showSecAlert('alert-pass','Mínimo 8 caracteres','error');return;}
   if(np!==cp){showSecAlert('alert-pass','❌ No coinciden','error');return;}
-  if(np===creds.pass){showSecAlert('alert-pass','Debe ser diferente a la actual','error');return;}
-  creds.pass=np;saveCreds(creds);
-  showSecAlert('alert-pass','✅ Contraseña cambiada','success');
+  if(np===currentPass){showSecAlert('alert-pass','Debe ser diferente a la actual','error');return;}
+  const{error}=await db.from('configuracion').update({admin_pass:np}).eq('id','main');
+  if(error){showSecAlert('alert-pass','❌ Error al guardar','error');return;}
+  const creds=getCreds();creds.pass=np;saveCreds(creds);
+  showSecAlert('alert-pass','✅ Contraseña cambiada en todos los dispositivos','success');
   document.getElementById('pd-dot2').className='step-dot done';
   document.getElementById('pd-line2').className='step-line done';
   document.getElementById('pd-dot3').className='step-dot done';
