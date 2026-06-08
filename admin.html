@@ -340,6 +340,9 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input type="text" id="pedido-search" placeholder="Buscar código o cliente..." oninput="renderPedidos()" style="background:transparent;border:none;outline:none;color:var(--light);font-size:13px;font-family:'Barlow',sans-serif;width:180px">
           </div>
+          <select id="filtro-tienda" onchange="renderPedidos()" style="background:var(--navy);border:1px solid var(--steel);color:var(--light);padding:6px 10px;border-radius:4px;font-size:12px">
+            <option value="">Todas las tiendas</option>
+          </select>
           <select id="filtro-estado" onchange="renderPedidos()" style="background:var(--navy);border:1px solid var(--steel);color:var(--light);padding:6px 10px;border-radius:4px;font-size:12px">
             <option value="">Todos</option>
             <option value="pendiente">Pendientes</option>
@@ -773,6 +776,7 @@ async function loadVendedores(){
   renderVendedores();
   renderVendedoresStats();
   updateVendedoresBadge();
+  poblarFiltroTiendas();
 }
 
 function updateVendedoresBadge(){
@@ -1196,6 +1200,20 @@ async function loadProducts(){
   document.getElementById('prod-count').textContent=allProducts.length+' productos';
 }
 
+function poblarFiltroTiendas(){
+  const sel=document.getElementById('filtro-tienda');
+  if(!sel)return;
+  const current=sel.value;
+  sel.innerHTML='<option value="">Todas las tiendas</option><option value="__ruizpsm__">🏭 Ruiz PSM</option>';
+  allVendedores.filter(v=>v.estado==='aprobado').forEach(v=>{
+    const opt=document.createElement('option');
+    opt.value=v.id;
+    opt.textContent='🏪 '+v.nombre_tienda;
+    sel.appendChild(opt);
+  });
+  sel.value=current;
+}
+
 async function loadPedidos(){
   const{data}=await db.from('pedidos').select('*').order('created_at',{ascending:false});
   allPedidos=data||[];
@@ -1205,9 +1223,15 @@ async function loadPedidos(){
 function renderPedidos(){
   const filtro=document.getElementById('filtro-estado').value;
   const q=(document.getElementById('pedido-search')?.value||'').toLowerCase();
+  const filtroTienda=document.getElementById('filtro-tienda')?.value||'';
   let filtered=filtro==='__vendedor__'
     ?allPedidos.filter(p=>(p.productos||[]).some(x=>x.vendedor_id))
     :filtro?allPedidos.filter(p=>p.estado===filtro):[...allPedidos];
+  if(filtroTienda==='__ruizpsm__'){
+    filtered=filtered.filter(p=>!(p.productos||[]).some(x=>x.vendedor_id));
+  } else if(filtroTienda){
+    filtered=filtered.filter(p=>(p.productos||[]).some(x=>x.vendedor_id===filtroTienda));
+  }
   if(q)filtered=filtered.filter(p=>(p.codigo&&p.codigo.toLowerCase().includes(q))||(p.cliente_nombre&&p.cliente_nombre.toLowerCase().includes(q))||(p.cliente_telefono&&p.cliente_telefono.includes(q)));
   filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
   if(!filtered.length){document.getElementById('pedidos-tbody').innerHTML='<tr><td colspan="9" class="empty-state">No hay pedidos</td></tr>';return;}
