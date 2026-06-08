@@ -349,6 +349,7 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
             <option value="confirmado">Confirmados</option>
             <option value="cancelado">Cancelados</option>
             <option value="anulado">Anulados</option>
+            <option value="pendiente_verificacion">⏳ Pend. verificación</option>
           </select>
           <button class="btn-sm" onclick="exportarExcel()" style="background:rgba(37,211,102,0.1);border-color:var(--green);color:var(--green)">📊 Exportar Excel</button>
           <button class="btn-red" onclick="eliminarPedidosSeleccionados()">🗑️ Eliminar</button>
@@ -407,6 +408,27 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
             <div class="card-title">🖼️ Texto Principal de la Tienda</div>
             <div class="fg"><label>Título principal</label><input type="text" id="c-hero-titulo" placeholder="Tu proveedor de confianza"></div>
             <div class="fg"><label>Subtítulo</label><input type="text" id="c-hero-sub" placeholder="Calidad garantizada y los mejores precios del mercado"></div>
+          </div>
+
+          <!-- DATOS BANCARIOS -->
+          <div class="card">
+            <div class="card-title">🏦 Datos Bancarios (para recibir pagos)</div>
+            <div style="background:rgba(37,211,102,0.07);border:1px solid rgba(37,211,102,0.3);border-radius:6px;padding:10px 14px;margin-bottom:1rem;font-size:12px;color:var(--muted)">
+              🔒 Estos datos se mostrarán al cliente cuando confirme su pedido para hacer la transferencia.
+            </div>
+            <div class="form-grid">
+              <div class="fg"><label>Banco</label><input type="text" id="c-banco" placeholder="Ej: Banco Pichincha"></div>
+              <div class="fg"><label>Tipo de cuenta</label>
+                <select id="c-banco-tipo" style="background:var(--dark);border:1px solid var(--steel);color:var(--light);padding:10px;border-radius:6px;width:100%;font-size:13px">
+                  <option value="">Seleccionar...</option>
+                  <option value="Ahorros">Ahorros</option>
+                  <option value="Corriente">Corriente</option>
+                </select>
+              </div>
+              <div class="fg"><label>Número de cuenta</label><input type="text" id="c-banco-cuenta" placeholder="Número de cuenta"></div>
+              <div class="fg"><label>Titular de la cuenta</label><input type="text" id="c-banco-titular" placeholder="Nombre completo del titular"></div>
+              <div class="fg full"><label>Cédula / RUC del titular</label><input type="text" id="c-banco-cedula" placeholder="Cédula o RUC"></div>
+            </div>
           </div>
 
           <button class="btn-gold" onclick="saveConfig()" style="margin-bottom:2rem">💾 Guardar toda la configuración</button>
@@ -1256,7 +1278,7 @@ function renderPedidos(){
       <td style="font-family:monospace;color:var(--gold);font-size:12px">${p.codigo}${tieneVendedor?'<div style="font-size:9px;color:var(--green);margin-top:2px">📦 VENDEDOR</div>':''}</td>
       <td style="color:var(--white)">${p.cliente_nombre}</td>
       <td style="color:var(--muted);font-size:12px">${p.cliente_telefono}</td>
-      <td style="font-size:11px;color:var(--muted);max-width:180px">${prods}${vendedorInfo}</td>
+      <td style="font-size:11px;color:var(--muted);max-width:180px">${prods}${vendedorInfo}${p.comprobante?`<div style="margin-top:3px;color:var(--green);font-size:10px">📋 Comprobante: ${p.comprobante}</div>`:''}</td>
       <td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${fmtPrice(p.total)}</td>
       <td><span class="estado-badge e-${p.estado}">${p.estado}</span></td>
       <td style="font-size:11px;color:var(--muted)">${fecha}<br><span style="font-size:10px;opacity:0.6">${hora}</span></td>
@@ -1329,6 +1351,11 @@ async function loadConfig(){
     document.getElementById('c-hero-titulo').value=data.hero_titulo||'';
     document.getElementById('c-hero-sub').value=data.hero_subtitulo||'';
     if(data.logo)document.getElementById('logo-current').textContent='Logo actual: '+data.logo;
+    if(document.getElementById('c-banco'))document.getElementById('c-banco').value=data.banco_nombre||'';
+    if(document.getElementById('c-banco-tipo'))document.getElementById('c-banco-tipo').value=data.banco_tipo||'';
+    if(document.getElementById('c-banco-cuenta'))document.getElementById('c-banco-cuenta').value=data.banco_cuenta||'';
+    if(document.getElementById('c-banco-titular'))document.getElementById('c-banco-titular').value=data.banco_titular||'';
+    if(document.getElementById('c-banco-cedula'))document.getElementById('c-banco-cedula').value=data.banco_cedula||'';
     updatePreview();
   }
   setupConfigListeners();
@@ -1375,7 +1402,12 @@ async function saveConfig(){
     facebook:document.getElementById('c-fb').value.trim(),
     hero_titulo:document.getElementById('c-hero-titulo').value.trim(),
     hero_subtitulo:document.getElementById('c-hero-sub').value.trim(),
-    logo:logoName
+    logo:logoName,
+    banco_nombre:document.getElementById('c-banco')?.value.trim()||'',
+    banco_tipo:document.getElementById('c-banco-tipo')?.value||'',
+    banco_cuenta:document.getElementById('c-banco-cuenta')?.value.trim()||'',
+    banco_titular:document.getElementById('c-banco-titular')?.value.trim()||'',
+    banco_cedula:document.getElementById('c-banco-cedula')?.value.trim()||''
   };
   const{error}=await db.from('configuracion').update(data).eq('id','main');
   if(error){showConfigAlert('❌ Error al guardar: '+error.message,'error');return;}
