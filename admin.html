@@ -696,6 +696,7 @@ function showSessionExpired(){
 }
 
 let allProducts=[],allPedidos=[],configData={},adminPIN='2468';
+function fmtPrice(n){return parseFloat(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
 
 async function doLogin(){
   const u=document.getElementById('l-user').value.trim();
@@ -769,7 +770,7 @@ function renderVendedoresStats(){
   document.getElementById('v-aprob-vend').textContent=aprob;
   db.from('comisiones').select('monto_comision').then(({data})=>{
     const total=data?data.reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
-    document.getElementById('v-total-com').textContent='$'+total.toFixed(2);
+    document.getElementById('v-total-com').textContent='$'+fmtPrice(total);
   });
 }
 
@@ -856,9 +857,9 @@ async function cargarComisionesVendedor(vendedorId){
   if(!data||!data.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted)">Sin comisiones aún</td></tr>';return;}
   tbody.innerHTML=data.map(c=>`<tr>
     <td style="font-size:11px;color:var(--muted)">${c.pedido_id?c.pedido_id.substring(0,8)+'...':'-'}</td>
-    <td>$${parseFloat(c.monto_venta).toFixed(2)}</td>
+    <td>$${fmtPrice(c.monto_venta)}</td>
     <td>${c.pct_comision}%</td>
-    <td style="color:var(--gold);font-weight:700">$${parseFloat(c.monto_comision).toFixed(2)}</td>
+    <td style="color:var(--gold);font-weight:700">$${fmtPrice(c.monto_comision)}</td>
     <td><span class="vend-badge ${c.estado}">${c.estado}</span></td>
     <td>${c.estado==='pendiente'?`<button class="vend-btn aprobar" onclick="pagarComision('${c.id}')" style="font-size:10px;padding:3px 8px">💳 Pagar</button>`:'-'}</td>
   </tr>`).join('');
@@ -1013,7 +1014,7 @@ function renderPedidos(){
       <td style="color:var(--white)">${p.cliente_nombre}</td>
       <td style="color:var(--muted);font-size:12px">${p.cliente_telefono}</td>
       <td style="font-size:11px;color:var(--muted);max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prods}</td>
-      <td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.total).toFixed(2)}</td>
+      <td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${fmtPrice(p.total)}</td>
       <td><span class="estado-badge e-${p.estado}">${p.estado}</span></td>
       <td style="font-size:11px;color:var(--muted)">${fecha}<br><span style="font-size:10px;opacity:0.6">${hora}</span></td>
       <td><div class="actions-wrap">
@@ -1058,7 +1059,7 @@ function exportarExcel(){
     const fecha=new Date(p.created_at).toLocaleDateString('es-EC',{timeZone:'America/Guayaquil'});
     const hora=new Date(p.created_at).toLocaleTimeString('es-EC',{timeZone:'America/Guayaquil',hour:'2-digit',minute:'2-digit'});
     const prods=(p.productos||[]).map(i=>i.nombre+' x'+i.cantidad).join(' | ');
-    rows.push([p.codigo,p.cliente_nombre,p.cliente_telefono,prods,'$'+parseFloat(p.total).toFixed(2),p.estado,fecha,hora]);
+    rows.push([p.codigo,p.cliente_nombre,p.cliente_telefono,prods,'$'+fmtPrice(p.total),p.estado,fecha,hora]);
   });
   const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
@@ -1169,7 +1170,7 @@ function renderDashboard(){
   const alerts=allProducts.filter(p=>p.stock<=5);
   document.getElementById('stock-alerts').innerHTML=!alerts.length?'<div class="empty-state">Todo en orden ✅</div>':alerts.map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--steel)"><span style="font-size:13px;color:var(--white)">${p.nombre}</span><span class="stock-badge ${p.stock===0?'stock-out':'stock-low'}">${p.stock===0?'SIN STOCK':p.stock+' uds'}</span></div>`).join('');
   const recent=allPedidos.slice(0,5);
-  document.getElementById('recent-pedidos').innerHTML=!recent.length?'<div class="empty-state">Sin pedidos aún</div>':`<table style="width:100%;font-size:13px;border-collapse:collapse"><tr style="color:var(--muted);font-size:11px;text-transform:uppercase"><td style="padding:6px">Código</td><td>Cliente</td><td>Total</td><td>Estado</td></tr>${recent.map(p=>`<tr style="border-top:1px solid var(--steel)"><td style="padding:8px;font-family:monospace;color:var(--gold)">${p.codigo}</td><td>${p.cliente_nombre}</td><td style="color:var(--gold);font-family:'Rajdhani',sans-serif">$${parseFloat(p.total).toFixed(2)}</td><td><span class="estado-badge e-${p.estado}">${p.estado}</span></td></tr>`).join('')}</table>`;
+  document.getElementById('recent-pedidos').innerHTML=!recent.length?'<div class="empty-state">Sin pedidos aún</div>':`<table style="width:100%;font-size:13px;border-collapse:collapse"><tr style="color:var(--muted);font-size:11px;text-transform:uppercase"><td style="padding:6px">Código</td><td>Cliente</td><td>Total</td><td>Estado</td></tr>${recent.map(p=>`<tr style="border-top:1px solid var(--steel)"><td style="padding:8px;font-family:monospace;color:var(--gold)">${p.codigo}</td><td>${p.cliente_nombre}</td><td style="color:var(--gold);font-family:'Rajdhani',sans-serif">$${fmtPrice(p.total)}</td><td><span class="estado-badge e-${p.estado}">${p.estado}</span></td></tr>`).join('')}</table>`;
   const ventas={};
   allPedidos.filter(p=>p.estado==='confirmado').forEach(ped=>{(ped.productos||[]).forEach(item=>{ventas[item.nombre]=(ventas[item.nombre]||0)+item.cantidad;});});
   const sorted=Object.entries(ventas).sort((a,b)=>b[1]-a[1]).slice(0,5);
@@ -1193,7 +1194,7 @@ function renderProductsTable(){
       :p.stock<=5
       ?`<span class="stock-badge stock-low">${p.stock} uds ⚠️</span>`
       :`<span class="stock-badge stock-ok">${p.stock} uds</span>`;
-    return `<tr style="${p.stock===0?'opacity:0.7;background:rgba(226,75,74,0.04)':''}"><td>${imgUrl?`<img src="${imgUrl}" class="prod-thumb" onerror="this.style.display='none'">`:`<div class="prod-thumb-ph">🔩</div>`}</td><td><div style="font-weight:500;color:var(--white)">${p.nombre}</div><div style="font-size:10px;color:var(--muted);font-family:monospace">${p.referencia||''}</div></td><td style="color:var(--muted);font-size:12px;text-transform:uppercase">${p.categoria||''}</td><td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${parseFloat(p.precio).toFixed(2)}</td><td>${stockDisplay}</td><td style="color:${p.destacado?'var(--gold)':'var(--muted)'}">${p.destacado?'⭐':'No'}</td><td><div class="actions-wrap"><button class="btn-sm" onclick="editProduct('${p.id}')">✏️</button><button class="btn-green" onclick="agregarStock('${p.id}','${p.nombre}',${p.stock})" style="font-size:10px;padding:5px 8px">+ Stock</button><button class="btn-red" onclick="deleteProduct('${p.id}','${p.nombre}')">🗑️</button></div></td></tr>`;
+    return `<tr style="${p.stock===0?'opacity:0.7;background:rgba(226,75,74,0.04)':''}"><td>${imgUrl?`<img src="${imgUrl}" class="prod-thumb" onerror="this.style.display='none'">`:`<div class="prod-thumb-ph">🔩</div>`}</td><td><div style="font-weight:500;color:var(--white)">${p.nombre}</div><div style="font-size:10px;color:var(--muted);font-family:monospace">${p.referencia||''}</div></td><td style="color:var(--muted);font-size:12px;text-transform:uppercase">${p.categoria||''}</td><td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${fmtPrice(p.precio)}</td><td>${stockDisplay}</td><td style="color:${p.destacado?'var(--gold)':'var(--muted)'}">${p.destacado?'⭐':'No'}</td><td><div class="actions-wrap"><button class="btn-sm" onclick="editProduct('${p.id}')">✏️</button><button class="btn-green" onclick="agregarStock('${p.id}','${p.nombre}',${p.stock})" style="font-size:10px;padding:5px 8px">+ Stock</button><button class="btn-red" onclick="deleteProduct('${p.id}','${p.nombre}')">🗑️</button></div></td></tr>`;
   }).join('');
 }
 
@@ -1338,10 +1339,10 @@ async function notificarVendedores(pedidoId){
     msg+=`📋 *Código:* ${pedido.codigo}%0A`;
     msg+=`👤 *Cliente:* ${pedido.cliente_nombre}%0A%0A`;
     msg+=`📦 *Productos:*%0A`;
-    prods.forEach(p=>{msg+=`▪ ${p.nombre} x${p.cantidad} = $${parseFloat(p.subtotal).toFixed(2)}%0A`;});
-    msg+=`%0A💰 *Subtotal venta:* $${subtotal.toFixed(2)}%0A`;
-    msg+=`📊 *Comisión Ruiz PSM (${pct}%):* $${comision.toFixed(2)}%0A`;
-    msg+=`✅ *Tu pago neto:* $${neto.toFixed(2)}%0A%0A`;
+    prods.forEach(p=>{msg+=`▪ ${p.nombre} x${p.cantidad} = $${fmtPrice(p.subtotal)}%0A`;});
+    msg+=`%0A💰 *Subtotal venta:* $${fmtPrice(subtotal)}%0A`;
+    msg+=`📊 *Comisión Ruiz PSM (${pct}%):* $${fmtPrice(comision)}%0A`;
+    msg+=`✅ *Tu pago neto:* $${fmtPrice(neto)}%0A%0A`;
     msg+=`Por favor confirma disponibilidad y coordina el despacho.`;
     window.open(`https://wa.me/${tel}?text=${msg}`,'_blank');
   }
@@ -1503,7 +1504,7 @@ function startRealtimePedidos(){
       const audio=new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq4JIPEBtpuXtpH5WPEJ2ruTwpX9WQEd7tuzysYxiQkqGvO7/uZNlRk2Rx/H/u5ZnSFKXzfX/vppmSFWh1vj/wZ9sS1qn2Pn/xKFuT1+u3Pr/x6NwU2Sz3vr/yqZzVWi33vr/zKh2WGy63vr/z6t4Wm+83fr/0q16XHO+3fr/1a99XXbA3vr/2LCBXnnC3vr/2rKCX3zE3vr/3LSDYoDF3fr/37eFZIPH3fr/4bmHZobI3fr/4ruIaIjK3fr/5LyJaorL3fr/5r6KbIzM3fr/6L+Lb47O3fr/6sGMcZDP3fr/7MKNc5LQ3fr/7cOOdZTS3fr/7sSOd5bT3fr/8MWPepjU3fr/8cWQfJrV3fr/8saRfpzW3fr/88eRgJ7X3fr/88iSgqDY3fr/9MmTg6LZ3fr/9MmUhaTa3fr/9cqVh6bb3fr/9sqWiajc3fr/98uXiqrd3fr/+MyYjKze3fr/+MyZjq7f3fr/+c2ajrDg3fr/+c6bkLHh3fr/+s6ckLPi3fr/+s+dkrTj3fr/+8+elLXk3fr/+9CflrXl3fr//NGglrbn3fr//NGhl7fo3fr//dKimLjp3fr//tKimbno3fr//tOjmrrq3fr//tOkm7vr3fr//9Slm7zs3fr//9SmncDs3fr//9Snnb3t3fr//9Wonr7u3fr//9Wpp8Dv3fr//9Wqqr/w3fr//9arqsDx3fr//9arrMHz3fr//9esrMLy3fr//9esrcP03fr//9iusMX13fr//9ivr8b23fr//9iwr8f33fr//9mxscj43fr//9mysr743fr//9mys8r63fr//9qzt8v73fr//9q0uMz83fr//9q1u87+3fr//9q2vND/3fr//9u3v9EA3fr//9u4v9IB3fr//9u4wdMC3fr//9u5w9QE3fr//9y6xNUF3fr//9y7xdYG3fr//9y8x9cI3fr//9y9yNgK3fr//9y9ydkL3fr//9y+y9oM3fr//9y/zdsO3fr//9zA0NwP3fr//9zA0t0R3fr//93B1N4S3fr//93C1t8T3fr//93C1+AU3fr//93D2eEV3fr//97E2uIX3fr//97E2+MY3fr//97F3OQZ3fr//97F3eUa3fr//97G3+Yb3fr//97H4Ogc3fr//97H4Okd3fr//9/I4+sf3fr//9/J4+wg3fr//9/J5O0h3fr//9/K5u4i3fr//9/L5+8j3fr//+DL5/Ak3fr//+DM6fEl3fr//+DM6fIm3fr//+DN6/Mn3fr//+DO7PQo3fr//+DO7PUq3fr//+DP7vYr3fr//+DP7/cs3fr//+DQ8Pgt3fr//+DR8Pku3fr//+DR8fov3fr//+DS8/sw3fr//+DS8/wx3fr//+DT9f0y3fr//+DU9f4z3fr//+DU9v80');
       audio.volume=0.3;
       audio.play().catch(()=>{});
-      showToastAdmin('🔔 Nuevo pedido de '+payload.new.cliente_nombre+' — $'+parseFloat(payload.new.total).toFixed(2));
+      showToastAdmin('🔔 Nuevo pedido de '+payload.new.cliente_nombre+' — $'+fmtPrice(payload.new.total));
     })
     .subscribe();
 }
