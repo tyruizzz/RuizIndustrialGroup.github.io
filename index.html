@@ -1751,7 +1751,7 @@ function renderProds(){
   const filtered=products.filter(p=>{
     const mc=currentCat==='todos'||p.categoria===currentCat;
     const mq=!q||(p.nombre&&p.nombre.toLowerCase().includes(q))||(p.referencia&&p.referencia.toLowerCase().includes(q));
-    const visible=p.stock>0;
+    const visible=p.stock>0&&p.activo!==false;
     return mc&&mq&&visible;
   });
   const grid=document.getElementById('grid');
@@ -1845,19 +1845,24 @@ function openDetail(pid){
   const addWrapEl=document.getElementById('detail-add-wrap');
   const cartMini=document.getElementById('cart-summary-mini');
   if(p.vendedor_id){
-    // Producto de vendedor → ocultar carrito, mostrar contactar vendedor
-    addWrapEl.style.display='none';
-    cartMini.style.display='none';
-    cotizarBtn.style.display='flex';
-    cotizarBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Contactar vendedor`;
-    cotizarBtn.onclick=()=>contactarVendedor(p);
+    // Producto de vendedor
+    if(addWrapEl)addWrapEl.style.display='none';
+    if(cartMini)cartMini.style.display='none';
+    if(cotizarBtn){
+      cotizarBtn.style.display='flex';
+      cotizarBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Cotizar por WhatsApp`;
+      cotizarBtn.onclick=cotizarWA;
+    }
     loadVendorInfo(p.vendedor_id);
   } else {
-    // Producto de Ruiz PSM → mostrar carrito y cotizar
-    if(p.stock>0)addWrapEl.style.display='flex';
-    cotizarBtn.style.display='flex';
-    cotizarBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Cotizar por WhatsApp`;
-    cotizarBtn.onclick=cotizarWA;
+    // Producto de Ruiz PSM
+    if(p.stock>0&&addWrapEl)addWrapEl.style.display='flex';
+    if(cartMini)cartMini.style.display='';
+    if(cotizarBtn){
+      cotizarBtn.style.display='flex';
+      cotizarBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Cotizar por WhatsApp`;
+      cotizarBtn.onclick=cotizarWA;
+    }
     const vib=document.getElementById('vendor-info-box');
     if(vib)vib.style.display='none';
   }
@@ -1959,19 +1964,24 @@ function addFromDetail(){
   const addWrapEl=document.getElementById('detail-add-wrap');
   const cartMini=document.getElementById('cart-summary-mini');
   if(p.vendedor_id){
-    // Producto de vendedor → ocultar carrito, mostrar contactar vendedor
-    addWrapEl.style.display='none';
-    cartMini.style.display='none';
-    cotizarBtn.style.display='flex';
-    cotizarBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Contactar vendedor`;
-    cotizarBtn.onclick=()=>contactarVendedor(p);
+    // Producto de vendedor
+    if(addWrapEl)addWrapEl.style.display='none';
+    if(cartMini)cartMini.style.display='none';
+    if(cotizarBtn){
+      cotizarBtn.style.display='flex';
+      cotizarBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Cotizar por WhatsApp`;
+      cotizarBtn.onclick=cotizarWA;
+    }
     loadVendorInfo(p.vendedor_id);
   } else {
-    // Producto de Ruiz PSM → mostrar carrito y cotizar
-    if(p.stock>0)addWrapEl.style.display='flex';
-    cotizarBtn.style.display='flex';
-    cotizarBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Cotizar por WhatsApp`;
-    cotizarBtn.onclick=cotizarWA;
+    // Producto de Ruiz PSM
+    if(p.stock>0&&addWrapEl)addWrapEl.style.display='flex';
+    if(cartMini)cartMini.style.display='';
+    if(cotizarBtn){
+      cotizarBtn.style.display='flex';
+      cotizarBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Cotizar por WhatsApp`;
+      cotizarBtn.onclick=cotizarWA;
+    }
     const vib=document.getElementById('vendor-info-box');
     if(vib)vib.style.display='none';
   }
