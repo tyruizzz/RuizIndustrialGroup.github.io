@@ -2034,9 +2034,9 @@ function openCart(){
       </div>
       <div class="m-actions">
         <button class="m-close" onclick="closeCart()">Cancelar</button>
-        <button class="m-confirm" onclick="confirmarPedido()">
+        <button class="m-confirm" onclick="mostrarDatosBancarios()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-          Confirmar pedidos
+          Continuar al pago
         </button>
       </div>`
     :`<div style="text-align:center;padding:1.5rem 0;border-top:1px solid var(--steel);margin-top:1rem">
@@ -2046,6 +2046,8 @@ function openCart(){
           <button class="m-confirm" onclick="closeCart();openAuth('register')">Registrarse</button>
         </div>
       </div>`;
+  // Guardar datos de config para usar en mostrarDatosBancarios
+  window._configCache=configData||{};
   document.getElementById('modal').classList.add('open');
 }
 
@@ -2077,6 +2079,40 @@ function cotizarCarritoWA(){
   window.open('https://wa.me/'+WA+'?text='+msg,'_blank');
 }
 
+async function mostrarDatosBancarios(){
+  const nombre=document.getElementById('c-nombre')?.value.trim();
+  const telNum=document.getElementById('c-tel')?.value.replace(/[^0-9]/g,'');
+  if(!nombre||!telNum||telNum.length<5){showToast('Ingresa tu nombre y teléfono primero','error');return;}
+  // Cargar datos bancarios de config
+  const{data:cfg}=await db.from('configuracion').select('banco_nombre,banco_tipo,banco_cuenta,banco_titular,banco_cedula').eq('id','main').maybeSingle();
+  const tieneBanco=cfg&&cfg.banco_cuenta;
+  const footer=document.getElementById('modal-footer');
+  footer.innerHTML=`
+    <div style="border-top:1px solid var(--steel);padding-top:1rem;margin-top:0.5rem">
+      ${tieneBanco?`
+      <div style="background:rgba(37,211,102,0.07);border:1px solid rgba(37,211,102,0.3);border-radius:8px;padding:1rem;margin-bottom:1rem">
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px;display:flex;align-items:center;gap:6px">🏦 Datos para transferencia</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+          <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase">Banco</div><div style="color:var(--white);font-weight:600">${cfg.banco_nombre}</div></div>
+          <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase">Tipo</div><div style="color:var(--white);font-weight:600">${cfg.banco_tipo}</div></div>
+          <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase">N° Cuenta</div><div style="color:var(--gold);font-weight:700;font-size:14px">${cfg.banco_cuenta}</div></div>
+          <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase">Titular</div><div style="color:var(--white);font-weight:600">${cfg.banco_titular}</div></div>
+          <div style="grid-column:1/-1"><div style="color:var(--muted);font-size:10px;text-transform:uppercase">Cédula/RUC</div><div style="color:var(--white)">${cfg.banco_cedula}</div></div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Después de transferir, ingresa el número de comprobante:</div>
+      <div class="fg" style="margin-bottom:1rem">
+        <input type="text" id="c-comprobante" placeholder="Número de comprobante de transferencia" style="width:100%;background:var(--dark);border:1px solid var(--gold);border-radius:6px;padding:10px;color:var(--white);font-size:13px;outline:none">
+      </div>`:'<div style="background:rgba(201,168,76,0.08);border:1px solid var(--gold);border-radius:8px;padding:1rem;margin-bottom:1rem;font-size:13px;color:var(--muted)">📱 Coordina el pago por WhatsApp con Ruiz PSM antes de confirmar.</div><input type="hidden" id="c-comprobante" value="">'}
+      <div style="display:flex;gap:8px">
+        <button class="m-close" onclick="openCart()">← Volver</button>
+        <button class="m-confirm" onclick="confirmarPedido()" style="flex:1">
+          ✅ Confirmar pedido
+        </button>
+      </div>
+    </div>`;
+}
+
 async function confirmarPedido(){
   const nombre=document.getElementById('c-nombre').value.trim();
   const telCodigo=document.getElementById('c-codigo')?document.getElementById('c-codigo').value:'';
@@ -2102,7 +2138,9 @@ async function confirmarPedido(){
   // Insertar un pedido por grupo
   const waMensajes=[];
   for(const[key,grupo]of Object.entries(grupos)){
-    const pedidoData={codigo:codigo+'-'+(key==='__ruizpsm__'?'R':key.substring(0,4).toUpperCase()),cliente_nombre:nombre,cliente_telefono:tel,productos:grupo.productos,total:grupo.total,estado:'pendiente'};
+    const comprobante=document.getElementById('c-comprobante')?.value.trim()||'';
+    const estadoPedido=comprobante?'pendiente_verificacion':'pendiente';
+    const pedidoData={codigo:codigo+'-'+(key==='__ruizpsm__'?'R':key.substring(0,4).toUpperCase()),cliente_nombre:nombre,cliente_telefono:tel,productos:grupo.productos,total:grupo.total,estado:estadoPedido,comprobante:comprobante,metodo_pago:'transferencia'};
     if(currentUser)pedidoData.usuario_id=currentUser.id;
     await db.from('pedidos').insert(pedidoData);
     // Bajar stock
@@ -2131,9 +2169,11 @@ async function confirmarPedido(){
       }
     } else {
       // Mensaje para Ruiz PSM
+      const compNum=document.getElementById('c-comprobante')?.value.trim()||'';
       let msg=`🏭 *RUIZ PSM - Nuevo Pedido*%0A%0A📋 Código: ${pedidoData.codigo}%0A👤 Cliente: ${nombre}%0A📱 Tel: ${tel}%0A%0A*Productos:*%0A`;
       grupo.productos.forEach(px=>{msg+=`▪ ${px.nombre} x${px.cantidad} = $${fmtPrice(px.subtotal)}%0A`;});
       msg+=`%0A💰 *Total: $${fmtPrice(grupo.total)}*`;
+      if(compNum)msg+=`%0A%0A📋 *Comprobante:* ${compNum}`;
       waMensajes.push({tel:WA,msg,nombre_tienda:'Ruiz PSM'});
     }
   }
