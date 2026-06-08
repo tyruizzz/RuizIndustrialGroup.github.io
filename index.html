@@ -385,6 +385,52 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
 .case-text{font-family:"Arial Black",Arial,sans-serif;font-size:13px;font-weight:900;color:#fff;letter-spacing:2px}
 .brand-div{width:1px;height:20px;background:rgba(255,255,255,0.1)}
 @media(max-width:768px){.nav-links{display:none}.about-grid,.contact-grid{grid-template-columns:1fr}.about-feats{grid-template-columns:1fr}.detail-layout{grid-template-columns:1fr;gap:1rem;padding:1rem}.detail-gallery{flex-direction:column-reverse}.gallery-thumbs{flex-direction:row;width:100%;overflow-x:auto}.gallery-thumb{flex-shrink:0}.gallery-main{max-height:320px}.prods-grid{grid-template-columns:1fr}.spec-key{min-width:110px}.spec-val{max-width:calc(100% - 120px)}}
+
+/* ===== PANEL VENDEDOR ===== */
+.vendor-layout{max-width:1100px;margin:0 auto;padding:2rem}
+.vendor-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.vendor-title{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px}
+.vendor-tabs{display:flex;gap:4px;background:var(--navy);border-radius:8px;padding:4px;margin-bottom:2rem;overflow-x:auto}
+.vendor-tab{padding:8px 20px;border-radius:6px;cursor:pointer;font-size:13px;color:var(--muted);white-space:nowrap;transition:all 0.2s}
+.vendor-tab.active{background:var(--steel);color:var(--white);font-weight:600}
+.vendor-tab-content{display:none}
+.vendor-tab-content.active{display:block}
+.vendor-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+.vendor-stat{background:var(--navy);border:1px solid var(--steel);border-radius:8px;padding:1.2rem}
+.vendor-stat-num{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--gold)}
+.vendor-stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.vendor-prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.vendor-prod-card{background:var(--navy);border:1px solid var(--steel);border-radius:8px;overflow:hidden}
+.vendor-prod-img{width:100%;height:140px;object-fit:cover;background:var(--dark)}
+.vendor-prod-info{padding:1rem}
+.vendor-prod-name{font-size:14px;font-weight:600;color:var(--white);margin-bottom:4px;line-height:1.3}
+.vendor-prod-price{font-family:'Rajdhani',sans-serif;font-size:18px;color:var(--gold);font-weight:700}
+.vendor-prod-stock{font-size:11px;color:var(--muted);margin-top:4px}
+.vendor-prod-actions{display:flex;gap:6px;margin-top:10px}
+.vendor-btn-sm{flex:1;padding:6px;border-radius:4px;font-size:11px;cursor:pointer;border:none;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.vendor-btn-edit{background:var(--steel);color:var(--white)}
+.vendor-btn-del{background:rgba(226,75,74,0.2);color:var(--red);border:1px solid var(--red)}
+.vendor-form{background:var(--navy);border:1px solid var(--steel);border-radius:8px;padding:1.5rem}
+.vendor-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.vendor-fg{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem}
+.vendor-fg label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.vendor-fg input,.vendor-fg textarea,.vendor-fg select{background:var(--dark);border:1px solid var(--steel);color:var(--white);padding:10px 12px;border-radius:6px;font-size:14px;outline:none;font-family:'Barlow',sans-serif}
+.vendor-fg input:focus,.vendor-fg textarea:focus{border-color:var(--gold)}
+.vendor-fg textarea{min-height:80px;resize:vertical}
+.vendor-section-title{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin:1.5rem 0 1rem;border-bottom:1px solid var(--steel);padding-bottom:8px}
+.vendor-com-table{width:100%;border-collapse:collapse}
+.vendor-com-table th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:10px;text-align:left;border-bottom:1px solid var(--steel)}
+.vendor-com-table td{padding:10px;font-size:13px;border-bottom:1px solid rgba(30,58,95,0.3);color:var(--light)}
+.vendor-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
+.vendor-badge.pendiente{background:rgba(201,168,76,0.15);color:var(--gold)}
+.vendor-badge.pagado{background:rgba(37,211,102,0.15);color:var(--green)}
+.vendor-alert{padding:12px 16px;border-radius:6px;font-size:13px;margin-bottom:1rem;display:none}
+.vendor-alert.success{background:rgba(37,211,102,0.1);border:1px solid var(--green);color:var(--green)}
+.vendor-alert.error{background:rgba(226,75,74,0.1);border:1px solid var(--red);color:var(--red)}
+.vendor-pending{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:2rem;text-align:center}
+.vendor-pending-icon{font-size:48px;margin-bottom:1rem}
+.register-vendor-btn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0A0C10;border:none;padding:10px 20px;border-radius:6px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+@media(max-width:768px){.vendor-form-grid{grid-template-columns:1fr}.vendor-stat-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -420,6 +466,7 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
       <div class="nav-avatar" id="nav-avatar">U</div>
       <span class="nav-username" id="nav-username"></span>
       <button class="nav-login-btn" onclick="showPage('mispedidos')" style="border-color:var(--steel);color:var(--muted)"><span data-t="nav_mypedidos">Mis pedidos</span></button>
+      <button class="nav-login-btn" id="btn-mi-tienda" onclick="showPage('vendor')" style="display:none;border-color:var(--gold);color:var(--gold)">🏪 Mi Tienda</button>
       <button class="nav-logout" onclick="doLogout()"><span data-t="nav_logout">Salir</span></button>
     </div>
     <a id="nav-wa-btn" href="https://wa.me/593969889751" target="_blank" class="nav-wa">
@@ -583,6 +630,149 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
     <div class="f-brand"><span>RUIZ</span> PSM</div>
     <div class="f-copy">© 2026 Ruiz PSM · Todos los derechos reservados</div>
   </footer>
+</div>
+
+<!-- VENDOR PANEL PAGE -->
+<div id="page-vendor" class="page">
+  <div class="vendor-layout">
+    <div class="vendor-header">
+      <div class="vendor-title" id="vendor-store-name">Mi Tienda</div>
+      <button class="register-vendor-btn" onclick="showPage('home')">← Volver a la tienda</button>
+    </div>
+
+    <!-- ESTADO PENDIENTE -->
+    <div id="vendor-pending" style="display:none">
+      <div class="vendor-pending">
+        <div class="vendor-pending-icon">⏳</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--white);margin-bottom:0.5rem">Solicitud en revisión</div>
+        <div style="color:var(--muted);font-size:14px;max-width:400px;margin:0 auto">Tu solicitud para ser vendedor está siendo revisada por el administrador. Te notificaremos cuando sea aprobada.</div>
+      </div>
+    </div>
+
+    <!-- FORMULARIO REGISTRO VENDEDOR -->
+    <div id="vendor-register" style="display:none">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:1.5rem">Conviértete en Vendedor</div>
+      <div class="vendor-form">
+        <div id="vendor-reg-alert" class="vendor-alert"></div>
+        <div class="vendor-section-title">📦 Información de tu tienda</div>
+        <div class="vendor-form-grid">
+          <div class="vendor-fg"><label>Nombre de tu tienda *</label><input id="vr-tienda" placeholder="Ej: Repuestos García"></div>
+          <div class="vendor-fg"><label>Ciudad</label><input id="vr-ciudad" placeholder="Ej: Guayaquil"></div>
+        </div>
+        <div class="vendor-fg"><label>Descripción de tu tienda</label><textarea id="vr-desc" placeholder="Describe qué productos vendes..."></textarea></div>
+        <div class="vendor-section-title">👤 Datos personales</div>
+        <div class="vendor-form-grid">
+          <div class="vendor-fg"><label>Cédula / RUC *</label><input id="vr-ruc" placeholder="1234567890"></div>
+          <div class="vendor-fg"><label>Teléfono *</label><input id="vr-tel" placeholder="+593 999 999 999"></div>
+        </div>
+        <div class="vendor-fg"><label>Email de contacto *</label><input id="vr-email" type="email" placeholder="tu@email.com"></div>
+        <div class="vendor-section-title">🏦 Datos bancarios (para recibir pagos)</div>
+        <div class="vendor-form-grid">
+          <div class="vendor-fg"><label>Banco</label><input id="vr-banco" placeholder="Ej: Banco Pichincha"></div>
+          <div class="vendor-fg"><label>Tipo de cuenta</label>
+            <select id="vr-tipocuenta"><option value="">Seleccionar...</option><option>Ahorros</option><option>Corriente</option></select>
+          </div>
+        </div>
+        <div class="vendor-fg"><label>Número de cuenta</label><input id="vr-cuenta" placeholder="Número de cuenta bancaria"></div>
+        <div style="margin-top:1.5rem">
+          <button class="register-vendor-btn" onclick="registrarVendedor()" style="width:100%;padding:14px;font-size:15px">📤 Enviar solicitud</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL ACTIVO -->
+    <div id="vendor-panel-active" style="display:none">
+      <div class="vendor-stat-grid">
+        <div class="vendor-stat"><div class="vendor-stat-num" id="v-stat-prods">0</div><div class="vendor-stat-label">Mis Productos</div></div>
+        <div class="vendor-stat"><div class="vendor-stat-num" id="v-stat-ventas">$0</div><div class="vendor-stat-label">Total Ventas</div></div>
+        <div class="vendor-stat"><div class="vendor-stat-num" id="v-stat-comisiones">$0</div><div class="vendor-stat-label">Comisiones</div></div>
+        <div class="vendor-stat"><div class="vendor-stat-num" id="v-stat-pendiente">$0</div><div class="vendor-stat-label">Por cobrar</div></div>
+      </div>
+
+      <div class="vendor-tabs">
+        <div class="vendor-tab active" onclick="showVendorTab('productos',this)">📦 Mis Productos</div>
+        <div class="vendor-tab" onclick="showVendorTab('agregar',this)">➕ Agregar Producto</div>
+        <div class="vendor-tab" onclick="showVendorTab('comisiones',this)">💰 Mis Comisiones</div>
+        <div class="vendor-tab" onclick="showVendorTab('perfil',this)">⚙️ Mi Perfil</div>
+      </div>
+
+      <!-- MIS PRODUCTOS -->
+      <div id="vtab-productos" class="vendor-tab-content active">
+        <div id="vendor-prods-list" class="vendor-prod-grid"></div>
+      </div>
+
+      <!-- AGREGAR PRODUCTO -->
+      <div id="vtab-agregar" class="vendor-tab-content">
+        <div class="vendor-form">
+          <div id="vendor-prod-alert" class="vendor-alert"></div>
+          <input type="hidden" id="vp-edit-id">
+          <div class="vendor-section-title">📦 Información del producto</div>
+          <div class="vendor-form-grid">
+            <div class="vendor-fg"><label>Nombre del producto *</label><input id="vp-nombre" placeholder="Nombre del producto"></div>
+            <div class="vendor-fg"><label>Precio (USD) *</label><input id="vp-precio" type="number" step="0.01" placeholder="0.00"></div>
+          </div>
+          <div class="vendor-form-grid">
+            <div class="vendor-fg"><label>Categoría</label>
+              <select id="vp-categoria"><option value="repuestos">Repuestos</option><option value="maquinaria">Maquinaria</option><option value="herramientas">Herramientas</option><option value="otros">Otros</option></select>
+            </div>
+            <div class="vendor-fg"><label>Stock disponible *</label><input id="vp-stock" type="number" placeholder="0"></div>
+          </div>
+          <div class="vendor-fg"><label>Referencia / Código</label><input id="vp-ref" placeholder="Ej: REF-001"></div>
+          <div class="vendor-section-title">🔧 Especificaciones</div>
+          <div class="vendor-form-grid">
+            <div class="vendor-fg"><label>Marca</label><input id="vp-marca" placeholder="Ej: Komatsu"></div>
+            <div class="vendor-fg"><label>Modelo</label><input id="vp-modelo" placeholder="Ej: WA500"></div>
+          </div>
+          <div class="vendor-fg"><label>Descripción</label><textarea id="vp-desc" placeholder="Describe el producto, compatibilidades, etc."></textarea></div>
+          <div class="vendor-section-title">🖼️ Imágenes (hasta 3)</div>
+          <div class="vendor-fg"><label>Imágenes del producto</label><input type="file" id="vp-imgs" multiple accept="image/*" style="color:var(--muted)"></div>
+          <div id="vp-imgs-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+          <div style="margin-top:1.5rem;display:flex;gap:1rem">
+            <button class="register-vendor-btn" onclick="guardarProductoVendedor()" style="flex:1;padding:14px">💾 Guardar producto</button>
+            <button onclick="cancelarEditVendor()" style="padding:14px 20px;background:transparent;border:1px solid var(--steel);color:var(--muted);border-radius:6px;cursor:pointer">Cancelar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMISIONES -->
+      <div id="vtab-comisiones" class="vendor-tab-content">
+        <div style="overflow-x:auto">
+          <table class="vendor-com-table">
+            <thead><tr><th>Pedido</th><th>Producto</th><th>Venta</th><th>Comisión %</th><th>Monto</th><th>Estado</th><th>Fecha</th></tr></thead>
+            <tbody id="vendor-com-list"><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem">Cargando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PERFIL -->
+      <div id="vtab-perfil" class="vendor-tab-content">
+        <div class="vendor-form">
+          <div id="vendor-perfil-alert" class="vendor-alert"></div>
+          <div class="vendor-section-title">🏪 Datos de tu tienda</div>
+          <div class="vendor-form-grid">
+            <div class="vendor-fg"><label>Nombre de tienda</label><input id="vperf-tienda" placeholder="Nombre de tu tienda"></div>
+            <div class="vendor-fg"><label>Ciudad</label><input id="vperf-ciudad" placeholder="Ciudad"></div>
+          </div>
+          <div class="vendor-fg"><label>Descripción</label><textarea id="vperf-desc" placeholder="Descripción de tu tienda"></textarea></div>
+          <div class="vendor-form-grid">
+            <div class="vendor-fg"><label>Teléfono</label><input id="vperf-tel" placeholder="Teléfono"></div>
+            <div class="vendor-fg"><label>Email</label><input id="vperf-email" type="email" placeholder="Email"></div>
+          </div>
+          <div class="vendor-section-title">🏦 Datos bancarios</div>
+          <div class="vendor-form-grid">
+            <div class="vendor-fg"><label>Banco</label><input id="vperf-banco" placeholder="Banco"></div>
+            <div class="vendor-fg"><label>Tipo de cuenta</label>
+              <select id="vperf-tipocuenta"><option value="">Seleccionar...</option><option>Ahorros</option><option>Corriente</option></select>
+            </div>
+          </div>
+          <div class="vendor-fg"><label>Número de cuenta</label><input id="vperf-cuenta" placeholder="Número de cuenta"></div>
+          <div style="margin-top:1.5rem">
+            <button class="register-vendor-btn" onclick="guardarPerfilVendedor()" style="padding:14px 30px">💾 Guardar perfil</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- DETAIL PAGE -->
@@ -956,6 +1146,7 @@ function showPage(page){
   document.getElementById('page-'+page).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
   if(page==='mispedidos')loadMisPedidos();
+  if(page==='vendor')loadVendorPanel();
 }
 
 /* ===== AUTH ===== */
@@ -1077,9 +1268,12 @@ function updateNavUser(user){
     const nombre=user.nombre||user.email||'Usuario';
     document.getElementById('nav-username').textContent=nombre.split(' ')[0];
     document.getElementById('nav-avatar').textContent=nombre[0].toUpperCase();
+    checkVendorStatus();
   } else {
     document.getElementById('nav-guest').style.display='flex';
     document.getElementById('nav-user').style.display='none';
+    const btn=document.getElementById('btn-mi-tienda');
+    if(btn)btn.style.display='none';
   }
 }
 
@@ -1611,6 +1805,243 @@ applyTranslations();
 loadConfig();
 loadProducts();
 registrarVisita();
+
+
+/* ===== VENDOR PANEL ===== */
+let vendorData=null;
+
+function showVendorTab(tab,el){
+  document.querySelectorAll('.vendor-tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.vendor-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('vtab-'+tab).classList.add('active');
+  if(el)el.classList.add('active');
+  if(tab==='comisiones')loadVendorComisiones();
+  if(tab==='productos')loadVendorProducts();
+}
+
+async function loadVendorPanel(){
+  if(!currentUser){showPage('home');openAuth('login');return;}
+  document.getElementById('vendor-pending').style.display='none';
+  document.getElementById('vendor-register').style.display='none';
+  document.getElementById('vendor-panel-active').style.display='none';
+  const{data}=await db.from('vendedores').select('*').eq('usuario_id',currentUser.id).single();
+  vendorData=data;
+  if(!data){
+    document.getElementById('vendor-register').style.display='block';
+  } else if(data.estado==='pendiente'){
+    document.getElementById('vendor-pending').style.display='block';
+  } else if(data.estado==='aprobado'){
+    document.getElementById('vendor-store-name').textContent=data.nombre_tienda||'Mi Tienda';
+    document.getElementById('vendor-panel-active').style.display='block';
+    loadVendorStats();
+    loadVendorProducts();
+    cargarPerfilVendedor();
+  }
+}
+
+async function loadVendorStats(){
+  if(!vendorData)return;
+  const{data:prods}=await db.from('productos').select('id').eq('vendedor_id',vendorData.id).gt('stock',0);
+  const{data:coms}=await db.from('comisiones').select('monto_comision,estado').eq('vendedor_id',vendorData.id);
+  const totalProds=prods?prods.length:0;
+  const totalVentas=vendorData.total_ventas||0;
+  const totalCom=coms?coms.reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
+  const pendiente=coms?coms.filter(c=>c.estado==='pendiente').reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
+  document.getElementById('v-stat-prods').textContent=totalProds;
+  document.getElementById('v-stat-ventas').textContent='$'+totalVentas.toFixed(2);
+  document.getElementById('v-stat-comisiones').textContent='$'+totalCom.toFixed(2);
+  document.getElementById('v-stat-pendiente').textContent='$'+pendiente.toFixed(2);
+}
+
+async function loadVendorProducts(){
+  if(!vendorData)return;
+  const{data:prods}=await db.from('productos').select('*').eq('vendedor_id',vendorData.id).order('created_at',{ascending:false});
+  const list=document.getElementById('vendor-prods-list');
+  if(!prods||prods.length===0){list.innerHTML='<div style="text-align:center;color:var(--muted);padding:3rem;grid-column:1/-1">No tienes productos a\xFAn. <br><br><button class="register-vendor-btn" onclick="showVendorTab(\'agregar\',null)" style="margin-top:1rem">+ Agregar producto</button></div>';return;}
+  list.innerHTML=prods.map(p=>{
+    const imgs=p.imagenes||[];
+    const imgUrl=imgs.length>0?`https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/${imgs[0]}`:'';
+    const specs=p.especificaciones||{};
+    return `<div class="vendor-prod-card">
+      ${imgUrl?`<img class="vendor-prod-img" src="${imgUrl}" alt="${p.nombre}" onerror="this.style.display='none'">`:'<div class="vendor-prod-img" style="display:flex;align-items:center;justify-content:center;color:var(--muted)">Sin imagen</div>'}
+      <div class="vendor-prod-info">
+        <div class="vendor-prod-name">${p.nombre}</div>
+        <div class="vendor-prod-price">$${parseFloat(p.precio).toFixed(2)}</div>
+        <div class="vendor-prod-stock">Stock: ${p.stock} unidades ${p.stock===0?'<span style="color:var(--red)">· Sin stock</span>':''}</div>
+        <div class="vendor-prod-actions">
+          <button class="vendor-btn-sm vendor-btn-edit" onclick="editarProductoVendedor('${p.id}')">✏️ Editar</button>
+          <button class="vendor-btn-sm vendor-btn-del" onclick="eliminarProductoVendedor('${p.id}')">🗑️</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function registrarVendedor(){
+  const tienda=document.getElementById('vr-tienda').value.trim();
+  const tel=document.getElementById('vr-tel').value.trim();
+  const email=document.getElementById('vr-email').value.trim();
+  const ruc=document.getElementById('vr-ruc').value.trim();
+  const alrt=document.getElementById('vendor-reg-alert');
+  if(!tienda||!tel||!email||!ruc){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Completa los campos obligatorios (*)';return;}
+  const{error}=await db.from('vendedores').insert({
+    usuario_id:currentUser.id,
+    nombre_tienda:tienda,
+    descripcion:document.getElementById('vr-desc').value.trim(),
+    ruc:ruc,telefono:tel,email:email,
+    ciudad:document.getElementById('vr-ciudad').value.trim(),
+    banco:document.getElementById('vr-banco').value.trim(),
+    tipo_cuenta:document.getElementById('vr-tipocuenta').value,
+    cuenta_bancaria:document.getElementById('vr-cuenta').value.trim(),
+    estado:'pendiente'
+  });
+  if(error){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Error: '+error.message;return;}
+  await db.from('usuarios').update({es_vendedor:true}).eq('id',currentUser.id);
+  alrt.style.display='block';alrt.className='vendor-alert success';alrt.textContent='✅ Solicitud enviada. El administrador revisará tu solicitud pronto.';
+  setTimeout(()=>loadVendorPanel(),2000);
+}
+
+async function guardarProductoVendedor(){
+  const nombre=document.getElementById('vp-nombre').value.trim();
+  const precio=parseFloat(document.getElementById('vp-precio').value);
+  const stock=parseInt(document.getElementById('vp-stock').value);
+  const alrt=document.getElementById('vendor-prod-alert');
+  if(!nombre||!precio||isNaN(stock)){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Completa nombre, precio y stock';return;}
+  const editId=document.getElementById('vp-edit-id').value;
+  const specs={
+    marca:document.getElementById('vp-marca').value.trim(),
+    modelo:document.getElementById('vp-modelo').value.trim(),
+    descripcion:document.getElementById('vp-desc').value.trim()
+  };
+  const files=document.getElementById('vp-imgs').files;
+  let imagenes=[];
+  if(files.length>0){
+    for(let i=0;i<Math.min(files.length,3);i++){
+      const f=files[i];
+      const fname=`prod_${vendorData.id}_img${i}_${Date.now()}.${f.name.split('.').pop()}`;
+      const{error:upErr}=await db.storage.from('productos').upload(fname,f,{upsert:true});
+      if(!upErr)imagenes.push(fname);
+    }
+  }
+  const prodData={
+    nombre,precio,stock,
+    categoria:document.getElementById('vp-categoria').value,
+    referencia:document.getElementById('vp-ref').value.trim(),
+    especificaciones:specs,
+    vendedor_id:vendorData.id,
+    activo:true
+  };
+  if(imagenes.length>0)prodData.imagenes=imagenes;
+  let error;
+  if(editId){
+    ({error}=await db.from('productos').update(prodData).eq('id',editId).eq('vendedor_id',vendorData.id));
+  } else {
+    ({error}=await db.from('productos').insert(prodData));
+  }
+  if(error){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Error: '+error.message;return;}
+  alrt.style.display='block';alrt.className='vendor-alert success';alrt.textContent='✅ Producto guardado correctamente';
+  cancelarEditVendor();
+  setTimeout(()=>{alrt.style.display='none';showVendorTab('productos',null);},1500);
+}
+
+async function editarProductoVendedor(id){
+  const{data:p}=await db.from('productos').select('*').eq('id',id).single();
+  if(!p)return;
+  document.getElementById('vp-edit-id').value=id;
+  document.getElementById('vp-nombre').value=p.nombre||'';
+  document.getElementById('vp-precio').value=p.precio||'';
+  document.getElementById('vp-stock').value=p.stock||'';
+  document.getElementById('vp-categoria').value=p.categoria||'repuestos';
+  document.getElementById('vp-ref').value=p.referencia||'';
+  const s=p.especificaciones||{};
+  document.getElementById('vp-marca').value=s.marca||'';
+  document.getElementById('vp-modelo').value=s.modelo||'';
+  document.getElementById('vp-desc').value=s.descripcion||'';
+  showVendorTab('agregar',document.querySelectorAll('.vendor-tab')[1]);
+}
+
+function cancelarEditVendor(){
+  document.getElementById('vp-edit-id').value='';
+  document.getElementById('vp-nombre').value='';
+  document.getElementById('vp-precio').value='';
+  document.getElementById('vp-stock').value='';
+  document.getElementById('vp-ref').value='';
+  document.getElementById('vp-marca').value='';
+  document.getElementById('vp-modelo').value='';
+  document.getElementById('vp-desc').value='';
+  document.getElementById('vp-imgs').value='';
+  document.getElementById('vp-imgs-preview').innerHTML='';
+  document.getElementById('vendor-prod-alert').style.display='none';
+}
+
+async function eliminarProductoVendedor(id){
+  if(!confirm('¿Eliminar este producto?'))return;
+  await db.from('productos').delete().eq('id',id).eq('vendedor_id',vendorData.id);
+  loadVendorProducts();
+  loadVendorStats();
+}
+
+async function loadVendorComisiones(){
+  if(!vendorData)return;
+  const{data}=await db.from('comisiones').select('*,pedidos(codigo)').eq('vendedor_id',vendorData.id).order('created_at',{ascending:false});
+  const tbody=document.getElementById('vendor-com-list');
+  if(!data||data.length===0){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem">No tienes comisiones aún</td></tr>';return;}
+  tbody.innerHTML=data.map(c=>`<tr>
+    <td>${c.pedidos?.codigo||'-'}</td>
+    <td>-</td>
+    <td>$${parseFloat(c.monto_venta).toFixed(2)}</td>
+    <td>${c.pct_comision}%</td>
+    <td style="color:var(--gold);font-weight:700">$${parseFloat(c.monto_comision).toFixed(2)}</td>
+    <td><span class="vendor-badge ${c.estado}">${c.estado}</span></td>
+    <td>${new Date(c.created_at).toLocaleDateString('es-EC')}</td>
+  </tr>`).join('');
+}
+
+function cargarPerfilVendedor(){
+  if(!vendorData)return;
+  document.getElementById('vperf-tienda').value=vendorData.nombre_tienda||'';
+  document.getElementById('vperf-ciudad').value=vendorData.ciudad||'';
+  document.getElementById('vperf-desc').value=vendorData.descripcion||'';
+  document.getElementById('vperf-tel').value=vendorData.telefono||'';
+  document.getElementById('vperf-email').value=vendorData.email||'';
+  document.getElementById('vperf-banco').value=vendorData.banco||'';
+  document.getElementById('vperf-tipocuenta').value=vendorData.tipo_cuenta||'';
+  document.getElementById('vperf-cuenta').value=vendorData.cuenta_bancaria||'';
+}
+
+async function guardarPerfilVendedor(){
+  const alrt=document.getElementById('vendor-perfil-alert');
+  const{error}=await db.from('vendedores').update({
+    nombre_tienda:document.getElementById('vperf-tienda').value.trim(),
+    ciudad:document.getElementById('vperf-ciudad').value.trim(),
+    descripcion:document.getElementById('vperf-desc').value.trim(),
+    telefono:document.getElementById('vperf-tel').value.trim(),
+    email:document.getElementById('vperf-email').value.trim(),
+    banco:document.getElementById('vperf-banco').value.trim(),
+    tipo_cuenta:document.getElementById('vperf-tipocuenta').value,
+    cuenta_bancaria:document.getElementById('vperf-cuenta').value.trim(),
+    updated_at:new Date().toISOString()
+  }).eq('id',vendorData.id);
+  if(error){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Error: '+error.message;return;}
+  alrt.style.display='block';alrt.className='vendor-alert success';alrt.textContent='✅ Perfil actualizado correctamente';
+  setTimeout(()=>alrt.style.display='none',3000);
+}
+
+// Mostrar botón Mi Tienda si es vendedor
+async function checkVendorStatus(){
+  if(!currentUser)return;
+  const{data}=await db.from('vendedores').select('estado').eq('usuario_id',currentUser.id).single();
+  const btn=document.getElementById('btn-mi-tienda');
+  if(btn){
+    if(data){
+      btn.style.display='inline-flex';
+      btn.textContent=data.estado==='aprobado'?'🏪 Mi Tienda':'⏳ Mi Solicitud';
+    } else {
+      btn.style.display='inline-flex';
+      btn.textContent='🏪 Ser Vendedor';
+    }
+  }
+}
 </script>
 </body>
 </html>
