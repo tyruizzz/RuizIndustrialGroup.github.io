@@ -282,8 +282,8 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
           <div class="fg full">
             <label>Imágenes del producto (máximo 5)</label>
             <input type="file" id="p-img" accept="image/*" multiple onchange="previewImgs(this)">
-            <div class="fg-hint">Selecciona hasta 5 imágenes. <strong style="color:var(--gold)">Arrastra para reordenar</strong> — la primera será la principal.</div>
-            <div id="img-previews" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;min-height:40px;padding:4px;border:1px dashed transparent;border-radius:6px;transition:border 0.2s" ondragover="event.preventDefault();this.style.borderColor='var(--gold)'" ondragleave="this.style.borderColor='transparent'" ondrop="dropImg(event,null)"></div>
+            <div class="fg-hint">Selecciona hasta 5 imágenes. Usa <strong style="color:var(--gold)">◀ ▶</strong> para reordenar — la primera será la principal.</div>
+            <div id="img-previews" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;align-items:flex-start"></div>
             <div id="img-current" style="font-size:11px;color:var(--muted);margin-top:6px"></div>
           </div>
           <div class="fg full" style="margin-top:0.5rem">
@@ -1200,7 +1200,6 @@ function renderProductsTable(){
 
 let imgFilesOrdered=[];
 let imgDataUrls=[];
-let dragSrcIdx=null;
 
 function previewImgs(input){
   const files=Array.from(input.files).slice(0,5);
@@ -1208,7 +1207,6 @@ function previewImgs(input){
   imgDataUrls=[];
   let loaded=0;
   if(!files.length)return;
-  // Leer todos los archivos primero, luego renderizar
   const tempUrls=new Array(files.length);
   const tempFiles=new Array(files.length);
   files.forEach((file,i)=>{
@@ -1231,36 +1229,30 @@ function renderImgPreviews(){
   const wrap=document.getElementById('img-previews');
   wrap.innerHTML='';
   imgDataUrls.forEach((url,i)=>{
+    const total=imgDataUrls.length;
+    const isPrincipal=i===0;
     const div=document.createElement('div');
-    div.draggable=true;
-    div.dataset.idx=String(i);
-    div.style.cssText='position:relative;width:80px;height:80px;border-radius:6px;overflow:hidden;border:2px solid '+(i===0?'var(--gold)':'var(--steel)')+';cursor:grab;flex-shrink:0;user-select:none';
-    div.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;pointer-events:none">
-      <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);font-size:9px;text-align:center;padding:3px;color:${i===0?'var(--gold)':'#fff'};font-weight:${i===0?700:400}">${i===0?'⭐ Principal':'Img '+(i+1)}</div>
-      <div style="position:absolute;top:2px;right:2px;background:rgba(226,75,74,0.9);color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2" onclick="removeImg(${i})">✕</div>`;
-    div.addEventListener('dragstart',ev=>{
-      dragSrcIdx=parseInt(div.dataset.idx);
-      ev.dataTransfer.effectAllowed='move';
-      div.style.opacity='0.4';
-    });
-    div.addEventListener('dragend',()=>{div.style.opacity='1';dragSrcIdx=null;});
-    div.addEventListener('dragover',ev=>{ev.preventDefault();ev.dataTransfer.dropEffect='move';div.style.boxShadow='0 0 0 2px var(--gold)';});
-    div.addEventListener('dragleave',()=>{div.style.boxShadow='';});
-    div.addEventListener('drop',ev=>{
-      ev.preventDefault();
-      div.style.boxShadow='';
-      if(dragSrcIdx===null||dragSrcIdx===parseInt(div.dataset.idx))return;
-      const toIdx=parseInt(div.dataset.idx);
-      // reordenar arrays
-      const movedFile=imgFilesOrdered.splice(dragSrcIdx,1)[0];
-      const movedUrl=imgDataUrls.splice(dragSrcIdx,1)[0];
-      imgFilesOrdered.splice(toIdx,0,movedFile);
-      imgDataUrls.splice(toIdx,0,movedUrl);
-      dragSrcIdx=null;
-      renderImgPreviews();
-    });
+    div.style.cssText='display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0';
+    div.innerHTML=`
+      <div style="position:relative;width:80px;height:80px;border-radius:6px;overflow:hidden;border:2px solid ${isPrincipal?'var(--gold)':'var(--steel)'}">
+        <img src="${url}" style="width:100%;height:100%;object-fit:cover">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);font-size:9px;text-align:center;padding:3px;color:${isPrincipal?'var(--gold)':'#fff'};font-weight:${isPrincipal?700:400}">${isPrincipal?'⭐ Principal':'Img '+(i+1)}</div>
+        <div style="position:absolute;top:2px;right:2px;background:rgba(226,75,74,0.9);color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="removeImg(${i})">✕</div>
+      </div>
+      <div style="display:flex;gap:3px">
+        <button type="button" onclick="moveImg(${i},-1)" ${i===0?'disabled':''} style="width:24px;height:22px;background:${i===0?'var(--steel)':'var(--navy)'};border:1px solid var(--steel);color:${i===0?'var(--muted)':'var(--white)'};border-radius:3px;cursor:${i===0?'default':'pointer'};font-size:12px;display:flex;align-items:center;justify-content:center">◀</button>
+        <button type="button" onclick="moveImg(${i},1)" ${i===total-1?'disabled':''} style="width:24px;height:22px;background:${i===total-1?'var(--steel)':'var(--navy)'};border:1px solid var(--steel);color:${i===total-1?'var(--muted)':'var(--white)'};border-radius:3px;cursor:${i===total-1?'default':'pointer'};font-size:12px;display:flex;align-items:center;justify-content:center">▶</button>
+      </div>`;
     wrap.appendChild(div);
   });
+}
+
+function moveImg(idx,dir){
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=imgFilesOrdered.length)return;
+  [imgFilesOrdered[idx],imgFilesOrdered[newIdx]]=[imgFilesOrdered[newIdx],imgFilesOrdered[idx]];
+  [imgDataUrls[idx],imgDataUrls[newIdx]]=[imgDataUrls[newIdx],imgDataUrls[idx]];
+  renderImgPreviews();
 }
 
 function removeImg(idx){
