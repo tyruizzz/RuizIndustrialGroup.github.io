@@ -50,6 +50,7 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
 .vend-badge.pendiente{background:rgba(201,168,76,0.15);color:var(--gold)}
 .vend-badge.aprobado{background:rgba(37,211,102,0.15);color:var(--green)}
 .vend-badge.suspendido{background:rgba(226,75,74,0.15);color:var(--red)}
+.vend-badge.rechazado{background:rgba(138,155,176,0.15);color:var(--muted)}
 .vend-actions{display:flex;gap:6px}
 .vend-btn{padding:5px 12px;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;border:none;text-transform:uppercase;letter-spacing:0.5px}
 .vend-btn.aprobar{background:var(--green);color:#fff}
@@ -442,6 +443,8 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
           <button class="btn-gold" onclick="filtrarVendedores('todos')" id="vf-todos" style="font-size:12px;padding:6px 14px">Todos</button>
           <button class="btn-outline" onclick="filtrarVendedores('pendiente')" id="vf-pendiente" style="font-size:12px;padding:6px 14px">⏳ Pendientes</button>
           <button class="btn-outline" onclick="filtrarVendedores('aprobado')" id="vf-aprobado" style="font-size:12px;padding:6px 14px">✅ Aprobados</button>
+          <button class="btn-outline" onclick="filtrarVendedores('rechazado')" style="font-size:12px;padding:6px 14px">❌ Rechazados</button>
+          <button class="btn-outline" onclick="filtrarVendedores('suspendido')" style="font-size:12px;padding:6px 14px">🚫 Suspendidos</button>
         </div>
       </div>
 
@@ -490,7 +493,13 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
             <div class="vend-detail-label">Tipo de cuenta</div><div class="vend-detail-val" id="vd-tipocuenta">-</div>
           </div>
           <div>
-            <div class="vend-detail-label">Descripción</div><div class="vend-detail-val" id="vd-desc">-</div>
+            <div class="vend-detail-label">Categoría principal</div><div class="vend-detail-val" id="vd-categoria">-</div>
+          </div>
+          <div>
+            <div class="vend-detail-label">Descripción tienda</div><div class="vend-detail-val" id="vd-desc">-</div>
+          </div>
+          <div style="grid-column:1/-1">
+            <div class="vend-detail-label">Productos que ofrece</div><div class="vend-detail-val" id="vd-productos-desc">-</div>
           </div>
         </div>
         <div style="margin-top:1rem">
@@ -793,19 +802,52 @@ function renderVendedores(){
     <td><span class="vend-badge ${v.estado}">${v.estado}</span></td>
     <td style="font-size:11px;color:var(--muted)">${new Date(v.created_at).toLocaleDateString('es-EC')}</td>
     <td><div class="vend-actions">
-      ${v.estado==='pendiente'?`<button class="vend-btn aprobar" onclick="cambiarEstadoVendedor('${v.id}','aprobado')">✅ Aprobar</button>`:''}
+      ${v.estado==='pendiente'?`<button class="vend-btn aprobar" onclick="cambiarEstadoVendedor('${v.id}','aprobado')">✅ Aprobar</button><button class="vend-btn suspender" onclick="rechazarVendedor('${v.id}')">❌ Rechazar</button>`:''}
       ${v.estado==='aprobado'?`<button class="vend-btn suspender" onclick="cambiarEstadoVendedor('${v.id}','suspendido')">🚫 Suspender</button>`:''}
       ${v.estado==='suspendido'?`<button class="vend-btn aprobar" onclick="cambiarEstadoVendedor('${v.id}','aprobado')">✅ Reactivar</button>`:''}
+      ${v.estado!=='pendiente'?`<button class="vend-btn" style="background:rgba(226,75,74,0.15);color:var(--red);border:1px solid var(--red)" onclick="eliminarVendedor('${v.id}','${v.nombre_tienda.replace(/'/g,'')}')">🗑️</button>`:''}
       <button class="vend-btn ver" onclick="verDetalleVendedor('${v.id}')">👁️ Ver</button>
       <a href="https://wa.me/${(v.telefono||'').replace(/[^0-9]/g,'')}" target="_blank" class="vend-btn" style="background:var(--green);color:#fff;text-decoration:none;padding:5px 12px">💬</a>
     </div></td>
   </tr>`).join('');
 }
 
+async function rechazarVendedor(id){
+  const v=allVendedores.find(x=>x.id===id);
+  if(!v)return;
+  const motivo=prompt(`¿Motivo del rechazo para "${v.nombre_tienda}"? (Se notificará al vendedor)`);
+  if(motivo===null)return;
+  const{error}=await db.from('vendedores').update({estado:'rechazado',descripcion_rechazo:motivo||'Solicitud no aprobada'}).eq('id',id);
+  if(error){alert('Error: '+error.message);return;}
+  v.estado='rechazado';
+  renderVendedores();
+  renderVendedoresStats();
+  updateVendedoresBadge();
+  // Notificar al vendedor por WA si tiene teléfono
+  if(v.telefono){
+    const tel=v.telefono.replace(/[^0-9]/g,'');
+    const msg=`Hola ${v.nombre_tienda}, lamentamos informarte que tu solicitud para ser vendedor en Ruiz PSM no fue aprobada.%0A%0AMotivo: ${motivo||'Solicitud no aprobada'}%0A%0APuedes volver a aplicar corrigiendo la información. Contáctanos si tienes dudas.`;
+    window.open(`https://wa.me/${tel}?text=${msg}`,'_blank');
+  }
+}
+
+async function eliminarVendedor(id,nombre){
+  if(!confirm(`¿Eliminar permanentemente la cuenta de "${nombre}"?\n\nEsta acción no se puede deshacer.`))return;
+  const pin=prompt('🔐 Ingresa el PIN de seguridad para confirmar:');
+  if(pin!==adminPIN){alert('❌ PIN incorrecto');return;}
+  const{error}=await db.from('vendedores').delete().eq('id',id);
+  if(error){alert('Error: '+error.message);return;}
+  allVendedores=allVendedores.filter(v=>v.id!==id);
+  renderVendedores();
+  renderVendedoresStats();
+  updateVendedoresBadge();
+  cerrarDetalleVendedor();
+}
+
 async function cambiarEstadoVendedor(id,estado){
   const v=allVendedores.find(x=>x.id===id);
   if(!v)return;
-  const accion=estado==='aprobado'?'aprobar':'suspender';
+  const accion=estado==='aprobado'?'aprobar':(estado==='suspendido'?'suspender':'cambiar');
   if(!confirm(`¿${accion.charAt(0).toUpperCase()+accion.slice(1)} a ${v.nombre_tienda}?`))return;
   const{error}=await db.from('vendedores').update({estado}).eq('id',id);
   if(error){alert('Error: '+error.message);return;}
@@ -813,6 +855,12 @@ async function cambiarEstadoVendedor(id,estado){
   renderVendedores();
   renderVendedoresStats();
   updateVendedoresBadge();
+  // Notificar aprobación por WA
+  if(estado==='aprobado'&&v.telefono){
+    const tel=v.telefono.replace(/[^0-9]/g,'');
+    const msg=`🎉 ¡Felicidades ${v.nombre_tienda}!%0A%0ATu solicitud para ser vendedor en *Ruiz PSM* ha sido *aprobada*.%0A%0AYa puedes ingresar a tu panel de vendedor en ruizpsm.com, publicar tus productos y empezar a vender.%0A%0A📋 *Recuerda:*%0A▪ Mantén tu stock actualizado%0A▪ Responde rápido cuando te notifiquemos un pedido%0A▪ La comisión de Ruiz PSM es del 2% por venta%0A%0A¡Bienvenido al equipo! 🚀`;
+    if(confirm('¿Notificar al vendedor por WhatsApp?'))window.open(`https://wa.me/${tel}?text=${msg}`,'_blank');
+  }
 }
 
 function verDetalleVendedor(id){
@@ -828,6 +876,8 @@ function verDetalleVendedor(id){
   document.getElementById('vd-cuenta').textContent=v.cuenta_bancaria||'-';
   document.getElementById('vd-tipocuenta').textContent=v.tipo_cuenta||'-';
   document.getElementById('vd-desc').textContent=v.descripcion||'-';
+  document.getElementById('vd-categoria').textContent=v.categoria_principal||'-';
+  document.getElementById('vd-productos-desc').textContent=v.productos_descripcion||'-';
   document.getElementById('vd-comision-input').value=v.comision_pct||10;
   document.getElementById('vend-detail-panel').classList.add('open');
   cargarComisionesVendedor(id);
