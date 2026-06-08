@@ -702,16 +702,81 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
 <div style="font-size:11px;color:var(--muted);margin-top:4px">Solo números, sin espacios ni guiones</div></div>
         </div>
         <div class="vendor-fg"><label>Email de contacto *</label><input id="vr-email" type="email" placeholder="tu@email.com"></div>
-        <div class="vendor-section-title">🏦 Datos bancarios (para recibir pagos)</div>
-        <div class="vendor-form-grid">
-          <div class="vendor-fg"><label>Banco</label><input id="vr-banco" placeholder="Ej: Banco Pichincha"></div>
-          <div class="vendor-fg"><label>Tipo de cuenta</label>
-            <select id="vr-tipocuenta"><option value="">Seleccionar...</option><option>Ahorros</option><option>Corriente</option></select>
+        <div class="vendor-section-title">🏦 <span data-t="bank_title">Datos bancarios (para recibir tus ganancias)</span></div>
+
+        <!-- AVISO DE SEGURIDAD -->
+        <div style="background:rgba(37,211,102,0.07);border:1px solid rgba(37,211,102,0.3);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.2rem">
+          <div style="display:flex;align-items:flex-start;gap:10px">
+            <span style="font-size:20px;flex-shrink:0">🔒</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#25D366;margin-bottom:4px" data-t="bank_secure_title">Tu información bancaria está segura</div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.6" data-t="bank_secure_desc">Solo necesitamos tu número de cuenta para transferirte tus ganancias. <strong style="color:var(--light)">Nunca te pediremos datos de tu tarjeta de débito o crédito, ni contraseñas bancarias.</strong> Esta información solo la verá el administrador de Ruiz PSM.</div>
+            </div>
           </div>
         </div>
-        <div class="vendor-fg"><label>Número de cuenta</label><input id="vr-cuenta" placeholder="Número de cuenta bancaria"></div>
+
+        <div class="vendor-form-grid">
+          <div class="vendor-fg">
+            <label data-t="bank_name">Banco</label>
+            <select id="vr-banco" onchange="checkOtrosBanco('vr-banco','vr-banco-otro')"><option value="">Seleccionar banco...</option>
+<option>Banco Pichincha</option>
+<option>Banco del Pacífico</option>
+<option>Banco Guayaquil</option>
+<option>Banco Internacional</option>
+<option>Banco Produbanco</option>
+<option>Banco Bolivariano</option>
+<option>Banco de Machala</option>
+<option>Banco Solidario</option>
+<option>Banco General Rumiñahui</option>
+<option>Banco ProCredit</option>
+<option>Banco D-MIRO</option>
+<option>Banco Coopnacional</option>
+<option>Banco Amazonas</option>
+<option>Banco Comercial de Manabí</option>
+<option>Banco Capital</option>
+<option>Banco Litoral</option>
+<option>Banco Cofiec</option>
+<option>BanEcuador</option>
+<option>CFN (Corporación Financiera Nacional)</option>
+<option>Mutualista Pichincha</option>
+<option>Mutualista Azuay</option>
+<option>Mutualista Ambato</option>
+<option>Mutualista Imbabura</option>
+<option>Cooperativa JEP</option>
+<option>Cooperativa Jardín Azuayo</option>
+<option>Cooperativa Juventud Ecuatoriana Progresista</option>
+<option>Cooperativa 29 de Octubre</option>
+<option>Cooperativa Oscus</option>
+<option>Cooperativa Mushuc Runa</option>
+<option>Cooperativa Cacpeco</option>
+<option>Cooperativa Andina</option>
+<option>Cooperativa San Francisco</option>
+<option>Cooperativa Codesarrollo</option>
+<option>Cooperativa El Sagrario</option>
+<option>Cooperativa Tulcán</option>
+<option>Otro</option></select>
+            <input id="vr-banco-otro" placeholder="Escribe el nombre de tu banco" style="display:none;margin-top:6px;background:var(--dark);border:1px solid var(--steel);color:var(--white);padding:10px 12px;border-radius:6px;font-size:14px;width:100%;outline:none">
+          </div>
+          <div class="vendor-fg">
+            <label data-t="bank_type">Tipo de cuenta</label>
+            <select id="vr-tipocuenta">
+              <option value="">Seleccionar...</option>
+              <option value="Ahorros" data-t="bank_savings">Ahorros</option>
+              <option value="Corriente" data-t="bank_checking">Corriente</option>
+            </select>
+          </div>
+        </div>
+        <div class="vendor-fg">
+          <label data-t="bank_account">Número de cuenta</label>
+          <div style="display:flex;gap:8px">
+            <input id="vr-cuenta" placeholder="Ingresa el número de cuenta" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onkeypress="return /[0-9]/.test(event.key)" style="flex:1">
+            <button type="button" onclick="verificarCuenta()" style="background:var(--steel);border:none;color:var(--white);padding:0 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap" data-t="bank_verify">✓ Verificar</button>
+          </div>
+          <div id="cuenta-verify-msg" style="font-size:11px;margin-top:4px"></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px" data-t="bank_account_hint">Solo números — sin guiones ni espacios</div>
+        </div>
         <div style="margin-top:1.5rem">
-          <button class="register-vendor-btn" onclick="registrarVendedor()" style="width:100%;padding:14px;font-size:15px">📤 Enviar solicitud</button>
+          <button class="register-vendor-btn" onclick="registrarVendedor()" style="width:100%;padding:14px;font-size:15px" data-t="vendor_submit">📤 Enviar solicitud</button>
         </div>
       </div>
     </div>
@@ -1106,6 +1171,13 @@ const TRANSLATIONS={
     btn_send_wa:'Enviar por WhatsApp',btn_write_wa:'Escribir por WhatsApp',
     auth_login_title:'Bienvenido de vuelta',auth_login_sub:'Inicia sesión con tu correo para guardar tu carrito y ver tus pedidos.',
     auth_register_title:'Crear cuenta',auth_register_sub:'Regístrate con tu correo para guardar tu carrito y seguir tus pedidos.',
+    bank_title:'Datos bancarios (para recibir tus ganancias)',
+    bank_secure_title:'Tu información bancaria está segura',
+    bank_secure_desc:'Solo necesitamos tu número de cuenta para transferirte tus ganancias. Nunca te pediremos datos de tu tarjeta de débito o crédito, ni contraseñas bancarias.',
+    bank_secure_short:'Solo usamos esta información para transferirte tus ganancias. No pedimos datos de tarjetas.',
+    bank_name:'Banco',bank_type:'Tipo de cuenta',bank_account:'Número de cuenta',
+    bank_verify:'✓ Verificar',bank_account_hint:'Solo números — sin guiones ni espacios',
+    bank_savings:'Ahorros',bank_checking:'Corriente',vendor_submit:'📤 Enviar solicitud',
     auth_name:'Nombre completo',auth_email:'Correo electrónico',auth_pass:'Contraseña',auth_tel:'Teléfono de contacto',
     auth_name_ph:'Tu nombre completo',auth_email_ph:'tu@correo.com',auth_pass_ph_login:'Tu contraseña',auth_pass_ph_reg:'Mínimo 6 caracteres',
     btn_login:'Iniciar sesión',btn_register:'Crear cuenta',btn_forgot:'¿Olvidaste tu contraseña?',
@@ -1149,6 +1221,13 @@ const TRANSLATIONS={
     btn_send_wa:'Send via WhatsApp',btn_write_wa:'Write on WhatsApp',
     auth_login_title:'Welcome Back',auth_login_sub:'Sign in with your email to save your cart and view your orders.',
     auth_register_title:'Create Account',auth_register_sub:'Register with your email to save your cart and track your orders.',
+    bank_title:'Banking details (to receive your earnings)',
+    bank_secure_title:'Your banking information is secure',
+    bank_secure_desc:'We only need your account number to transfer your earnings. We will never ask for your debit or credit card details, or banking passwords.',
+    bank_secure_short:'We only use this to transfer your earnings. We do not request card details.',
+    bank_name:'Bank',bank_type:'Account type',bank_account:'Account number',
+    bank_verify:'✓ Verify',bank_account_hint:'Numbers only — no dashes or spaces',
+    bank_savings:'Savings',bank_checking:'Checking',vendor_submit:'📤 Submit application',
     auth_name:'Full name',auth_email:'Email address',auth_pass:'Password',auth_tel:'Contact phone',
     auth_name_ph:'Your full name',auth_email_ph:'you@email.com',auth_pass_ph_login:'Your password',auth_pass_ph_reg:'Minimum 6 characters',
     btn_login:'Sign In',btn_register:'Create Account',btn_forgot:'Forgot your password?',
@@ -2000,6 +2079,59 @@ function fmtPrice(n){
 }
 
 /* ===== PHONE VALIDATION ===== */
+function checkOtrosBanco(selectId, inputId){
+  const sel=document.getElementById(selectId);
+  const inp=document.getElementById(inputId);
+  if(!sel||!inp)return;
+  inp.style.display=sel.value==='Otro'?'block':'none';
+  if(sel.value!=='Otro')inp.value='';
+}
+
+function getBancoValue(selectId, otroId){
+  const sel=document.getElementById(selectId);
+  const otro=document.getElementById(otroId);
+  if(!sel)return'';
+  return sel.value==='Otro'?(otro?otro.value.trim():'Otro'):sel.value;
+}
+
+function verificarCuenta(){
+  const cuenta=document.getElementById('vr-cuenta').value.trim();
+  const banco=getBancoValue('vr-banco','vr-banco-otro');
+  const tipo=document.getElementById('vr-tipocuenta').value;
+  const msg=document.getElementById('cuenta-verify-msg');
+  validarNumeroCuenta(cuenta,banco,tipo,msg);
+}
+
+function verificarCuentaPerfil(){
+  const cuenta=document.getElementById('vperf-cuenta').value.trim();
+  const banco=getBancoValue('vperf-banco','vperf-banco-otro');
+  const tipo=document.getElementById('vperf-tipocuenta').value;
+  const msg=document.getElementById('perf-cuenta-verify-msg');
+  validarNumeroCuenta(cuenta,banco,tipo,msg);
+}
+
+function validarNumeroCuenta(cuenta,banco,tipo,msgEl){
+  if(!msgEl)return true;
+  if(!cuenta){msgEl.style.color='var(--red)';msgEl.textContent='❌ Ingresa el número de cuenta';return false;}
+  if(!banco){msgEl.style.color='var(--red)';msgEl.textContent='❌ Selecciona un banco';return false;}
+  if(!tipo){msgEl.style.color='var(--red)';msgEl.textContent='❌ Selecciona el tipo de cuenta';return false;}
+  if(!/^[0-9]+$/.test(cuenta)){msgEl.style.color='var(--red)';msgEl.textContent='❌ Solo se permiten números';return false;}
+  // Validación por longitud según banco ecuatoriano
+  const len=cuenta.length;
+  let minLen=10, maxLen=13;
+  if(banco.toLowerCase().includes('pichincha')||banco.toLowerCase().includes('pacífico')||banco.toLowerCase().includes('pacifico'))minLen=10,maxLen=10;
+  else if(banco.toLowerCase().includes('guayaquil'))minLen=10,maxLen=10;
+  else if(banco.toLowerCase().includes('cooperativa')||banco.toLowerCase().includes('jep')||banco.toLowerCase().includes('jardín'))minLen=12,maxLen=13;
+  else if(banco.toLowerCase().includes('banecuador'))minLen=10,maxLen=13;
+  if(len<minLen||len>maxLen){
+    msgEl.style.color='var(--red)';
+    msgEl.textContent=`❌ El número debe tener entre ${minLen} y ${maxLen} dígitos para ${banco}`;
+    return false;
+  }
+  msgEl.style.color='var(--green)';
+  msgEl.textContent=`✅ Número válido — ${tipo} en ${banco}`;
+  return true;
+}
 function validatePhoneField(numId){
   const el=document.getElementById(numId);
   if(!el)return;
@@ -2050,6 +2182,14 @@ async function loadVendorPanel(){
   vendorData=data;
   if(!data){
     document.getElementById('vendor-register').style.display='block';
+    // Autocompletar con datos del usuario
+    const userMeta=currentUser.user_metadata||{};
+    const userEmail=currentUser.email||'';
+    if(document.getElementById('vr-email'))document.getElementById('vr-email').value=userMeta.email||userEmail;
+    if(document.getElementById('vr-tel')&&userMeta.telefono){
+      const rawTel=String(userMeta.telefono).replace(/[^0-9]/g,'');
+      document.getElementById('vr-tel').value=rawTel;
+    }
   } else if(data.estado==='pendiente'){
     document.getElementById('vendor-pending').style.display='block';
   } else if(data.estado==='aprobado'){
@@ -2247,8 +2387,9 @@ async function guardarPerfilVendedor(){
     ciudad:document.getElementById('vperf-ciudad').value.trim(),
     descripcion:document.getElementById('vperf-desc').value.trim(),
     telefono:(document.getElementById('vperf-tel-code')?document.getElementById('vperf-tel-code').value:'')+document.getElementById('vperf-tel').value.replace(/[^0-9]/g,''),
+    banco:getBancoValue('vperf-banco','vperf-banco-otro'),
     email:document.getElementById('vperf-email').value.trim(),
-    banco:document.getElementById('vperf-banco').value.trim(),
+
     tipo_cuenta:document.getElementById('vperf-tipocuenta').value,
     cuenta_bancaria:document.getElementById('vperf-cuenta').value.trim(),
     updated_at:new Date().toISOString()
