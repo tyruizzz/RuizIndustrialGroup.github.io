@@ -43,6 +43,27 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
 .logout-btn:hover{border-color:var(--red);color:var(--red)}
 .admin-content{padding:2rem;max-width:1200px;margin:0 auto}
 .tab-content{display:none}
+.vend-table{width:100%;border-collapse:collapse}
+.vend-table th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:10px 12px;text-align:left;border-bottom:1px solid var(--steel)}
+.vend-table td{padding:10px 12px;font-size:13px;border-bottom:1px solid rgba(30,58,95,0.3);color:var(--light);vertical-align:middle}
+.vend-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
+.vend-badge.pendiente{background:rgba(201,168,76,0.15);color:var(--gold)}
+.vend-badge.aprobado{background:rgba(37,211,102,0.15);color:var(--green)}
+.vend-badge.suspendido{background:rgba(226,75,74,0.15);color:var(--red)}
+.vend-actions{display:flex;gap:6px}
+.vend-btn{padding:5px 12px;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;border:none;text-transform:uppercase;letter-spacing:0.5px}
+.vend-btn.aprobar{background:var(--green);color:#fff}
+.vend-btn.suspender{background:var(--red);color:#fff}
+.vend-btn.ver{background:var(--steel);color:var(--white)}
+.vend-detail{background:var(--navy);border:1px solid var(--steel);border-radius:8px;padding:1.5rem;margin-top:1rem;display:none}
+.vend-detail.open{display:block}
+.vend-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.vend-detail-row{font-size:13px;margin-bottom:8px}
+.vend-detail-label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.vend-detail-val{color:var(--white);font-weight:500}
+.vend-com-table{width:100%;border-collapse:collapse;margin-top:1rem}
+.vend-com-table th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:8px;text-align:left;border-bottom:1px solid var(--steel)}
+.vend-com-table td{padding:8px;font-size:12px;border-bottom:1px solid rgba(30,58,95,0.3);color:var(--light)}
 .tab-content.active{display:block}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
 .stat-card{background:var(--navy);border:1px solid var(--steel);border-radius:6px;padding:1.25rem;text-align:center}
@@ -149,6 +170,7 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
       <button class="tab-btn" onclick="showTab('pedidos',this)">📋 Pedidos <span id="pedidos-badge" style="display:none;background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-left:4px">0</span></button>
       <button class="tab-btn" onclick="showTab('configuracion',this)">⚙️ Configuración</button>
       <button class="tab-btn" onclick="showTab('seguridad',this)">🔐 Seguridad</button>
+      <button class="tab-btn" onclick="showTab('vendedores',this)">🏪 Vendedores <span id="vendedores-badge" style="display:none;background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-left:4px">0</span></button>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
       <div id="notif-bell" style="position:relative;cursor:pointer" onclick="showTab('pedidos',document.querySelectorAll('.tab-btn')[2])">
@@ -410,6 +432,86 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
     </div>
 
     <!-- SEGURIDAD -->
+    <div class="tab-content" id="tab-vendedores">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+        <div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px">🏪 Vendedores</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:4px">Gestiona los vendedores y sus comisiones</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-gold" onclick="filtrarVendedores('todos')" id="vf-todos" style="font-size:12px;padding:6px 14px">Todos</button>
+          <button class="btn-outline" onclick="filtrarVendedores('pendiente')" id="vf-pendiente" style="font-size:12px;padding:6px 14px">⏳ Pendientes</button>
+          <button class="btn-outline" onclick="filtrarVendedores('aprobado')" id="vf-aprobado" style="font-size:12px;padding:6px 14px">✅ Aprobados</button>
+        </div>
+      </div>
+
+      <!-- Stats vendedores -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.5rem">
+        <div class="stat-card"><div class="stat-num" id="v-total-vend">0</div><div class="stat-label">Total Vendedores</div></div>
+        <div class="stat-card"><div class="stat-num" id="v-pend-vend">0</div><div class="stat-label">Pendientes</div></div>
+        <div class="stat-card"><div class="stat-num" id="v-aprob-vend">0</div><div class="stat-label">Aprobados</div></div>
+        <div class="stat-card"><div class="stat-num" id="v-total-com">$0</div><div class="stat-label">Comisiones totales</div></div>
+      </div>
+
+      <!-- Tabla vendedores -->
+      <div style="overflow-x:auto">
+        <table class="vend-table">
+          <thead><tr><th>Tienda</th><th>Contacto</th><th>Ciudad</th><th>RUC/CI</th><th>Banco</th><th>Comisión</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+          <tbody id="vendedores-list"><tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2rem">Cargando...</td></tr></tbody>
+        </table>
+      </div>
+
+      <!-- Detalle vendedor -->
+      <div id="vend-detail-panel" class="vend-detail">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+          <div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--gold)" id="vd-nombre">-</div>
+          <button onclick="cerrarDetalleVendedor()" style="background:transparent;border:1px solid var(--steel);color:var(--muted);padding:4px 12px;border-radius:4px;cursor:pointer;font-size:12px">✕ Cerrar</button>
+        </div>
+        <div class="vend-detail-grid">
+          <div>
+            <div class="vend-detail-label">Email</div><div class="vend-detail-val" id="vd-email">-</div>
+          </div>
+          <div>
+            <div class="vend-detail-label">Teléfono</div><div class="vend-detail-val" id="vd-tel">-</div>
+          </div>
+          <div>
+            <div class="vend-detail-label">Ciudad</div><div class="vend-detail-val" id="vd-ciudad">-</div>
+          </div>
+          <div>
+            <div class="vend-detail-label">RUC / Cédula</div><div class="vend-detail-val" id="vd-ruc">-</div>
+          </div>
+          <div>
+            <div class="vend-detail-label">Banco</div><div class="vend-detail-val" id="vd-banco">-</div>
+          </div>
+          <div>
+            <div class="vend-detail-label">Cuenta bancaria</div><div class="vend-detail-val" id="vd-cuenta">-</div>
+          </div>
+          <div>
+            <div class="vend-detail-label">Tipo de cuenta</div><div class="vend-detail-val" id="vd-tipocuenta">-</div>
+          </div>
+          <div>
+            <div class="vend-detail-label">Descripción</div><div class="vend-detail-val" id="vd-desc">-</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem">
+          <div class="vend-detail-label">Comisión (%)</div>
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <input type="number" id="vd-comision-input" min="0" max="50" step="0.5" style="width:100px;background:var(--dark);border:1px solid var(--steel);color:var(--white);padding:8px;border-radius:6px;font-size:14px">
+            <button class="btn-gold" onclick="guardarComisionVendedor()" style="font-size:12px;padding:6px 14px">💾 Guardar %</button>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem">
+          <div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--white);margin-bottom:8px">💰 Comisiones</div>
+          <div style="overflow-x:auto">
+            <table class="vend-com-table">
+              <thead><tr><th>Pedido</th><th>Venta</th><th>%</th><th>Comisión</th><th>Estado</th><th>Acción</th></tr></thead>
+              <tbody id="vd-comisiones-list"><tr><td colspan="6" style="text-align:center;color:var(--muted)">Sin comisiones</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="tab-content" id="tab-seguridad">
       <div style="margin-bottom:1.5rem">
         <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.5rem">🔐 Seguridad</div>
@@ -639,6 +741,135 @@ async function changePin(){
   alrt.textContent='✅ PIN cambiado en todos los dispositivos';
   setTimeout(()=>alrt.textContent='',3000);
 }
+/* ===== ADMIN VENDEDORES ===== */
+let allVendedores=[];
+let vendedorActivo=null;
+let vendedoresFiltro='todos';
+
+async function loadVendedores(){
+  const{data}=await db.from('vendedores').select('*').order('created_at',{ascending:false});
+  allVendedores=data||[];
+  renderVendedores();
+  renderVendedoresStats();
+  updateVendedoresBadge();
+}
+
+function updateVendedoresBadge(){
+  const pendientes=allVendedores.filter(v=>v.estado==='pendiente').length;
+  const badge=document.getElementById('vendedores-badge');
+  if(badge){badge.textContent=pendientes;badge.style.display=pendientes>0?'inline-flex':'none';}
+}
+
+function renderVendedoresStats(){
+  const total=allVendedores.length;
+  const pend=allVendedores.filter(v=>v.estado==='pendiente').length;
+  const aprob=allVendedores.filter(v=>v.estado==='aprobado').length;
+  document.getElementById('v-total-vend').textContent=total;
+  document.getElementById('v-pend-vend').textContent=pend;
+  document.getElementById('v-aprob-vend').textContent=aprob;
+  db.from('comisiones').select('monto_comision').then(({data})=>{
+    const total=data?data.reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
+    document.getElementById('v-total-com').textContent='$'+total.toFixed(2);
+  });
+}
+
+function filtrarVendedores(estado){
+  vendedoresFiltro=estado;
+  renderVendedores();
+}
+
+function renderVendedores(){
+  const lista=vendedoresFiltro==='todos'?allVendedores:allVendedores.filter(v=>v.estado===vendedoresFiltro);
+  const tbody=document.getElementById('vendedores-list');
+  if(!lista.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2rem">No hay vendedores</td></tr>';return;}
+  tbody.innerHTML=lista.map(v=>`<tr>
+    <td><strong style="color:var(--white)">${v.nombre_tienda}</strong></td>
+    <td><div style="font-size:12px">${v.email||'-'}</div><div style="font-size:11px;color:var(--muted)">${v.telefono||'-'}</div></td>
+    <td>${v.ciudad||'-'}</td>
+    <td style="font-size:12px">${v.ruc||'-'}</td>
+    <td style="font-size:12px">${v.banco||'-'}</td>
+    <td style="color:var(--gold);font-weight:700">${v.comision_pct||10}%</td>
+    <td><span class="vend-badge ${v.estado}">${v.estado}</span></td>
+    <td style="font-size:11px;color:var(--muted)">${new Date(v.created_at).toLocaleDateString('es-EC')}</td>
+    <td><div class="vend-actions">
+      ${v.estado==='pendiente'?`<button class="vend-btn aprobar" onclick="cambiarEstadoVendedor('${v.id}','aprobado')">✅ Aprobar</button>`:''}
+      ${v.estado==='aprobado'?`<button class="vend-btn suspender" onclick="cambiarEstadoVendedor('${v.id}','suspendido')">🚫 Suspender</button>`:''}
+      ${v.estado==='suspendido'?`<button class="vend-btn aprobar" onclick="cambiarEstadoVendedor('${v.id}','aprobado')">✅ Reactivar</button>`:''}
+      <button class="vend-btn ver" onclick="verDetalleVendedor('${v.id}')">👁️ Ver</button>
+      <a href="https://wa.me/${(v.telefono||'').replace(/[^0-9]/g,'')}" target="_blank" class="vend-btn" style="background:var(--green);color:#fff;text-decoration:none;padding:5px 12px">💬</a>
+    </div></td>
+  </tr>`).join('');
+}
+
+async function cambiarEstadoVendedor(id,estado){
+  const v=allVendedores.find(x=>x.id===id);
+  if(!v)return;
+  const accion=estado==='aprobado'?'aprobar':'suspender';
+  if(!confirm(`¿${accion.charAt(0).toUpperCase()+accion.slice(1)} a ${v.nombre_tienda}?`))return;
+  const{error}=await db.from('vendedores').update({estado}).eq('id',id);
+  if(error){alert('Error: '+error.message);return;}
+  v.estado=estado;
+  renderVendedores();
+  renderVendedoresStats();
+  updateVendedoresBadge();
+}
+
+function verDetalleVendedor(id){
+  const v=allVendedores.find(x=>x.id===id);
+  if(!v)return;
+  vendedorActivo=v;
+  document.getElementById('vd-nombre').textContent=v.nombre_tienda;
+  document.getElementById('vd-email').textContent=v.email||'-';
+  document.getElementById('vd-tel').textContent=v.telefono||'-';
+  document.getElementById('vd-ciudad').textContent=v.ciudad||'-';
+  document.getElementById('vd-ruc').textContent=v.ruc||'-';
+  document.getElementById('vd-banco').textContent=v.banco||'-';
+  document.getElementById('vd-cuenta').textContent=v.cuenta_bancaria||'-';
+  document.getElementById('vd-tipocuenta').textContent=v.tipo_cuenta||'-';
+  document.getElementById('vd-desc').textContent=v.descripcion||'-';
+  document.getElementById('vd-comision-input').value=v.comision_pct||10;
+  document.getElementById('vend-detail-panel').classList.add('open');
+  cargarComisionesVendedor(id);
+  document.getElementById('vend-detail-panel').scrollIntoView({behavior:'smooth'});
+}
+
+function cerrarDetalleVendedor(){
+  document.getElementById('vend-detail-panel').classList.remove('open');
+  vendedorActivo=null;
+}
+
+async function guardarComisionVendedor(){
+  if(!vendedorActivo)return;
+  const pct=parseFloat(document.getElementById('vd-comision-input').value);
+  if(isNaN(pct)||pct<0||pct>50){alert('Porcentaje inválido (0-50)');return;}
+  await db.from('vendedores').update({comision_pct:pct}).eq('id',vendedorActivo.id);
+  vendedorActivo.comision_pct=pct;
+  const v=allVendedores.find(x=>x.id===vendedorActivo.id);
+  if(v)v.comision_pct=pct;
+  renderVendedores();
+  alert('✅ Comisión actualizada a '+pct+'%');
+}
+
+async function cargarComisionesVendedor(vendedorId){
+  const{data}=await db.from('comisiones').select('*').eq('vendedor_id',vendedorId).order('created_at',{ascending:false});
+  const tbody=document.getElementById('vd-comisiones-list');
+  if(!data||!data.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted)">Sin comisiones aún</td></tr>';return;}
+  tbody.innerHTML=data.map(c=>`<tr>
+    <td style="font-size:11px;color:var(--muted)">${c.pedido_id?c.pedido_id.substring(0,8)+'...':'-'}</td>
+    <td>$${parseFloat(c.monto_venta).toFixed(2)}</td>
+    <td>${c.pct_comision}%</td>
+    <td style="color:var(--gold);font-weight:700">$${parseFloat(c.monto_comision).toFixed(2)}</td>
+    <td><span class="vend-badge ${c.estado}">${c.estado}</span></td>
+    <td>${c.estado==='pendiente'?`<button class="vend-btn aprobar" onclick="pagarComision('${c.id}')" style="font-size:10px;padding:3px 8px">💳 Pagar</button>`:'-'}</td>
+  </tr>`).join('');
+}
+
+async function pagarComision(id){
+  if(!confirm('¿Marcar esta comisión como pagada?'))return;
+  await db.from('comisiones').update({estado:'pagado',fecha_pago:new Date().toISOString()}).eq('id',id);
+  if(vendedorActivo)cargarComisionesVendedor(vendedorActivo.id);
+}
+
 function doLogout(){
   localStorage.removeItem(SESSION_KEY);
   localStorage.removeItem(ACTIVITY_KEY);
@@ -683,9 +914,10 @@ function showTab(tab,el){
   el.classList.add('active');
   if(tab==='seguridad')updateSecurityInfo();
   if(tab==='configuracion')loadConfig();
+  if(tab==='vendedores')loadVendedores();
 }
 
-async function loadAll(){await loadProducts();await loadPedidos();await loadConfig();await loadVisitas();renderDashboard();}
+async function loadAll(){await loadProducts();await loadPedidos();await loadConfig();await loadVisitas();await loadVendedores();renderDashboard();}
 
 async function loadVisitas(){
   try{
