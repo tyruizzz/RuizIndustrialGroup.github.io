@@ -510,7 +510,10 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
           </div>
         </div>
         <div style="margin-top:1.5rem">
-          <div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--white);margin-bottom:8px">💰 Comisiones</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--white)">💰 Comisiones</div>
+          <button class="vend-btn" onclick="perdonarComisionesVendedor(vendedorActivo.id,vendedorActivo.nombre_tienda)" style="font-size:10px;padding:4px 10px;background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid var(--gold)">🎁 Perdonar todas</button>
+        </div>
           <div style="overflow-x:auto">
             <table class="vend-com-table">
               <thead><tr><th>Pedido</th><th>Venta</th><th>%</th><th>Comisión</th><th>Estado</th><th>Acción</th></tr></thead>
@@ -838,23 +841,55 @@ async function verificarCortesVendedores(){
   if(!vendedores)return;
   const ahora=new Date();
   const avisos=[];
+  const avisos3dias=[];
   for(const v of vendedores){
-    if(!v.fecha_primera_venta)continue;
-    const inicio=new Date(v.fecha_primera_venta);
-    const meses=Math.floor((ahora-inicio)/(30*24*60*60*1000));
-    if(meses<1)continue;
-    const{data:coms}=await db.from('comisiones').select('monto_comision').eq('vendedor_id',v.id).eq('estado','pendiente');
+    if(!v.created_at)continue;
+    const inicio=new Date(v.created_at);
+    const diasDesdeCreacion=Math.floor((ahora-inicio)/(24*60*60*1000));
+    if(diasDesdeCreacion<30)continue; // Primer mes de gracia
+    // Ver comisiones pendientes
+    const{data:coms}=await db.from('comisiones').select('monto_comision,created_at').eq('vendedor_id',v.id).eq('estado','pendiente');
     if(!coms||!coms.length)continue;
     const pendiente=coms.reduce((a,c)=>a+parseFloat(c.monto_comision),0);
-    if(pendiente>0)avisos.push({vendedor:v,pendiente});
+    if(pendiente<=0)continue;
+    // Calcular día de corte (cada 30 días desde creación)
+    const mesesTranscurridos=Math.floor(diasDesdeCreacion/30);
+    const proximoCorte=new Date(inicio);
+    proximoCorte.setDate(proximoCorte.getDate()+(mesesTranscurridos+1)*30);
+    const diasParaCorte=Math.floor((proximoCorte-ahora)/(24*60*60*1000));
+    if(diasParaCorte<=3&&diasParaCorte>=0){
+      avisos3dias.push({vendedor:v,pendiente,diasParaCorte,proximoCorte});
+    } else if(diasParaCorte<0){
+      avisos.push({vendedor:v,pendiente,vencido:true});
+    } else {
+      avisos.push({vendedor:v,pendiente,diasParaCorte});
+    }
   }
-  if(avisos.length>0){
-    const msg=avisos.map(a=>`• ${a.vendedor.nombre_tienda}: $${a.pendiente.toFixed(2)}`).join('\n');
-    alert('⚠️ Vendedores con comisiones pendientes:\n\n'+msg+'\n\nRevisa la pestaña de Vendedores para gestionar.');
-    // Mostrar badge
-    const badge=document.getElementById('vendedores-badge');
-    if(badge){badge.textContent=avisos.length;badge.style.display='inline-flex';}
+  // Mostrar alerta de vencidos
+  if(avisos.filter(a=>a.vencido).length>0){
+    const vencidos=avisos.filter(a=>a.vencido);
+    const msg=vencidos.map(a=>`• ${a.vendedor.nombre_tienda}: $${fmtPrice(a.pendiente)} VENCIDO`).join('\n');
+    alert('🚨 COMISIONES VENCIDAS — Cuentas a bloquear:\n\n'+msg+'\n\nIr a Vendedores para gestionar.');
   }
+  // Mostrar alerta de próximos 3 días
+  if(avisos3dias.length>0){
+    const msg=avisos3dias.map(a=>`• ${a.vendedor.nombre_tienda}: $${fmtPrice(a.pendiente)} — vence en ${a.diasParaCorte} día(s)`).join('\n');
+    alert('⚠️ COMISIONES POR VENCER (3 días):\n\n'+msg);
+  }
+  // Badge
+  const total=avisos.length+avisos3dias.length;
+  const badge=document.getElementById('vendedores-badge');
+  if(badge&&total>0){badge.textContent=total;badge.style.display='inline-flex';}
+}
+
+async function perdonarComisionesVendedor(vendedorId,nombreTienda){
+  if(!confirm(`¿Perdonar TODAS las comisiones pendientes de "${nombreTienda}"?\nEsta acción no se puede deshacer.`))return;
+  const pin=prompt('🔐 Ingresa el PIN de seguridad:');
+  if(pin!==adminPIN){alert('❌ PIN incorrecto');return;}
+  const{error}=await db.from('comisiones').update({estado:'perdonado'}).eq('vendedor_id',vendedorId).eq('estado','pendiente');
+  if(error){alert('Error: '+error.message);return;}
+  alert('✅ Comisiones perdonadas correctamente');
+  if(vendedorActivo&&vendedorActivo.id===vendedorId)cargarComisionesVendedor(vendedorId);
 }
 
 async function rechazarVendedor(id){
@@ -963,6 +998,12 @@ async function cargarComisionesVendedor(vendedorId){
 async function pagarComision(id){
   if(!confirm('¿Marcar esta comisión como pagada?'))return;
   await db.from('comisiones').update({estado:'pagado',fecha_pago:new Date().toISOString()}).eq('id',id);
+  if(vendedorActivo)cargarComisionesVendedor(vendedorActivo.id);
+}
+
+async function perdonarComisionIndividual(id){
+  if(!confirm('¿Perdonar esta comisión?'))return;
+  await db.from('comisiones').update({estado:'perdonado'}).eq('id',id);
   if(vendedorActivo)cargarComisionesVendedor(vendedorActivo.id);
 }
 
@@ -1094,7 +1135,9 @@ async function loadPedidos(){
 function renderPedidos(){
   const filtro=document.getElementById('filtro-estado').value;
   const q=(document.getElementById('pedido-search')?.value||'').toLowerCase();
-  let filtered=filtro?allPedidos.filter(p=>p.estado===filtro):[...allPedidos];
+  let filtered=filtro==='__vendedor__'
+    ?allPedidos.filter(p=>(p.productos||[]).some(x=>x.vendedor_id))
+    :filtro?allPedidos.filter(p=>p.estado===filtro):[...allPedidos];
   if(q)filtered=filtered.filter(p=>(p.codigo&&p.codigo.toLowerCase().includes(q))||(p.cliente_nombre&&p.cliente_nombre.toLowerCase().includes(q))||(p.cliente_telefono&&p.cliente_telefono.includes(q)));
   filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
   if(!filtered.length){document.getElementById('pedidos-tbody').innerHTML='<tr><td colspan="9" class="empty-state">No hay pedidos</td></tr>';return;}
@@ -1103,19 +1146,30 @@ function renderPedidos(){
     const fecha=dt.toLocaleDateString('es-EC',{timeZone:'America/Guayaquil',day:'2-digit',month:'2-digit',year:'numeric'});
     const hora=dt.toLocaleTimeString('es-EC',{timeZone:'America/Guayaquil',hour:'2-digit',minute:'2-digit'});
     const prods=(p.productos||[]).map(i=>`${i.nombre} x${i.cantidad}`).join(', ');
-    return `<tr>
+    // Detectar si tiene productos de vendedor y calcular comisión
+    const prodsVendedor=(p.productos||[]).filter(x=>x.vendedor_id);
+    const tieneVendedor=prodsVendedor.length>0;
+    // Agrupar por vendedor para mostrar info
+    const vendedoresIds=[...new Set(prodsVendedor.map(x=>x.vendedor_id))];
+    const vendedorInfo=vendedoresIds.map(vid=>{
+      const v=allVendedores.find(x=>x.id===vid);
+      const subtotal=prodsVendedor.filter(x=>x.vendedor_id===vid).reduce((a,x)=>a+parseFloat(x.subtotal||0),0);
+      const com=(v?.comision_pct||2)/100*subtotal;
+      return v?`<div style="font-size:10px;margin-top:3px;color:var(--green)">🏪 ${v.nombre_tienda} · $${fmtPrice(subtotal)} · Com: $${fmtPrice(com)}</div>`:'';
+    }).join('');
+    return `<tr style="${tieneVendedor?'border-left:3px solid var(--green)':''}">
       <td><input type="checkbox" class="pedido-check" value="${p.id}" style="cursor:pointer"></td>
-      <td style="font-family:monospace;color:var(--gold);font-size:12px">${p.codigo}</td>
+      <td style="font-family:monospace;color:var(--gold);font-size:12px">${p.codigo}${tieneVendedor?'<div style="font-size:9px;color:var(--green);margin-top:2px">📦 VENDEDOR</div>':''}</td>
       <td style="color:var(--white)">${p.cliente_nombre}</td>
       <td style="color:var(--muted);font-size:12px">${p.cliente_telefono}</td>
-      <td style="font-size:11px;color:var(--muted);max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${prods}</td>
+      <td style="font-size:11px;color:var(--muted);max-width:180px">${prods}${vendedorInfo}</td>
       <td style="font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold)">$${fmtPrice(p.total)}</td>
       <td><span class="estado-badge e-${p.estado}">${p.estado}</span></td>
       <td style="font-size:11px;color:var(--muted)">${fecha}<br><span style="font-size:10px;opacity:0.6">${hora}</span></td>
       <td><div class="actions-wrap">
         ${p.estado==='pendiente'?`<button class="btn-green" onclick="updatePedido('${p.id}','confirmado')">✅</button><button class="btn-red" onclick="updatePedido('${p.id}','cancelado')">❌</button>`:p.estado==='confirmado'?`<button class="btn-red" onclick="updatePedido('${p.id}','anulado')" style="font-size:11px;padding:5px 10px">🚫 Anular</button>`:''}
         <button class="btn-sm" onclick="waCliente('${p.cliente_telefono}','${p.codigo}')">💬 Cliente</button>
-        ${(p.productos||[]).some(x=>x.vendedor_id)?`<button class="btn-sm" style="background:rgba(37,211,102,0.15);border-color:var(--green);color:var(--green)" onclick="notificarVendedores('${p.id}')">📲 Vendedor</button>`:''}
+        ${tieneVendedor?`<button class="btn-sm" style="background:rgba(37,211,102,0.15);border-color:var(--green);color:var(--green)" onclick="notificarVendedores('${p.id}')">📲 Vendedor</button>`:''}
       </div></td>
     </tr>`;
   }).join('');
