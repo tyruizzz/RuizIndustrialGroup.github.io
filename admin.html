@@ -1018,7 +1018,8 @@ function renderPedidos(){
       <td style="font-size:11px;color:var(--muted)">${fecha}<br><span style="font-size:10px;opacity:0.6">${hora}</span></td>
       <td><div class="actions-wrap">
         ${p.estado==='pendiente'?`<button class="btn-green" onclick="updatePedido('${p.id}','confirmado')">✅</button><button class="btn-red" onclick="updatePedido('${p.id}','cancelado')">❌</button>`:p.estado==='confirmado'?`<button class="btn-red" onclick="updatePedido('${p.id}','anulado')" style="font-size:11px;padding:5px 10px">🚫 Anular</button>`:''}
-        <button class="btn-sm" onclick="waCliente('${p.cliente_telefono}','${p.codigo}')">💬</button>
+        <button class="btn-sm" onclick="waCliente('${p.cliente_telefono}','${p.codigo}')">💬 Cliente</button>
+        ${(p.productos||[]).some(x=>x.vendedor_id)?`<button class="btn-sm" style="background:rgba(37,211,102,0.15);border-color:var(--green);color:var(--green)" onclick="notificarVendedores('${p.id}')">📲 Vendedor</button>`:''}
       </div></td>
     </tr>`;
   }).join('');
@@ -1311,6 +1312,39 @@ async function deleteProduct(id,nombre){
   if(!confirm('¿Eliminar "'+nombre+'"?'))return;
   await db.from('productos').delete().eq('id',id);
   await loadProducts();renderDashboard();
+}
+
+async function notificarVendedores(pedidoId){
+  const pedido=allPedidos.find(p=>p.id===pedidoId);
+  if(!pedido)return;
+  // Agrupar productos por vendedor_id
+  const grupos={};
+  (pedido.productos||[]).forEach(prod=>{
+    if(!prod.vendedor_id)return;
+    if(!grupos[prod.vendedor_id])grupos[prod.vendedor_id]=[];
+    grupos[prod.vendedor_id].push(prod);
+  });
+  if(!Object.keys(grupos).length){alert('Este pedido no tiene productos de vendedores');return;}
+  for(const[vendedorId,prods]of Object.entries(grupos)){
+    const{data:v}=await db.from('vendedores').select('nombre_tienda,telefono,comision_pct').eq('id',vendedorId).single();
+    if(!v||!v.telefono){alert('Vendedor sin teléfono registrado');continue;}
+    const pct=v.comision_pct||2;
+    const subtotal=prods.reduce((a,p)=>a+parseFloat(p.subtotal||0),0);
+    const comision=subtotal*(pct/100);
+    const neto=subtotal-comision;
+    const tel=v.telefono.replace(/[^0-9]/g,'');
+    let msg=`🏭 *RUIZ PSM - Nuevo Pedido*%0A%0A`;
+    msg+=`Hola *${v.nombre_tienda}*, tienes un nuevo pedido.%0A%0A`;
+    msg+=`📋 *Código:* ${pedido.codigo}%0A`;
+    msg+=`👤 *Cliente:* ${pedido.cliente_nombre}%0A%0A`;
+    msg+=`📦 *Productos:*%0A`;
+    prods.forEach(p=>{msg+=`▪ ${p.nombre} x${p.cantidad} = $${parseFloat(p.subtotal).toFixed(2)}%0A`;});
+    msg+=`%0A💰 *Subtotal venta:* $${subtotal.toFixed(2)}%0A`;
+    msg+=`📊 *Comisión Ruiz PSM (${pct}%):* $${comision.toFixed(2)}%0A`;
+    msg+=`✅ *Tu pago neto:* $${neto.toFixed(2)}%0A%0A`;
+    msg+=`Por favor confirma disponibilidad y coordina el despacho.`;
+    window.open(`https://wa.me/${tel}?text=${msg}`,'_blank');
+  }
 }
 
 async function updatePedido(id,estado){
