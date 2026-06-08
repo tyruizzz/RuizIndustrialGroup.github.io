@@ -2003,9 +2003,9 @@ function openCart(){
         🏪 <span id="vendor-label-${key}">${isRuiz?'RUIZ PSM':'Cargando...'}</span>
       </div>`;
     grupo.productos.forEach(p=>{
-      html+=`<div class="m-item"><div class="m-item-info"><div class="m-item-name">${p.nombre}</div><div class="m-item-ref">${p.referencia||''}</div></div><div class="m-item-right"><button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button><span class="qty-num">${p.qty}</span><button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button><span class="m-item-price">$${p.fmtPrice(sub)}</span></div></div>`;
+      html+=`<div class="m-item"><div class="m-item-info"><div class="m-item-name">${p.nombre}</div><div class="m-item-ref">${p.referencia||''}</div></div><div class="m-item-right"><button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button><span class="qty-num">${p.qty}</span><button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button><span class="m-item-price">$${fmtPrice(p.sub)}</span></div></div>`;
     });
-    html+=`<div style="padding:8px 12px;text-align:right;font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold);font-weight:700;border-top:1px solid rgba(30,58,95,0.5)">Subtotal: $${grupo.fmtPrice(total)}</div></div>`;
+    html+=`<div style="padding:8px 12px;text-align:right;font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold);font-weight:700;border-top:1px solid rgba(30,58,95,0.5)">Subtotal: $${fmtPrice(grupo.total)}</div></div>`;
   });
   html+=`<div class="m-total">Total general: $${fmtPrice(totalGeneral)}</div>`;
   document.getElementById('modal-body').innerHTML=html;
