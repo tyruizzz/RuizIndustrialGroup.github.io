@@ -2047,7 +2047,7 @@ function openCart(){
         </div>
       </div>`;
   // Guardar datos de config para usar en mostrarDatosBancarios
-  window._configCache=configData||{};
+  // config se carga al momento de mostrar datos bancarios
   document.getElementById('modal').classList.add('open');
 }
 
@@ -2530,7 +2530,7 @@ async function loadVendorStats(){
   const totalCom=coms?coms.reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
   const pendiente=coms?coms.filter(c=>c.estado==='pendiente').reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
   document.getElementById('v-stat-ventas').textContent='$'+fmtPrice(totalVentas);
-  document.getElementById('v-stat-comisiones').textContent='$'+fmtPrice(totalCom);
+  // v-stat-comisiones eliminado
   document.getElementById('v-stat-pendiente').textContent='$'+fmtPrice(pendiente);
   // Alerta stock bajo
   if(prods){const bajos=prods.filter(p=>p.stock>0&&p.stock<=5);if(bajos.length>0){const nb=document.getElementById('vendor-notif-banner');nb.style.display='flex';document.getElementById('vendor-notif-text').textContent=`⚠️ ${bajos.length} producto(s) con stock bajo (5 o menos unidades)`;}}
@@ -3049,7 +3049,7 @@ async function loadVendorStats(){
   const pendiente=coms?coms.filter(c=>c.estado==='pendiente').reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
   document.getElementById('v-stat-prods').textContent=totalProds;
   document.getElementById('v-stat-ventas').textContent='$'+fmtPrice(totalVentas);
-  document.getElementById('v-stat-comisiones').textContent='$'+fmtPrice(totalCom);
+  // v-stat-comisiones eliminado
   document.getElementById('v-stat-pendiente').textContent='$'+fmtPrice(pendiente);
 }
 
