@@ -1634,11 +1634,12 @@ async function doLogout(){
 
 async function handleUserSession(user){
   currentUser=user;
-  const{data}=await db.from('usuarios').select('*').eq('id',user.id).single();
+  const{data}=await db.from('usuarios').select('*').eq('id',user.id).maybeSingle();
   updateNavUser(data||user);
   await loadCartFromDB(user.id);
 }
 
+let vendorStatusLoaded=false;
 function updateNavUser(user){
   if(user){
     document.getElementById('nav-guest').style.display='none';
@@ -1646,17 +1647,18 @@ function updateNavUser(user){
     const nombre=user.nombre||user.email||'Usuario';
     document.getElementById('nav-username').textContent=nombre.split(' ')[0];
     document.getElementById('nav-avatar').textContent=nombre[0].toUpperCase();
-    checkVendorStatus();
+    if(!vendorStatusLoaded){vendorStatusLoaded=true;checkVendorStatus();}
   } else {
     document.getElementById('nav-guest').style.display='flex';
     document.getElementById('nav-user').style.display='none';
+    vendorStatusLoaded=false;
     const btn=document.getElementById('btn-mi-tienda');
     if(btn)btn.style.display='none';
   }
 }
 
 async function loadCartFromDB(userId){
-  const{data}=await db.from('carritos').select('*').eq('usuario_id',userId).single();
+  const{data}=await db.from('carritos').select('*').eq('usuario_id',userId).maybeSingle();
   if(data&&data.productos){
     cart={};
     (data.productos||[]).forEach(item=>{cart[item.id]=item.qty;});
@@ -1672,7 +1674,7 @@ async function saveCartToDB(){
 
 /* ===== CONFIG ===== */
 async function loadConfig(){
-  const{data}=await db.from('configuracion').select('*').eq('id','main').single();
+  const{data}=await db.from('configuracion').select('*').eq('id','main').maybeSingle();
   if(!data)return;
   WA=data.whatsapp||'593969889751';
   const nombre=data.negocio_nombre||'Ruiz PSM';
@@ -2396,7 +2398,7 @@ async function loadVendorPanel(){
   document.getElementById('vendor-pending').style.display='none';
   document.getElementById('vendor-register').style.display='none';
   document.getElementById('vendor-panel-active').style.display='none';
-  const{data}=await db.from('vendedores').select('*').eq('usuario_id',currentUser.id).single();
+  const{data}=await db.from('vendedores').select('*').eq('usuario_id',currentUser.id).maybeSingle();
   vendorData=data;
   if(!data){
     document.getElementById('vendor-register').style.display='block';
@@ -2875,7 +2877,7 @@ async function cerrarSesionTodos(){
 // ── CHECK VENDOR STATUS ───────────────────────────────────────────────────
 async function checkVendorStatus(){
   if(!currentUser)return;
-  const{data}=await db.from('vendedores').select('estado,cuenta_bloqueada').eq('usuario_id',currentUser.id).single();
+  const{data}=await db.from('vendedores').select('estado,cuenta_bloqueada').eq('usuario_id',currentUser.id).maybeSingle();
   const btn=document.getElementById('btn-mi-tienda');
   if(btn){
     if(data){btn.style.display='inline-flex';btn.textContent=data.estado==='aprobado'?(data.cuenta_bloqueada?'🔒 Suspendido':'🏪 Mi Tienda'):data.estado==='pendiente'?'⏳ Solicitud':'🏪 Ser Vendedor';}
@@ -2897,7 +2899,7 @@ async function loadVendorPanel(){
   document.getElementById('vendor-pending').style.display='none';
   document.getElementById('vendor-register').style.display='none';
   document.getElementById('vendor-panel-active').style.display='none';
-  const{data}=await db.from('vendedores').select('*').eq('usuario_id',currentUser.id).single();
+  const{data}=await db.from('vendedores').select('*').eq('usuario_id',currentUser.id).maybeSingle();
   vendorData=data;
   if(!data){
     document.getElementById('vendor-register').style.display='block';
