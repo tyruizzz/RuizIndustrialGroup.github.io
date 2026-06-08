@@ -775,6 +775,59 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
           <div id="cuenta-verify-msg" style="font-size:11px;margin-top:4px"></div>
           <div style="font-size:11px;color:var(--muted);margin-top:4px" data-t="bank_account_hint">Solo números — sin guiones ni espacios</div>
         </div>
+        <div class="vendor-section-title">🛒 <span data-t="vendor_what_sell_title">¿Qué vendes?</span></div>
+        <div class="vendor-fg">
+          <label data-t="vendor_category_label">Categoría principal de productos *</label>
+          <select id="vr-categoria">
+            <option value="">Seleccionar categoría...</option>
+            <option value="repuestos">🔩 Repuestos industriales</option>
+            <option value="maquinaria">🏗️ Maquinaria y equipos</option>
+            <option value="herramientas">🔧 Herramientas</option>
+            <option value="electrico">⚡ Eléctrico e instrumentación</option>
+            <option value="hidraulico">💧 Hidráulico y neumático</option>
+            <option value="lubricantes">🛢️ Lubricantes y químicos</option>
+            <option value="seguridad">🦺 Seguridad industrial</option>
+            <option value="construccion">🧱 Materiales de construcción</option>
+            <option value="agricola">🌾 Agrícola</option>
+            <option value="otros">📦 Otros</option>
+          </select>
+        </div>
+        <div class="vendor-fg">
+          <label data-t="vendor_products_desc">Describe los productos que ofrecerás *</label>
+          <textarea id="vr-productos-desc" placeholder="Ej: Repuestos para maquinaria Komatsu, Caterpillar y Volvo. Filtros, discos de freno, rodamientos..." style="min-height:70px"></textarea>
+        </div>
+
+        <!-- TÉRMINOS Y CONDICIONES -->
+        <div style="background:var(--dark);border:1px solid var(--steel);border-radius:8px;padding:1.25rem;margin-top:1.5rem">
+          <div style="font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;display:flex;align-items:center;gap:8px">
+            📋 <span data-t="terms_title">Términos y Condiciones del Vendedor</span>
+          </div>
+          <div style="height:180px;overflow-y:auto;font-size:12px;color:var(--muted);line-height:1.8;padding-right:8px;border:1px solid rgba(30,58,95,0.5);border-radius:6px;padding:12px" id="terms-box">
+            <strong style="color:var(--white)" data-t="terms_h1">1. Modelo de negocio</strong><br>
+            <span data-t="terms_1">Ruiz PSM actúa como intermediario entre vendedores y compradores. El vendedor publica sus productos en la plataforma y Ruiz PSM gestiona el proceso de venta, cotización y coordinación con el comprador final.</span><br><br>
+            <strong style="color:var(--white)" data-t="terms_h2">2. Comisión por venta</strong><br>
+            <span data-t="terms_2">Ruiz PSM aplica una comisión del <strong style="color:var(--gold)">2% sobre el valor total de cada venta</strong> realizada a través de la plataforma. Esta comisión se descontará automáticamente del pago que corresponde al vendedor.</span><br><br>
+            <strong style="color:var(--white)" data-t="terms_h3">3. Proceso de pedidos</strong><br>
+            <span data-t="terms_3">Cuando un cliente realice un pedido que incluya tus productos, recibirás una notificación en tu panel de vendedor y un mensaje por WhatsApp. Un agente de Ruiz PSM coordinará contigo los detalles de despacho.</span><br><br>
+            <strong style="color:var(--white)" data-t="terms_h4">4. Responsabilidad del vendedor</strong><br>
+            <span data-t="terms_4">El vendedor es responsable de: (a) garantizar la disponibilidad y calidad del producto publicado, (b) coordinar el despacho y entrega al comprador en los tiempos acordados, (c) mantener actualizado el stock en la plataforma, (d) resolver cualquier reclamación relacionada con la calidad del producto.</span><br><br>
+            <strong style="color:var(--white)" data-t="terms_h5">5. Proceso de pago</strong><br>
+            <span data-t="terms_5">Ruiz PSM recopila el pago del cliente y transfiere el monto neto (precio de venta menos la comisión del 2%) a la cuenta bancaria registrada por el vendedor. Los pagos se procesan dentro de los 5 días hábiles posteriores a la confirmación de entrega.</span><br><br>
+            <strong style="color:var(--white)" data-t="terms_h6">6. Precios y stock</strong><br>
+            <span data-t="terms_6">El vendedor define el precio público de sus productos. Opcionalmente puede establecer un precio mínimo de negociación. Ruiz PSM se reserva el derecho de negociar con el cliente dentro del rango de precios establecido. El vendedor debe mantener el stock actualizado; Ruiz PSM no será responsable por ventas de productos sin disponibilidad.</span><br><br>
+            <strong style="color:var(--white)" data-t="terms_h7">7. Suspensión de cuenta</strong><br>
+            <span data-t="terms_7">Ruiz PSM puede suspender o eliminar la cuenta del vendedor en caso de: incumplimiento de entregas, fraude, información falsa, o comportamiento que perjudique la reputación de la plataforma.</span><br><br>
+            <strong style="color:var(--white)" data-t="terms_h8">8. Privacidad</strong><br>
+            <span data-t="terms_8">Los datos bancarios del vendedor son confidenciales y solo serán utilizados para el procesamiento de pagos. Ruiz PSM no compartirá esta información con terceros.</span><br><br>
+            <strong style="color:var(--white)" data-t="terms_h9">9. Modificaciones</strong><br>
+            <span data-t="terms_9">Ruiz PSM se reserva el derecho de modificar estos términos con previo aviso de 15 días. El uso continuado de la plataforma implica la aceptación de los nuevos términos.</span>
+          </div>
+          <div style="margin-top:1rem;display:flex;align-items:flex-start;gap:10px">
+            <input type="checkbox" id="vr-terminos" style="width:18px;height:18px;accent-color:var(--gold);cursor:pointer;margin-top:2px;flex-shrink:0">
+            <label for="vr-terminos" style="font-size:13px;color:var(--light);cursor:pointer;line-height:1.5" data-t="terms_accept">He leído y acepto los Términos y Condiciones del Vendedor, incluyendo la comisión del 2% por venta y las responsabilidades de despacho y entrega.</label>
+          </div>
+        </div>
+
         <div style="margin-top:1.5rem">
           <button class="register-vendor-btn" onclick="registrarVendedor()" style="width:100%;padding:14px;font-size:15px" data-t="vendor_submit">📤 Enviar solicitud</button>
         </div>
@@ -1171,6 +1224,15 @@ const TRANSLATIONS={
     btn_send_wa:'Enviar por WhatsApp',btn_write_wa:'Escribir por WhatsApp',
     auth_login_title:'Bienvenido de vuelta',auth_login_sub:'Inicia sesión con tu correo para guardar tu carrito y ver tus pedidos.',
     auth_register_title:'Crear cuenta',auth_register_sub:'Regístrate con tu correo para guardar tu carrito y seguir tus pedidos.',
+    vendor_what_sell_title:'¿Qué vendes?',vendor_category_label:'Categoría principal de productos *',
+    vendor_products_desc:'Describe los productos que ofrecerás *',
+    terms_title:'Términos y Condiciones del Vendedor',
+    terms_h1:'1. Modelo de negocio',terms_h2:'2. Comisión por venta',terms_h3:'3. Proceso de pedidos',
+    terms_h4:'4. Responsabilidad del vendedor',terms_h5:'5. Proceso de pago',terms_h6:'6. Precios y stock',
+    terms_h7:'7. Suspensión de cuenta',terms_h8:'8. Privacidad',terms_h9:'9. Modificaciones',
+    terms_1:'Ruiz PSM actúa como intermediario entre vendedores y compradores.',
+    terms_2:'Ruiz PSM aplica una comisión del 2% sobre el valor total de cada venta.',
+    terms_accept:'He leído y acepto los Términos y Condiciones del Vendedor, incluyendo la comisión del 2% por venta.',
     bank_title:'Datos bancarios (para recibir tus ganancias)',
     bank_secure_title:'Tu información bancaria está segura',
     bank_secure_desc:'Solo necesitamos tu número de cuenta para transferirte tus ganancias. Nunca te pediremos datos de tu tarjeta de débito o crédito, ni contraseñas bancarias.',
@@ -1221,6 +1283,15 @@ const TRANSLATIONS={
     btn_send_wa:'Send via WhatsApp',btn_write_wa:'Write on WhatsApp',
     auth_login_title:'Welcome Back',auth_login_sub:'Sign in with your email to save your cart and view your orders.',
     auth_register_title:'Create Account',auth_register_sub:'Register with your email to save your cart and track your orders.',
+    vendor_what_sell_title:'What do you sell?',vendor_category_label:'Main product category *',
+    vendor_products_desc:'Describe the products you will offer *',
+    terms_title:'Seller Terms and Conditions',
+    terms_h1:'1. Business model',terms_h2:'2. Commission per sale',terms_h3:'3. Order process',
+    terms_h4:'4. Seller responsibilities',terms_h5:'5. Payment process',terms_h6:'6. Prices and stock',
+    terms_h7:'7. Account suspension',terms_h8:'8. Privacy',terms_h9:'9. Modifications',
+    terms_1:'Ruiz PSM acts as an intermediary between sellers and buyers.',
+    terms_2:'Ruiz PSM applies a 2% commission on the total value of each sale.',
+    terms_accept:'I have read and accept the Seller Terms and Conditions, including the 2% commission per sale.',
     bank_title:'Banking details (to receive your earnings)',
     bank_secure_title:'Your banking information is secure',
     bank_secure_desc:'We only need your account number to transfer your earnings. We will never ask for your debit or credit card details, or banking passwords.',
@@ -2245,12 +2316,20 @@ async function registrarVendedor(){
   const email=document.getElementById('vr-email').value.trim();
   const ruc=document.getElementById('vr-ruc').value.trim();
   const alrt=document.getElementById('vendor-reg-alert');
+  const categoria=document.getElementById('vr-categoria').value;
+  const productosDesc=document.getElementById('vr-productos-desc').value.trim();
+  const terminos=document.getElementById('vr-terminos').checked;
   if(!tienda||!tel||!email||!ruc){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Completa los campos obligatorios (*)';return;}
+  if(!categoria){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Selecciona la categoría de productos que vendes';return;}
+  if(!productosDesc){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Describe los productos que ofrecerás';return;}
+  if(!terminos){alrt.style.display='block';alrt.className='vendor-alert error';alrt.textContent='❌ Debes aceptar los Términos y Condiciones para continuar';return;}
   const{error}=await db.from('vendedores').insert({
     usuario_id:currentUser.id,
     nombre_tienda:tienda,
     descripcion:document.getElementById('vr-desc').value.trim(),
     ruc:ruc,telefono:tel,email:email,
+    categoria_principal:categoria,
+    productos_descripcion:productosDesc,
     ciudad:document.getElementById('vr-ciudad').value.trim(),
     banco:document.getElementById('vr-banco').value.trim(),
     tipo_cuenta:document.getElementById('vr-tipocuenta').value,
