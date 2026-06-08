@@ -2026,9 +2026,9 @@ function openCart(){
         <div class="checkout-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Datos del pedido</div>
         <div class="fg"><label>Tu nombre</label><input type="text" id="c-nombre" placeholder="Nombre completo" value="${currentUser.user_metadata?.nombre||''}"></div>
         <div class="fg"><label>Tu teléfono</label>
-          <div class="phone-wrap">
-            <select class="phone-code" id="c-codigo">${PHONE_OPTS}</select>
-            <input class="phone-num" type="tel" id="c-tel" placeholder="Número" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onkeypress="return /[0-9]/.test(event.key)">
+          <div style="display:flex;gap:6px;width:100%">
+            <select id="c-codigo" style="width:95px;flex-shrink:0;background:var(--dark);border:1px solid var(--steel);border-radius:6px;padding:10px 4px;color:var(--light);font-size:11px;outline:none">${PHONE_OPTS}</select>
+            <input type="tel" id="c-tel" placeholder="Número" style="flex:1;min-width:0;background:var(--dark);border:1px solid var(--steel);border-radius:6px;padding:10px 12px;color:var(--light);font-size:14px;outline:none" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onkeypress="return /[0-9]/.test(event.key)">
           </div>
           <div style="font-size:11px;color:var(--muted);margin-top:4px">Solo números, sin espacios ni guiones</div>
         </div>
