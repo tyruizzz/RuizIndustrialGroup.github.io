@@ -1877,7 +1877,9 @@ function openDetail(pid){
   const specLabels={marca:'Marca',modelo:'Modelo',material:'Material',dimensiones:'Dimensiones',peso:'Peso',potencia:'Potencia',voltaje:'Voltaje',rpm:'Velocidad / RPM',presion:'Presión máxima',temperatura:'Temperatura op.',origen:'País de origen',garantia:'Garantía',descripcion:'Descripción'};
   Object.entries(extraSpecs).forEach(([k,v])=>{if(v)specs.push({k:specLabels[k]||k,v});});
   document.getElementById('detail-specs-rows').innerHTML=specs.map(s=>`<div class="spec-row"><span class="spec-key">${s.k}</span><span class="spec-val">${s.v}</span></div>`).join('');
-  renderDetailGallery();
+  try{
+    renderDetailGallery();
+  }catch(e){console.error('Error en renderDetailGallery:',e);}
   showPage('detail');
 }
 
@@ -2436,9 +2438,7 @@ async function loadVendorStats(){
 // ── PRODUCTOS ─────────────────────────────────────────────────────────────
 async function loadVendorProducts(){
   if(!vendorData){console.warn('loadVendorProducts: vendorData es null');return;}
-  console.log('Cargando productos para vendedor:', vendorData.id);
-  const{data:prods,error}=await db.from('productos').select('*').eq('vendedor_id',vendorData.id).order('created_at',{ascending:false});
-  console.log('Productos encontrados:', prods?.length, 'Error:', error);
+  const{data:prods}=await db.from('productos').select('*').eq('vendedor_id',vendorData.id).order('created_at',{ascending:false});
   vendorProdsAll=prods||[];
   renderVendorProds();
 }
