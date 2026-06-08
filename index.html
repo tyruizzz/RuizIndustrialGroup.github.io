@@ -252,7 +252,7 @@ section{padding:4rem 2rem}
 .detail-stock-box.low{background:rgba(226,75,74,0.08);border:1px solid rgba(226,75,74,0.2);color:var(--red)}
 .detail-stock-box.out{background:rgba(226,75,74,0.08);border:1px solid rgba(226,75,74,0.2);color:var(--red)}
 .detail-add-wrap{display:flex;gap:10px;align-items:center;margin-bottom:0.75rem}
-.qty-control{display:flex;align-items:center;border:1px solid var(--steel);border-radius:6px;overflow:hidden}
+.qty-control{display:flex;align-items:center;border:1px solid var(--steel);border-radius:6px;overflow:hidden;height:44px}
 .qty-control button{background:var(--navy);border:none;color:var(--white);width:40px;height:46px;font-size:20px;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center}
 .qty-control button:hover{background:var(--steel)}
 .qty-control span{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--white);min-width:44px;text-align:center;height:46px;display:flex;align-items:center;justify-content:center;border-left:1px solid var(--steel);border-right:1px solid var(--steel)}
@@ -286,7 +286,7 @@ section{padding:4rem 2rem}
 .fg input:focus,.fg select:focus{border-color:var(--gold)}
 .fg select option{background:var(--dark)}
 .phone-wrap{display:flex;gap:6px}
-.phone-code{width:110px;flex-shrink:0;background:var(--dark);border:1px solid var(--steel);border-radius:6px;padding:10px 4px;color:var(--light);font-size:11px;font-family:'Barlow',sans-serif;outline:none;text-align:center}
+.phone-code{width:90px;flex-shrink:0;background:var(--dark);border:1px solid var(--steel);border-radius:6px;padding:8px 2px;color:var(--light);font-size:11px;font-family:'Barlow',sans-serif;outline:none;text-align:center}
 .phone-code:focus{border-color:var(--gold)}
 .phone-num{flex:1;min-width:0;background:var(--dark);border:1px solid var(--steel);border-radius:6px;padding:10px 14px;color:var(--light);font-size:14px;font-family:'Barlow',sans-serif;outline:none}
 .phone-num:focus{border-color:var(--gold)}
@@ -336,7 +336,7 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
 .m-item-info{flex:1}
 .m-item-name{font-size:13px;color:var(--white);font-weight:500}
 .m-item-ref{font-size:10px;color:var(--muted);font-family:monospace}
-.m-item-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.m-item-right{display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:nowrap}
 .qty-btn{background:var(--steel);border:none;color:var(--white);width:28px;height:28px;border-radius:4px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
 .qty-btn:hover{background:var(--gold);color:#0A0C10}
 .qty-num{font-family:'Rajdhani',sans-serif;font-size:16px;color:var(--gold);min-width:24px;text-align:center}
@@ -2019,7 +2019,7 @@ function openCart(){
       });
     }
   });
-  const PHONE_OPTS=`<option value="+1">🇺🇸 +1</option><option value="+593" selected>🇪🇨 +593</option><option value="+52">🇲🇽 +52</option><option value="+57">🇨🇴 +57</option><option value="+51">🇵🇪 +51</option><option value="+56">🇨🇱 +56</option><option value="+54">🇦🇷 +54</option><option value="+55">🇧🇷 +55</option><option value="+58">🇻🇪 +58</option><option value="+44">🇬🇧 +44</option><option value="+34">🇪🇸 +34</option><option value="+33">🇫🇷 +33</option><option value="+49">🇩🇪 +49</option><option value="+39">🇮🇹 +39</option><option value="+81">🇯🇵 +81</option><option value="+86">🇨🇳 +86</option><option value="+91">🇮🇳 +91</option><option value="+61">🇦🇺 +61</option><option value="+971">🇦🇪 +971</option><option value="+7">🇷🇺 +7</option>`;
+  const PHONE_OPTS=`<option value="+1">+1 US</option><option value="+593" selected>+593 EC</option><option value="+52">+52 MX</option><option value="+57">+57 CO</option><option value="+51">+51 PE</option><option value="+56">+56 CL</option><option value="+54">+54 AR</option><option value="+55">+55 BR</option><option value="+58">+58 VE</option><option value="+44">+44 UK</option><option value="+34">+34 ES</option><option value="+33">+33 FR</option><option value="+49">+49 DE</option><option value="+39">+39 IT</option><option value="+81">+81 JP</option><option value="+86">+86 CN</option><option value="+91">+91 IN</option><option value="+61">+61 AU</option><option value="+971">+971 AE</option><option value="+7">+7 RU</option>`;
   const isLoggedIn=!!currentUser;
   document.getElementById('modal-footer').innerHTML=isLoggedIn
     ?`<div class="checkout-form">
