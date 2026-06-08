@@ -2425,8 +2425,10 @@ async function loadVendorStats(){
 
 // ── PRODUCTOS ─────────────────────────────────────────────────────────────
 async function loadVendorProducts(){
-  if(!vendorData)return;
-  const{data:prods}=await db.from('productos').select('*').eq('vendedor_id',vendorData.id).order('created_at',{ascending:false});
+  if(!vendorData){console.warn('loadVendorProducts: vendorData es null');return;}
+  console.log('Cargando productos para vendedor:', vendorData.id);
+  const{data:prods,error}=await db.from('productos').select('*').eq('vendedor_id',vendorData.id).order('created_at',{ascending:false});
+  console.log('Productos encontrados:', prods?.length, 'Error:', error);
   vendorProdsAll=prods||[];
   renderVendorProds();
 }
@@ -2442,7 +2444,7 @@ function renderVendorProds(){
   let lista=vendorProdsAll.slice();
   if(vendorProdsFiltro==='activo')lista=lista.filter(p=>p.activo!==false);
   else if(vendorProdsFiltro==='inactivo')lista=lista.filter(p=>p.activo===false);
-  else if(vendorProdsFiltro==='oferta')lista=lista.filter(p=>p.descuento_pct>0);
+  else if(vendorProdsFiltro==='oferta')lista=lista.filter(p=>parseFloat(p.descuento_pct||0)>0);
   if(vendorOrden==='precio_asc')lista.sort((a,b)=>a.precio-b.precio);
   else if(vendorOrden==='precio_desc')lista.sort((a,b)=>b.precio-a.precio);
   else if(vendorOrden==='stock_asc')lista.sort((a,b)=>a.stock-b.stock);
@@ -2457,7 +2459,7 @@ function renderVendorProds(){
     const esNuevo=(ahora-new Date(p.created_at))<7*24*60*60*1000;
     const tieneOferta=p.descuento_pct>0&&(!p.descuento_expira||new Date(p.descuento_expira)>ahora);
     const precioFinal=tieneOferta?p.precio*(1-p.descuento_pct/100):p.precio;
-    const inactivo=p.activo===false;
+    const inactivo=p.activo===false;  // null/undefined = activo
     return `<div class="vendor-prod-card" style="${inactivo?'opacity:0.5':''}">
       <div style="position:relative">
         ${imgUrl?`<img class="vendor-prod-img" src="${imgUrl}" alt="${p.nombre}" onerror="this.style.display='none'">`:'<div class="vendor-prod-img" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:30px">📦</div>'}
