@@ -1199,49 +1199,73 @@ function renderProductsTable(){
 }
 
 let imgFilesOrdered=[];
+let imgDataUrls=[];
+let dragSrcIdx=null;
 
 function previewImgs(input){
-  const newFiles=Array.from(input.files).slice(0,5);
-  imgFilesOrdered=newFiles;
-  renderImgPreviews();
-}
-
-function renderImgPreviews(){
-  const wrap=document.getElementById('img-previews');
-  wrap.innerHTML='';
-  imgFilesOrdered.forEach((file,i)=>{
+  const files=Array.from(input.files).slice(0,5);
+  imgFilesOrdered=[];
+  imgDataUrls=[];
+  let loaded=0;
+  if(!files.length)return;
+  // Leer todos los archivos primero, luego renderizar
+  const tempUrls=new Array(files.length);
+  const tempFiles=new Array(files.length);
+  files.forEach((file,i)=>{
+    tempFiles[i]=file;
     const reader=new FileReader();
     reader.onload=e=>{
-      const div=document.createElement('div');
-      div.draggable=true;
-      div.dataset.idx=i;
-      div.style.cssText='position:relative;width:80px;height:80px;border-radius:6px;overflow:hidden;border:2px solid '+(i===0?'var(--gold)':'var(--steel)')+';cursor:grab;transition:opacity 0.2s,transform 0.2s;flex-shrink:0';
-      div.innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;pointer-events:none">
-        <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);font-size:9px;text-align:center;padding:3px;color:${i===0?'var(--gold)':'#fff'};font-weight:${i===0?'700':'400'}">${i===0?'⭐ Principal':'Img '+(i+1)}</div>
-        <div style="position:absolute;top:2px;right:2px;background:rgba(226,75,74,0.9);color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="removeImg(${i})">✕</div>
-        <div style="position:absolute;top:2px;left:2px;background:rgba(0,0,0,0.6);color:var(--gold);border-radius:3px;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center">⠿</div>`;
-      div.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',i);div.style.opacity='0.4';});
-      div.addEventListener('dragend',()=>{div.style.opacity='1';});
-      div.addEventListener('dragover',e=>{e.preventDefault();div.style.transform='scale(1.05)';});
-      div.addEventListener('dragleave',()=>{div.style.transform='scale(1)';});
-      div.addEventListener('drop',e=>{e.preventDefault();div.style.transform='scale(1)';dropImg(e,i);});
-      wrap.appendChild(div);
+      tempUrls[i]=e.target.result;
+      loaded++;
+      if(loaded===files.length){
+        imgFilesOrdered=tempFiles.slice();
+        imgDataUrls=tempUrls.slice();
+        renderImgPreviews();
+      }
     };
     reader.readAsDataURL(file);
   });
 }
 
-function dropImg(e,targetIdx){
-  const fromIdx=parseInt(e.dataTransfer.getData('text/plain'));
-  if(isNaN(fromIdx)||fromIdx===targetIdx)return;
-  const moved=imgFilesOrdered.splice(fromIdx,1)[0];
-  if(targetIdx===null){imgFilesOrdered.push(moved);}
-  else{imgFilesOrdered.splice(targetIdx,0,moved);}
-  renderImgPreviews();
+function renderImgPreviews(){
+  const wrap=document.getElementById('img-previews');
+  wrap.innerHTML='';
+  imgDataUrls.forEach((url,i)=>{
+    const div=document.createElement('div');
+    div.draggable=true;
+    div.dataset.idx=String(i);
+    div.style.cssText='position:relative;width:80px;height:80px;border-radius:6px;overflow:hidden;border:2px solid '+(i===0?'var(--gold)':'var(--steel)')+';cursor:grab;flex-shrink:0;user-select:none';
+    div.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;pointer-events:none">
+      <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);font-size:9px;text-align:center;padding:3px;color:${i===0?'var(--gold)':'#fff'};font-weight:${i===0?700:400}">${i===0?'⭐ Principal':'Img '+(i+1)}</div>
+      <div style="position:absolute;top:2px;right:2px;background:rgba(226,75,74,0.9);color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2" onclick="removeImg(${i})">✕</div>`;
+    div.addEventListener('dragstart',ev=>{
+      dragSrcIdx=parseInt(div.dataset.idx);
+      ev.dataTransfer.effectAllowed='move';
+      div.style.opacity='0.4';
+    });
+    div.addEventListener('dragend',()=>{div.style.opacity='1';dragSrcIdx=null;});
+    div.addEventListener('dragover',ev=>{ev.preventDefault();ev.dataTransfer.dropEffect='move';div.style.boxShadow='0 0 0 2px var(--gold)';});
+    div.addEventListener('dragleave',()=>{div.style.boxShadow='';});
+    div.addEventListener('drop',ev=>{
+      ev.preventDefault();
+      div.style.boxShadow='';
+      if(dragSrcIdx===null||dragSrcIdx===parseInt(div.dataset.idx))return;
+      const toIdx=parseInt(div.dataset.idx);
+      // reordenar arrays
+      const movedFile=imgFilesOrdered.splice(dragSrcIdx,1)[0];
+      const movedUrl=imgDataUrls.splice(dragSrcIdx,1)[0];
+      imgFilesOrdered.splice(toIdx,0,movedFile);
+      imgDataUrls.splice(toIdx,0,movedUrl);
+      dragSrcIdx=null;
+      renderImgPreviews();
+    });
+    wrap.appendChild(div);
+  });
 }
 
 function removeImg(idx){
   imgFilesOrdered.splice(idx,1);
+  imgDataUrls.splice(idx,1);
   renderImgPreviews();
 }
 
