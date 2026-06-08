@@ -2449,7 +2449,7 @@ function renderVendorProds(){
   else if(vendorOrden==='stock_desc')lista.sort((a,b)=>b.stock-a.stock);
   else if(vendorOrden==='destacado')lista.sort((a,b)=>(b.destacado?1:0)-(a.destacado?1:0));
   const list=document.getElementById('vendor-prods-list');
-  if(!lista.length){list.innerHTML='<div style="text-align:center;color:var(--muted);padding:3rem;grid-column:1/-1">No hay productos. <br><br><button class="register-vendor-btn" onclick="showVendorTab('agregar',document.querySelectorAll('.vendor-tab')[1])" style="margin-top:1rem">+ Agregar producto</button></div>';return;}
+  if(!lista.length){list.innerHTML='<div style="text-align:center;color:var(--muted);padding:3rem;grid-column:1/-1">No hay productos. <br><br><button class="register-vendor-btn" onclick="showVendorTab(\'agregar\',document.querySelectorAll(\'.vendor-tab\')[1])" style="margin-top:1rem">+ Agregar producto</button></div>';return;}
   const ahora=new Date();
   list.innerHTML=lista.map(p=>{
     const imgs=p.imagenes||[];
@@ -2700,8 +2700,7 @@ async function exportarFinanzasVendedor(){
   const{data:coms}=await db.from('comisiones').select('*').eq('vendedor_id',vendorData.id).order('created_at',{ascending:false});
   if(!coms||!coms.length){alert('Sin datos para exportar');return;}
   const rows=[['Fecha','Venta USD','Comision %','Comision USD','Ganancia Neta','Estado'],...coms.map(c=>[new Date(c.created_at).toLocaleDateString('es-EC'),c.monto_venta,c.pct_comision,c.monto_comision,(c.monto_venta-c.monto_comision).toFixed(2),c.estado])];
-  const csv=rows.map(r=>r.join(',')).join('
-');
+  const csv=rows.map(r=>r.join(',')).join('\n');
   const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,﻿'+encodeURIComponent(csv);a.download=`finanzas_${vendorData.nombre_tienda}_${new Date().toISOString().substring(0,10)}.csv`;a.click();
 }
 
