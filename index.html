@@ -360,6 +360,30 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
 @keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
 .toast.success{border-color:var(--green);color:var(--green)}
 .toast.error{border-color:var(--red);color:var(--red)}
+.brands-bar{background:#0D1B2A;padding:16px 0;border-bottom:1px solid rgba(201,168,76,0.2)}
+.brands-label{text-align:center;font-size:10px;letter-spacing:3px;color:#8A9BB0;margin-bottom:12px;font-family:Arial,sans-serif}
+.brands-track{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;padding:0 20px}
+.brand-item{display:flex;align-items:center;opacity:0.8;transition:opacity 0.2s}
+.brand-item:hover{opacity:1}
+.cat-logo{background:#FFD100;padding:3px 8px;border-radius:2px}
+.cat-text{font-family:"Arial Black",Arial,sans-serif;font-size:13px;font-weight:900;color:#000;letter-spacing:-0.5px;line-height:1}
+.cat-tri{width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:7px solid #FFD100}
+.kom-logo{padding:3px 8px;border:2px solid #E8B800;border-radius:2px}
+.kom-text{font-family:"Arial Black",Arial,sans-serif;font-size:12px;font-weight:900;color:#E8B800;letter-spacing:1px}
+.vol-logo{background:#003DAA;padding:4px 10px;border-radius:20px}
+.vol-text{font-family:Arial,sans-serif;font-size:12px;font-weight:700;color:#fff;letter-spacing:3px}
+.jd-logo{background:#367C2B;padding:4px 8px;border-radius:3px;border:2px solid #FFDE00}
+.jd-text{font-family:"Arial Black",Arial,sans-serif;font-size:11px;font-weight:900;color:#FFDE00;letter-spacing:0.5px}
+.hit-logo{padding:3px 8px;border-left:4px solid #E60012}
+.hit-text{font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:2px}
+.hyu-logo{background:#002C5F;padding:4px 8px;border-radius:3px;display:flex;align-items:center;gap:5px}
+.hyu-h{font-family:"Arial Black",Arial,sans-serif;font-size:14px;font-weight:900;color:#002C5F;background:#fff;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-style:italic}
+.hyu-text{font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:#fff;letter-spacing:2px}
+.doo-logo{padding:3px 8px;border-bottom:3px solid #E2001A}
+.doo-text{font-family:Arial,sans-serif;font-size:12px;font-weight:700;color:#fff;letter-spacing:1px}
+.case-logo{background:#D9000D;padding:4px 10px;border-radius:2px}
+.case-text{font-family:"Arial Black",Arial,sans-serif;font-size:13px;font-weight:900;color:#fff;letter-spacing:2px}
+.brand-div{width:1px;height:20px;background:rgba(255,255,255,0.1)}
 @media(max-width:768px){.nav-links{display:none}.about-grid,.contact-grid{grid-template-columns:1fr}.about-feats{grid-template-columns:1fr}.detail-layout{grid-template-columns:1fr;gap:1rem;padding:1rem}.detail-gallery{flex-direction:column-reverse}.gallery-thumbs{flex-direction:row;width:100%;overflow-x:auto}.gallery-thumb{flex-shrink:0}.gallery-main{max-height:320px}.prods-grid{grid-template-columns:1fr}.spec-key{min-width:110px}.spec-val{max-width:calc(100% - 120px)}}
 </style>
 </head>
@@ -418,7 +442,27 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
 
 <!-- HOME PAGE -->
 <div id="page-home" class="page active">
-  <section class="hero">
+  <div class="brands-bar">
+  <p class="brands-label">COMPATIBLE CON</p>
+  <div class="brands-track">
+    <div class="brand-item"><div class="cat-logo"><span class="cat-text">CAT</span></div><div class="cat-tri"></div></div>
+    <div class="brand-div"></div>
+    <div class="brand-item"><div class="kom-logo"><span class="kom-text">KOMATSU</span></div></div>
+    <div class="brand-div"></div>
+    <div class="brand-item"><div class="vol-logo"><span class="vol-text">VOLVO</span></div></div>
+    <div class="brand-div"></div>
+    <div class="brand-item"><div class="jd-logo"><span class="jd-text">JOHN DEERE</span></div></div>
+    <div class="brand-div"></div>
+    <div class="brand-item"><div class="hit-logo"><span class="hit-text">HITACHI</span></div></div>
+    <div class="brand-div"></div>
+    <div class="brand-item"><div class="hyu-logo"><span class="hyu-h">H</span><span class="hyu-text">HYUNDAI</span></div></div>
+    <div class="brand-div"></div>
+    <div class="brand-item"><div class="doo-logo"><span class="doo-text">DOOSAN</span></div></div>
+    <div class="brand-div"></div>
+    <div class="brand-item"><div class="case-logo"><span class="case-text">CASE</span></div></div>
+  </div>
+</div>
+<section class="hero">
     <div class="hero-gear" style="right:-60px;top:-60px">⚙</div>
     <div class="hero-gear" style="left:-40px;bottom:-60px">⚙</div>
     <div class="hero-badge" id="hero-badge">Purchases · Sale · Manufacturing</div>
