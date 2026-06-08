@@ -270,8 +270,8 @@ section{padding:4rem 2rem}
 .spec-val{color:var(--white);font-weight:500;word-break:break-word;overflow-wrap:break-word;max-width:calc(100% - 140px)}
 
 /* AUTH MODAL */
-.auth-modal-ov{display:none!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(0,0,0,0.88)!important;z-index:99999!important;align-items:center!important;justify-content:center!important;padding:1rem!important}
-.auth-modal-ov.open{display:flex!important}
+.auth-modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;padding:1rem}
+.auth-modal-ov.open{display:flex}
 .auth-modal{background:var(--navy);border:1px solid var(--gold);border-radius:12px;max-width:440px;width:100%;padding:2rem;max-height:90vh;overflow-y:auto}
 .auth-tabs{display:flex;margin-bottom:1.5rem;border-bottom:1px solid var(--steel)}
 .auth-tab{flex:1;background:transparent;border:none;color:var(--muted);padding:10px;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s}
@@ -327,8 +327,8 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
 .cart-fab{background:var(--gold);color:#0A0C10;border:none;width:58px;height:58px;border-radius:50%;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,0.4);transition:transform 0.2s;position:relative;display:flex;align-items:center;justify-content:center}
 .cart-fab:hover{transform:scale(1.1)}
 .cart-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;border-radius:50%;width:22px;height:22px;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center}
-.modal-ov{display:none!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100vh!important;background:rgba(0,0,0,0.88)!important;z-index:99998!important;align-items:center!important;justify-content:center!important;padding:1rem!important}
-.modal-ov.open{display:flex!important}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;padding:1rem}
+.modal-ov.open{display:flex}
 .modal-box{background:var(--navy);border:1px solid var(--gold);border-radius:12px;max-width:480px;width:100%;padding:2rem;max-height:85vh;overflow-y:auto}
 .modal-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--gold);margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:8px}
 .modal-empty{text-align:center;color:var(--muted);padding:2rem 0;font-size:14px}
