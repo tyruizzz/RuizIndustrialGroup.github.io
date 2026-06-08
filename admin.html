@@ -1079,7 +1079,7 @@ async function loadVisitas(){
 }
 
 async function loadProducts(){
-  const{data}=await db.from('productos').select('*').order('created_at',{ascending:false});
+  const{data}=await db.from('productos').select('*').is('vendedor_id',null).order('created_at',{ascending:false});
   allProducts=data||[];
   renderProductsTable();
   document.getElementById('prod-count').textContent=allProducts.length+' productos';
