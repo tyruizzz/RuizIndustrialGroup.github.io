@@ -219,6 +219,7 @@ section{padding:4rem 2rem}
 
 /* DETAIL PAGE */
 #page-detail{background:var(--dark);min-height:100vh}
+.page{position:relative;z-index:1}
 .detail-breadcrumb{padding:1rem 2rem;background:var(--navy);border-bottom:1px solid var(--steel);display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
 .detail-breadcrumb span{cursor:pointer;transition:color 0.2s}
 .detail-breadcrumb span:hover{color:var(--gold)}
@@ -270,7 +271,7 @@ section{padding:4rem 2rem}
 .spec-val{color:var(--white);font-weight:500;word-break:break-word;overflow-wrap:break-word;max-width:calc(100% - 140px)}
 
 /* AUTH MODAL */
-.auth-modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.auth-modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;padding:1rem}
 .auth-modal-ov.open{display:flex}
 .auth-modal{background:var(--navy);border:1px solid var(--gold);border-radius:12px;max-width:440px;width:100%;padding:2rem;max-height:90vh;overflow-y:auto}
 .auth-tabs{display:flex;margin-bottom:1.5rem;border-bottom:1px solid var(--steel)}
@@ -327,7 +328,7 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
 .cart-fab{background:var(--gold);color:#0A0C10;border:none;width:58px;height:58px;border-radius:50%;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,0.4);transition:transform 0.2s;position:relative;display:flex;align-items:center;justify-content:center}
 .cart-fab:hover{transform:scale(1.1)}
 .cart-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;border-radius:50%;width:22px;height:22px;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center}
-.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:300;align-items:center;justify-content:center;padding:1rem}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9998;align-items:center;justify-content:center;padding:1rem}
 .modal-ov.open{display:flex}
 .modal-box{background:var(--navy);border:1px solid var(--gold);border-radius:12px;max-width:480px;width:100%;padding:2rem;max-height:85vh;overflow-y:auto}
 .modal-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--gold);margin-bottom:1.5rem;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:8px}
