@@ -459,7 +459,7 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
       <!-- Tabla vendedores -->
       <div style="overflow-x:auto">
         <table class="vend-table">
-          <thead><tr><th>Tienda</th><th>Contacto</th><th>Ciudad</th><th>RUC/CI</th><th>Banco</th><th>Comisión</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>Tienda</th><th>Contacto</th><th>Ciudad</th><th>RUC/CI</th><th>Banco</th><th>Comisión</th><th>Estado</th><th>Cuenta</th><th>Fecha</th><th>Acciones</th></tr></thead>
           <tbody id="vendedores-list"><tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2rem">Cargando...</td></tr></tbody>
         </table>
       </div>
@@ -800,16 +800,61 @@ function renderVendedores(){
     <td style="font-size:12px">${v.banco||'-'}</td>
     <td style="color:var(--gold);font-weight:700">${v.comision_pct||10}%</td>
     <td><span class="vend-badge ${v.estado}">${v.estado}</span></td>
+    <td>${v.cuenta_bloqueada?'<span style="color:var(--red);font-size:11px">🔒 Bloqueada</span>':'<span style="color:var(--green);font-size:11px">✅ Activa</span>'}</td>
     <td style="font-size:11px;color:var(--muted)">${new Date(v.created_at).toLocaleDateString('es-EC')}</td>
     <td><div class="vend-actions">
       ${v.estado==='pendiente'?`<button class="vend-btn aprobar" onclick="cambiarEstadoVendedor('${v.id}','aprobado')">✅ Aprobar</button><button class="vend-btn suspender" onclick="rechazarVendedor('${v.id}')">❌ Rechazar</button>`:''}
       ${v.estado==='aprobado'?`<button class="vend-btn suspender" onclick="cambiarEstadoVendedor('${v.id}','suspendido')">🚫 Suspender</button>`:''}
       ${v.estado==='suspendido'?`<button class="vend-btn aprobar" onclick="cambiarEstadoVendedor('${v.id}','aprobado')">✅ Reactivar</button>`:''}
+      ${v.estado==='aprobado'?`<button class="vend-btn" style="background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid var(--gold)" onclick="toggleBloqueoVendedor('${v.id}',${v.cuenta_bloqueada?true:false})">${v.cuenta_bloqueada?'🔓 Activar':'🔒 Bloquear'}</button>`:''}
       ${v.estado!=='pendiente'?`<button class="vend-btn" style="background:rgba(226,75,74,0.15);color:var(--red);border:1px solid var(--red)" onclick="eliminarVendedor('${v.id}','${v.nombre_tienda.replace(/'/g,'')}')">🗑️</button>`:''}
       <button class="vend-btn ver" onclick="verDetalleVendedor('${v.id}')">👁️ Ver</button>
       <a href="https://wa.me/${(v.telefono||'').replace(/[^0-9]/g,'')}" target="_blank" class="vend-btn" style="background:var(--green);color:#fff;text-decoration:none;padding:5px 12px">💬</a>
     </div></td>
   </tr>`).join('');
+}
+
+async function toggleBloqueoVendedor(id,bloqueado){
+  const v=allVendedores.find(x=>x.id===id);
+  if(!v)return;
+  const accion=bloqueado?'activar':'bloquear';
+  if(!confirm(`¿${accion.charAt(0).toUpperCase()+accion.slice(1)} la cuenta de "${v.nombre_tienda}"?`))return;
+  const{error}=await db.from('vendedores').update({cuenta_bloqueada:!bloqueado}).eq('id',id);
+  if(error){alert('Error: '+error.message);return;}
+  v.cuenta_bloqueada=!bloqueado;
+  renderVendedores();
+  // Notificar al vendedor
+  if(v.telefono){
+    const tel=v.telefono.replace(/[^0-9]/g,'');
+    const msg=bloqueado
+      ?`✅ Hola ${v.nombre_tienda}, tu cuenta en Ruiz PSM ha sido *reactivada*. Ya puedes gestionar tus productos y recibir pedidos nuevamente.`
+      :`⚠️ Hola ${v.nombre_tienda}, tu cuenta en Ruiz PSM ha sido *suspendida temporalmente*. Por favor contacta al administrador para regularizar tu situación.`;
+    if(confirm('¿Notificar al vendedor por WhatsApp?'))window.open('https://wa.me/'+tel+'?text='+msg,'_blank');
+  }
+}
+
+async function verificarCortesVendedores(){
+  const{data:vendedores}=await db.from('vendedores').select('*').eq('estado','aprobado');
+  if(!vendedores)return;
+  const ahora=new Date();
+  const avisos=[];
+  for(const v of vendedores){
+    if(!v.fecha_primera_venta)continue;
+    const inicio=new Date(v.fecha_primera_venta);
+    const meses=Math.floor((ahora-inicio)/(30*24*60*60*1000));
+    if(meses<1)continue;
+    const{data:coms}=await db.from('comisiones').select('monto_comision').eq('vendedor_id',v.id).eq('estado','pendiente');
+    if(!coms||!coms.length)continue;
+    const pendiente=coms.reduce((a,c)=>a+parseFloat(c.monto_comision),0);
+    if(pendiente>0)avisos.push({vendedor:v,pendiente});
+  }
+  if(avisos.length>0){
+    const msg=avisos.map(a=>`• ${a.vendedor.nombre_tienda}: $${a.pendiente.toFixed(2)}`).join('\n');
+    alert('⚠️ Vendedores con comisiones pendientes:\n\n'+msg+'\n\nRevisa la pestaña de Vendedores para gestionar.');
+    // Mostrar badge
+    const badge=document.getElementById('vendedores-badge');
+    if(badge){badge.textContent=avisos.length;badge.style.display='inline-flex';}
+  }
 }
 
 async function rechazarVendedor(id){
@@ -968,7 +1013,7 @@ function showTab(tab,el){
   if(tab==='vendedores')loadVendedores();
 }
 
-async function loadAll(){await loadProducts();await loadPedidos();await loadConfig();await loadVisitas();await loadVendedores();renderDashboard();}
+async function loadAll(){await loadProducts();await loadPedidos();await loadConfig();await loadVisitas();await loadVendedores();renderDashboard();setTimeout(verificarCortesVendedores,3000);}
 
 async function loadVisitas(){
   try{
