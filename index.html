@@ -822,6 +822,7 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
         <div class="vendor-tab" onclick="showVendorTab('finanzas',this)">💰 Finanzas</div>
         <div class="vendor-tab" onclick="showVendorTab('estadisticas',this)">📊 Estadísticas</div>
         <div class="vendor-tab" onclick="showVendorTab('perfil',this)">🏪 Mi Tienda</div>
+        <div class="vendor-tab" onclick="showVendorTab('pagar',this)">💳 Pagar Comisión</div>
         <div class="vendor-tab" onclick="showVendorTab('seguridad',this)">🔐 Seguridad</div>
       </div>
 
@@ -1072,6 +1073,56 @@ footer{background:#080A0D;border-top:1px solid var(--steel);padding:2rem;text-al
           </div>
           <div style="margin-top:1.5rem">
             <button class="register-vendor-btn" onclick="guardarPerfilVendedor()" style="padding:14px 30px">💾 Guardar perfil</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGAR COMISIÓN -->
+      <div id="vtab-pagar" class="vendor-tab-content">
+        <div class="vendor-form">
+          <div id="vendor-pago-alert" class="vendor-alert"></div>
+
+          <!-- Resumen de deuda -->
+          <div id="vendor-pago-resumen" style="background:rgba(226,75,74,0.08);border:1px solid rgba(226,75,74,0.3);border-radius:8px;padding:1.25rem;margin-bottom:1.5rem;display:none">
+            <div style="font-size:13px;color:var(--muted);margin-bottom:4px">Comisiones pendientes de pago</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:var(--red)" id="vendor-deuda-total">$0.00</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px">Corresponde al 2% de tus ventas realizadas a través de Ruiz PSM</div>
+          </div>
+
+          <!-- Datos bancarios de Ruiz PSM -->
+          <div class="vendor-section-title">🏦 Realizar pago a Ruiz PSM</div>
+          <div id="vendor-banco-info" style="background:rgba(37,211,102,0.07);border:1px solid rgba(37,211,102,0.3);border-radius:8px;padding:1.25rem;margin-bottom:1.5rem">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Transfiere el monto de tu deuda a la siguiente cuenta:</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px" id="vendor-banco-datos">
+              <div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:12px">Cargando datos bancarios...</div>
+            </div>
+          </div>
+
+          <!-- Enviar baucher -->
+          <div class="vendor-section-title">📤 Enviar comprobante de pago</div>
+          <div style="background:var(--dark);border:1px solid var(--steel);border-radius:8px;padding:1.25rem;margin-bottom:1.5rem">
+            <div style="font-size:13px;color:var(--light);margin-bottom:1rem">Después de realizar la transferencia, envía el comprobante por WhatsApp a Ruiz PSM:</div>
+            <div id="vendor-wa-pago" style="margin-bottom:1rem"></div>
+            <div class="vendor-fg">
+              <label>Número de comprobante (opcional)</label>
+              <input type="text" id="vendor-comprobante-num" placeholder="Ingresa el número de comprobante">
+            </div>
+          </div>
+
+          <!-- Botón pago realizado -->
+          <button class="register-vendor-btn" onclick="notificarPagoRealizado()" style="width:100%;padding:14px;font-size:15px;background:linear-gradient(135deg,#25D366,#128C7E)">
+            ✅ Ya realicé el pago — Notificar a Ruiz PSM
+          </button>
+        </div>
+
+        <!-- Modal animación pago realizado -->
+        <div id="vendor-pago-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;text-align:center;padding:2rem">
+          <div style="background:var(--navy);border:1px solid var(--green);border-radius:16px;padding:3rem 2rem;max-width:400px;width:100%">
+            <div style="font-size:64px;margin-bottom:1rem" id="vendor-pago-icon">⏳</div>
+            <div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:var(--white);margin-bottom:0.5rem">¡Pago Notificado!</div>
+            <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:1.5rem">Tu comprobante fue enviado a Ruiz PSM. Realizaremos la verificación y tu cuenta estará completamente activa una vez confirmado el pago.</div>
+            <div style="background:rgba(37,211,102,0.1);border:1px solid var(--green);border-radius:8px;padding:1rem;font-size:12px;color:var(--green);margin-bottom:1.5rem">🔒 Mientras tanto puedes seguir usando la plataforma normalmente</div>
+            <button onclick="document.getElementById('vendor-pago-modal').style.display='none'" style="background:var(--gold);border:none;color:#0A0C10;padding:12px 30px;border-radius:6px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;cursor:pointer;letter-spacing:1px">Continuar →</button>
           </div>
         </div>
       </div>
@@ -2477,6 +2528,59 @@ function validatePhoneField(numId){
   el.value=el.value.replace(/[^0-9]/g,'');
 }
 
+/* ===== VENDOR PAGO ===== */
+async function loadPagoTab(){
+  if(!vendorData)return;
+  // Cargar deuda pendiente
+  const{data:coms}=await db.from('comisiones').select('monto_comision').eq('vendedor_id',vendorData.id).eq('estado','pendiente');
+  const deuda=coms?coms.reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
+  const resumen=document.getElementById('vendor-pago-resumen');
+  const deudaEl=document.getElementById('vendor-deuda-total');
+  if(resumen){resumen.style.display=deuda>0?'block':'none';}
+  if(deudaEl)deudaEl.textContent='$'+fmtPrice(deuda);
+  // Cargar datos bancarios
+  const{data:cfg}=await db.from('configuracion').select('banco_nombre,banco_tipo,banco_cuenta,banco_titular,banco_cedula,whatsapp').eq('id','main').maybeSingle();
+  const datosEl=document.getElementById('vendor-banco-datos');
+  const waEl=document.getElementById('vendor-wa-pago');
+  if(cfg&&cfg.banco_cuenta&&datosEl){
+    datosEl.innerHTML=`
+      <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;margin-bottom:2px">Banco</div><div style="color:var(--white);font-weight:600">${cfg.banco_nombre}</div></div>
+      <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;margin-bottom:2px">Tipo</div><div style="color:var(--white);font-weight:600">${cfg.banco_tipo}</div></div>
+      <div style="grid-column:1/-1"><div style="color:var(--muted);font-size:10px;text-transform:uppercase;margin-bottom:2px">N° Cuenta</div><div style="color:var(--gold);font-weight:700;font-size:18px;letter-spacing:2px">${cfg.banco_cuenta}</div></div>
+      <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;margin-bottom:2px">Titular</div><div style="color:var(--white);font-weight:600">${cfg.banco_titular}</div></div>
+      <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;margin-bottom:2px">Cédula/RUC</div><div style="color:var(--white)">${cfg.banco_cedula}</div></div>
+      ${deuda>0?`<div style="grid-column:1/-1;background:rgba(201,168,76,0.1);border:1px solid var(--gold);border-radius:6px;padding:10px;text-align:center;margin-top:4px"><div style="font-size:11px;color:var(--muted)">Monto a transferir</div><div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:var(--gold)">$${fmtPrice(deuda)}</div></div>`:''}`;
+  } else if(datosEl){
+    datosEl.innerHTML='<div style="grid-column:1/-1;color:var(--muted);font-size:12px">Los datos bancarios serán configurados pronto por el administrador.</div>';
+  }
+  if(cfg&&cfg.whatsapp&&waEl){
+    const wa=cfg.whatsapp.replace(/[^0-9]/g,'');
+    const comp=document.getElementById('vendor-comprobante-num')?.value||'';
+    const msg=`Hola Ruiz PSM, soy ${vendorData.nombre_tienda}. Acabo de realizar el pago de mi comisión pendiente por $${fmtPrice(deuda)}.${comp?' Comprobante: '+comp:''}`;
+    waEl.innerHTML=`<a href="https://wa.me/${wa}?text=${encodeURIComponent(msg)}" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--green);color:#fff;padding:12px;border-radius:6px;text-decoration:none;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      Enviar comprobante por WhatsApp
+    </a>`;
+  }
+}
+
+async function notificarPagoRealizado(){
+  // Mostrar modal de animación
+  const modal=document.getElementById('vendor-pago-modal');
+  if(modal){
+    modal.style.display='flex';
+    const icon=document.getElementById('vendor-pago-icon');
+    // Animación
+    const frames=['⏳','✅','🎉'];
+    let i=0;
+    const anim=setInterval(()=>{
+      if(icon)icon.textContent=frames[i%frames.length];
+      i++;
+      if(i>=6)clearInterval(anim);
+    },400);
+  }
+}
+
 /* ===== VENDOR CONTACT ===== */
 async function loadVendorInfo(vendorId){
   const box=document.getElementById('vendor-info-box');
@@ -2520,6 +2624,7 @@ function showVendorTab(tab,el){
   if(tab==='estadisticas')loadVendorEstadisticas();
   if(tab==='productos')loadVendorProducts();
   if(tab==='seguridad')loadVendorAccesos();
+  if(tab==='pagar')loadPagoTab();
 }
 
 // ── PANEL PRINCIPAL ───────────────────────────────────────────────────────
