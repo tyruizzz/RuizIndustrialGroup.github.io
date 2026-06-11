@@ -411,25 +411,62 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
             <div class="fg"><label>Subtítulo</label><input type="text" id="c-hero-sub" placeholder="Calidad garantizada y los mejores precios del mercado"></div>
           </div>
 
-          <!-- DATOS BANCARIOS -->
+          <!-- MÉTODOS DE PAGO -->
           <div class="card">
-            <div class="card-title">🏦 Datos Bancarios (para recibir pagos)</div>
-            <div style="background:rgba(37,211,102,0.07);border:1px solid rgba(37,211,102,0.3);border-radius:6px;padding:10px 14px;margin-bottom:1rem;font-size:12px;color:var(--muted)">
-              🔒 Estos datos se mostrarán al cliente cuando confirme su pedido para hacer la transferencia.
+            <div class="card-title">💳 Métodos de Pago (para recibir pagos de clientes y vendedores)</div>
+            <div style="background:rgba(37,211,102,0.07);border:1px solid rgba(37,211,102,0.3);border-radius:6px;padding:10px 14px;margin-bottom:1.2rem;font-size:12px;color:var(--muted)">
+              🔒 Estos datos se mostrarán al cliente al confirmar su pedido y al vendedor al pagar su comisión. Los datos de Pichincha y PNC están fijos. Solo configura el email de PayPal.
             </div>
-            <div class="form-grid">
-              <div class="fg"><label>Banco</label><input type="text" id="c-banco" placeholder="Ej: Banco Pichincha"></div>
-              <div class="fg"><label>Tipo de cuenta</label>
-                <select id="c-banco-tipo" style="background:var(--dark);border:1px solid var(--steel);color:var(--light);padding:10px;border-radius:6px;width:100%;font-size:13px">
-                  <option value="">Seleccionar...</option>
-                  <option value="Ahorros">Ahorros</option>
-                  <option value="Corriente">Corriente</option>
-                </select>
+
+            <!-- PICHINCHA (fijo) -->
+            <div style="background:rgba(255,255,255,0.03);border:1px solid var(--steel);border-radius:8px;padding:1rem;margin-bottom:1rem">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <span style="font-size:18px">🇪🇨</span>
+                <div style="font-size:13px;font-weight:700;color:var(--light)">Banco Pichincha — Ecuador</div>
+                <span style="font-size:10px;background:rgba(37,211,102,0.15);color:var(--green);padding:2px 8px;border-radius:10px;font-weight:600">ACTIVO</span>
               </div>
-              <div class="fg"><label>Número de cuenta</label><input type="text" id="c-banco-cuenta" placeholder="Número de cuenta"></div>
-              <div class="fg"><label>Titular de la cuenta</label><input type="text" id="c-banco-titular" placeholder="Nombre completo del titular"></div>
-              <div class="fg full"><label>Cédula / RUC del titular</label><input type="text" id="c-banco-cedula" placeholder="Cédula o RUC"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;color:var(--muted)">
+                <div><span style="text-transform:uppercase;font-size:10px">Cuenta de Ahorros</span><br><strong style="color:var(--gold);font-size:15px">2209803590</strong></div>
+                <div><span style="text-transform:uppercase;font-size:10px">Titular</span><br><span style="color:var(--light)">Cristhian Fabricio Ruiz Loyola</span></div>
+                <div><span style="text-transform:uppercase;font-size:10px">Cédula</span><br><span style="color:var(--light)">0941113516</span></div>
+              </div>
             </div>
+
+            <!-- PNC BANK (fijo) -->
+            <div style="background:rgba(255,255,255,0.03);border:1px solid var(--steel);border-radius:8px;padding:1rem;margin-bottom:1rem">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <span style="font-size:18px">🇺🇸</span>
+                <div style="font-size:13px;font-weight:700;color:var(--light)">PNC Bank — USA</div>
+                <span style="font-size:10px;background:rgba(37,211,102,0.15);color:var(--green);padding:2px 8px;border-radius:10px;font-weight:600">ACTIVO</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;color:var(--muted)">
+                <div style="grid-column:1/-1"><span style="text-transform:uppercase;font-size:10px">Business Checking Plus X9757</span></div>
+                <div><span style="text-transform:uppercase;font-size:10px">N° Routing</span><br><strong style="color:var(--gold)">031207607</strong></div>
+                <div><span style="text-transform:uppercase;font-size:10px">N° Cuenta</span><br><strong style="color:var(--gold)">8145339757</strong></div>
+                <div><span style="text-transform:uppercase;font-size:10px">ACH Nacional</span><br><span style="color:var(--light)">043000096</span></div>
+                <div><span style="text-transform:uppercase;font-size:10px">SWIFT</span><br><span style="color:var(--light)">PNCCUS33XXX</span></div>
+              </div>
+            </div>
+
+            <!-- PAYPAL (configurable) -->
+            <div style="background:rgba(255,255,255,0.03);border:1px solid var(--steel);border-radius:8px;padding:1rem;margin-bottom:0.5rem">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <span style="font-size:18px">💳</span>
+                <div style="font-size:13px;font-weight:700;color:var(--light)">PayPal</div>
+                <span id="paypal-status-badge" style="font-size:10px;background:rgba(226,75,74,0.15);color:var(--red);padding:2px 8px;border-radius:10px;font-weight:600">SIN CONFIGURAR</span>
+              </div>
+              <div class="fg" style="margin:0">
+                <label>Email de PayPal</label>
+                <input type="email" id="c-paypal-email" placeholder="tucorreo@paypal.com" oninput="document.getElementById('paypal-status-badge').textContent=this.value?'ACTIVO':'SIN CONFIGURAR';document.getElementById('paypal-status-badge').style.background=this.value?'rgba(37,211,102,0.15)':'rgba(226,75,74,0.15)';document.getElementById('paypal-status-badge').style.color=this.value?'var(--green)':'var(--red)'">
+              </div>
+            </div>
+
+            <!-- campos ocultos legacy para compatibilidad saveConfig -->
+            <input type="hidden" id="c-banco" value="Banco Pichincha">
+            <input type="hidden" id="c-banco-tipo" value="Ahorros">
+            <input type="hidden" id="c-banco-cuenta" value="2209803590">
+            <input type="hidden" id="c-banco-titular" value="Cristhian Fabricio Ruiz Loyola">
+            <input type="hidden" id="c-banco-cedula" value="0941113516">
           </div>
 
           <button class="btn-gold" onclick="saveConfig()" style="margin-bottom:2rem">💾 Guardar toda la configuración</button>
@@ -1578,6 +1615,13 @@ async function loadConfig(){
     if(document.getElementById('c-banco-cuenta'))document.getElementById('c-banco-cuenta').value=data.banco_cuenta||'';
     if(document.getElementById('c-banco-titular'))document.getElementById('c-banco-titular').value=data.banco_titular||'';
     if(document.getElementById('c-banco-cedula'))document.getElementById('c-banco-cedula').value=data.banco_cedula||'';
+    // PayPal
+    const ppEl=document.getElementById('c-paypal-email');
+    const ppBadge=document.getElementById('paypal-status-badge');
+    if(ppEl&&data.paypal_email){
+      ppEl.value=data.paypal_email;
+      if(ppBadge){ppBadge.textContent='ACTIVO';ppBadge.style.background='rgba(37,211,102,0.15)';ppBadge.style.color='var(--green)';}
+    }
     updatePreview();
   }
   setupConfigListeners();
@@ -1629,7 +1673,8 @@ async function saveConfig(){
     banco_tipo:document.getElementById('c-banco-tipo')?.value||'',
     banco_cuenta:document.getElementById('c-banco-cuenta')?.value.trim()||'',
     banco_titular:document.getElementById('c-banco-titular')?.value.trim()||'',
-    banco_cedula:document.getElementById('c-banco-cedula')?.value.trim()||''
+    banco_cedula:document.getElementById('c-banco-cedula')?.value.trim()||'',
+    paypal_email:document.getElementById('c-paypal-email')?.value.trim()||''
   };
   const{error}=await db.from('configuracion').update(data).eq('id','main');
   if(error){showConfigAlert('❌ Error al guardar: '+error.message,'error');return;}
