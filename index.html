@@ -2534,7 +2534,8 @@ async function loadPagoTab(){
   if(resumen){resumen.style.display=deuda>0?'block':'none';}
   if(deudaEl)deudaEl.textContent='$'+fmtPrice(deuda);
   // Cargar datos bancarios
-  const{data:cfg}=await db.from('configuracion').select('banco_nombre,banco_tipo,banco_cuenta,banco_titular,banco_cedula,whatsapp').eq('id','main').maybeSingle();
+  const{data:cfg,error:cfgErr}=await db.from('configuracion').select('banco_nombre,banco_tipo,banco_cuenta,banco_titular,banco_cedula,whatsapp').eq('id','main').single();
+  console.log('cfg:', cfg, 'error:', cfgErr);
   const datosEl=document.getElementById('vendor-banco-datos');
   const waEl=document.getElementById('vendor-wa-pago');
   if(cfg&&cfg.banco_cuenta&&datosEl){
