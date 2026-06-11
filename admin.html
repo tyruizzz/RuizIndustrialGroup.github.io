@@ -478,7 +478,7 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
         <div class="stat-card"><div class="stat-num" id="v-total-vend">0</div><div class="stat-label">Total Vendedores</div></div>
         <div class="stat-card"><div class="stat-num" id="v-pend-vend">0</div><div class="stat-label">Pendientes</div></div>
         <div class="stat-card"><div class="stat-num" id="v-aprob-vend">0</div><div class="stat-label">Aprobados</div></div>
-        <div class="stat-card"><div class="stat-num" id="v-total-com">$0</div><div class="stat-label">Comisiones totales</div></div>
+        <div class="stat-card"><div class="stat-num" id="v-total-com">$0</div><div class="stat-label">Comisiones pendientes</div></div>
       </div>
 
       <!-- Tabla vendedores -->
@@ -814,9 +814,13 @@ function renderVendedoresStats(){
   document.getElementById('v-total-vend').textContent=total;
   document.getElementById('v-pend-vend').textContent=pend;
   document.getElementById('v-aprob-vend').textContent=aprob;
-  db.from('comisiones').select('monto_comision').then(({data})=>{
-    const total=data?data.reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
-    document.getElementById('v-total-com').textContent='$'+fmtPrice(total);
+  db.from('comisiones').select('monto_comision,estado').eq('estado','pendiente').then(({data})=>{
+    const totalPendiente=data?data.reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
+    const el=document.getElementById('v-total-com');
+    if(el){
+      el.textContent='$'+fmtPrice(totalPendiente);
+      el.style.color=totalPendiente>0?'var(--red)':'var(--green)';
+    }
   });
 }
 
