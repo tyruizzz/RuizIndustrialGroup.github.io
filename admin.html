@@ -549,7 +549,7 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
           </div>
           <div style="overflow-x:auto">
             <table class="vend-com-table">
-              <thead><tr><th>Fecha</th><th>Venta</th><th>%</th><th>Comisión</th><th>Estado</th><th>Acción</th></tr></thead>
+              <thead><tr><th style="padding-left:10px">Fecha</th><th>Venta</th><th>%</th><th>Comisión</th><th>Estado</th><th>Acción</th></tr></thead>
               <tbody id="vd-comisiones-list"><tr><td colspan="6" style="text-align:center;color:var(--muted)">Sin comisiones</td></tr></tbody>
             </table>
           </div>
@@ -1080,15 +1080,68 @@ async function guardarComisionVendedor(){
 async function cargarComisionesVendedor(vendedorId){
   const{data}=await db.from('comisiones').select('*').eq('vendedor_id',vendedorId).order('created_at',{ascending:false});
   const tbody=document.getElementById('vd-comisiones-list');
-  if(!data||!data.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted)">Sin comisiones aún</td></tr>';return;}
-  tbody.innerHTML=data.map(c=>`<tr>
-    <td style="font-size:11px;color:var(--muted)">${c.pedido_id?c.pedido_id.substring(0,8)+'...':'-'}</td>
-    <td>$${fmtPrice(c.monto_venta)}</td>
-    <td>${c.pct_comision}%</td>
-    <td style="color:var(--gold);font-weight:700">$${fmtPrice(c.monto_comision)}</td>
-    <td><span class="vend-badge ${c.estado}">${c.estado}</span></td>
-    <td>${c.estado==='pendiente'?`<button class="vend-btn aprobar" onclick="pagarComision('${c.id}')" style="font-size:10px;padding:3px 8px">💳 Pagar</button>`:'-'}</td>
-  </tr>`).join('');
+  if(!data||!data.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:1rem">Sin comisiones aún</td></tr>';return;}
+  // Agrupar por mes
+  const porMes={};
+  data.forEach(c=>{
+    const d=new Date(c.created_at);
+    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const label=d.toLocaleDateString('es-EC',{month:'long',year:'numeric'});
+    if(!porMes[key])porMes[key]={label,items:[],total:0,totalPendiente:0};
+    porMes[key].items.push(c);
+    porMes[key].total+=parseFloat(c.monto_comision);
+    if(c.estado==='pendiente')porMes[key].totalPendiente+=parseFloat(c.monto_comision);
+  });
+  let html='';
+  Object.entries(porMes).sort((a,b)=>b[0].localeCompare(a[0])).forEach(([key,mes])=>{
+    const todoPagado=mes.items.every(c=>c.estado!=='pendiente');
+    html+=`<tr style="background:rgba(30,58,95,0.5)">
+      <td colspan="5" style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--gold);padding:8px 10px;text-transform:capitalize">
+        📅 ${mes.label}
+        ${mes.totalPendiente>0?`<span style="margin-left:8px;color:var(--red);font-size:11px">— $${fmtPrice(mes.totalPendiente)} pendiente</span>`:'<span style="margin-left:8px;color:var(--green);font-size:11px">✅ Al día</span>'}
+      </td>
+      <td style="padding:8px 10px">
+        ${mes.totalPendiente>0?`<button class="vend-btn aprobar" onclick="pagarMesComision('${key}','${vendedorId}')" style="font-size:10px;padding:3px 8px;background:var(--green)">💳 Pagar mes</button>`:''}
+      </td>
+    </tr>`;
+    mes.items.forEach(c=>{
+      const fecha=new Date(c.created_at).toLocaleDateString('es-EC');
+      const estado=c.estado;
+      html+=`<tr style="opacity:${estado==='pendiente'?1:0.6}">
+        <td style="font-size:11px;color:var(--muted);padding-left:20px">${fecha}</td>
+        <td>$${fmtPrice(c.monto_venta)}</td>
+        <td>${c.pct_comision}%</td>
+        <td style="color:${estado==='pendiente'?'var(--gold)':'var(--muted)'};font-weight:700">$${fmtPrice(c.monto_comision)}</td>
+        <td><span class="vend-badge ${estado}" style="${estado==='pagado'?'background:rgba(37,211,102,0.15);color:var(--green)':estado==='perdonado'?'background:rgba(138,155,176,0.15);color:var(--muted)':''}">${estado==='pagado'?'✅ pagado':estado==='perdonado'?'🎁 perdonado':'⏳ pendiente'}</span></td>
+        <td><div style="display:flex;gap:4px">
+          ${estado==='pendiente'?`
+            <button class="vend-btn aprobar" onclick="pagarComision('${c.id}')" style="font-size:10px;padding:3px 8px">💳 Pagar</button>
+            <button class="vend-btn" onclick="perdonarComisionIndividual('${c.id}')" style="font-size:10px;padding:3px 8px;background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid var(--gold)">🎁</button>
+          `:`<span style="color:var(--muted);font-size:11px">${estado==='pagado'?'✅':'🎁'}</span>`}
+        </div></td>
+      </tr>`;
+    });
+  });
+  tbody.innerHTML=html;
+}
+
+async function pagarMesComision(mesKey,vendedorId){
+  const pin=prompt('🔐 Ingresa el PIN para pagar todas las comisiones de este mes:');
+  if(pin!==adminPIN){alert('❌ PIN incorrecto');return;}
+  const{data}=await db.from('comisiones').select('id,created_at').eq('vendedor_id',vendedorId).eq('estado','pendiente');
+  if(!data||!data.length){alert('No hay comisiones pendientes');return;}
+  const delMes=data.filter(c=>{
+    const d=new Date(c.created_at);
+    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    return key===mesKey;
+  });
+  for(const c of delMes){
+    await db.from('comisiones').update({estado:'pagado',fecha_pago:new Date().toISOString()}).eq('id',c.id);
+  }
+  await cargarComisionesVendedor(vendedorId);
+  await loadVendorStats_admin(vendedorId);
+  renderVendedoresStats();
+  showAdminToast(`✅ ${delMes.length} comisión(es) del mes marcadas como pagadas`,'success');
 }
 
 async function pagarComision(id){
