@@ -172,6 +172,7 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
       <button class="tab-btn" onclick="showTab('configuracion',this)">⚙️ Configuración</button>
       <button class="tab-btn" onclick="showTab('seguridad',this)">🔐 Seguridad</button>
       <button class="tab-btn" onclick="showTab('vendedores',this)">🏪 Vendedores <span id="vendedores-badge" style="display:none;background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-left:4px">0</span></button>
+      <button class="tab-btn" onclick="showTab('gestion',this)">🧹 Gestión</button>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
       <div id="notif-bell" style="position:relative;cursor:pointer" onclick="showTab('pedidos',document.querySelectorAll('.tab-btn')[2])">
@@ -458,6 +459,33 @@ body{background:var(--dark);color:var(--light);font-family:'Barlow',sans-serif;m
     </div>
 
     <!-- SEGURIDAD -->
+    <!-- GESTIÓN -->
+    <div class="tab-content" id="tab-gestion">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:2px;margin-bottom:0.5rem">🧹 Gestión de Perfiles</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:1.5rem">Administra y resetea perfiles individuales de usuarios y vendedores.</div>
+
+      <!-- USUARIOS -->
+      <div class="card">
+        <div class="card-title">👥 Usuarios registrados</div>
+        <div style="margin-bottom:1rem;display:flex;gap:8px">
+          <input type="text" id="gestion-search" placeholder="Buscar por email o nombre..." oninput="filtrarGestion()" style="flex:1;background:var(--dark);border:1px solid var(--steel);color:var(--light);padding:8px 12px;border-radius:6px;font-size:13px;outline:none">
+          <button class="btn-gold" onclick="loadGestionUsuarios()" style="font-size:12px;padding:6px 14px">🔄 Recargar</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse" id="gestion-table">
+            <thead><tr>
+              <th style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:10px;text-align:left;border-bottom:1px solid var(--steel)">Email</th>
+              <th style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:10px;text-align:left;border-bottom:1px solid var(--steel)">Nombre</th>
+              <th style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:10px;text-align:left;border-bottom:1px solid var(--steel)">Rol</th>
+              <th style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:10px;text-align:left;border-bottom:1px solid var(--steel)">Fecha registro</th>
+              <th style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:10px;text-align:left;border-bottom:1px solid var(--steel)">Acciones</th>
+            </tr></thead>
+            <tbody id="gestion-tbody"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem">Cargando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <div class="tab-content" id="tab-vendedores">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
         <div>
@@ -1194,6 +1222,108 @@ function showAdminToast(msg,type){
   setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.style.display='none',300);},3000);
 }
 
+/* ===== GESTIÓN DE PERFILES ===== */
+let allUsuarios=[];
+
+async function loadGestionUsuarios(){
+  const{data}=await db.from('usuarios').select('*').order('created_at',{ascending:false});
+  allUsuarios=data||[];
+  renderGestion();
+}
+
+function filtrarGestion(){
+  renderGestion();
+}
+
+function renderGestion(){
+  const q=(document.getElementById('gestion-search')?.value||'').toLowerCase();
+  const lista=q?allUsuarios.filter(u=>(u.email||'').toLowerCase().includes(q)||(u.nombre||'').toLowerCase().includes(q)):allUsuarios;
+  const tbody=document.getElementById('gestion-tbody');
+  if(!lista.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem">No hay usuarios</td></tr>';return;}
+  tbody.innerHTML=lista.map(u=>{
+    const esVendedor=allVendedores.some(v=>v.usuario_id===u.id);
+    const vendedor=allVendedores.find(v=>v.usuario_id===u.id);
+    return `<tr style="border-bottom:1px solid rgba(30,58,95,0.3)">
+      <td style="padding:10px;font-size:13px;color:var(--light)">${u.email||'-'}</td>
+      <td style="padding:10px;font-size:13px;color:var(--white)">${u.nombre||'-'}</td>
+      <td style="padding:10px">
+        ${esVendedor?`<span style="background:rgba(201,168,76,0.15);color:var(--gold);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600">🏪 Vendedor</span>`
+        :`<span style="background:rgba(30,58,95,0.5);color:var(--muted);font-size:11px;padding:2px 8px;border-radius:10px">👤 Cliente</span>`}
+      </td>
+      <td style="padding:10px;font-size:11px;color:var(--muted)">${new Date(u.created_at).toLocaleDateString('es-EC')}</td>
+      <td style="padding:10px">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="vend-btn ver" onclick="verPerfilUsuario('${u.id}')" style="font-size:11px">👁️ Ver</button>
+          <button class="vend-btn" onclick="resetearCarrito('${u.id}','${(u.email||'').replace(/'/g,'')}')" style="font-size:11px;background:rgba(201,168,76,0.15);color:var(--gold);border:1px solid var(--gold)">🛒 Reset carrito</button>
+          <button class="vend-btn" onclick="resetearPedidos('${u.id}','${(u.email||'').replace(/'/g,'')}')" style="font-size:11px;background:rgba(74,144,217,0.15);color:#4A90D9;border:1px solid #4A90D9">📦 Reset pedidos</button>
+          ${esVendedor&&vendedor?`<button class="vend-btn" onclick="resetearVendedor('${vendedor.id}','${(vendedor.nombre_tienda||'').replace(/'/g,'')}')" style="font-size:11px;background:rgba(226,75,74,0.15);color:var(--red);border:1px solid var(--red)">🏪 Reset vendedor</button>`:''}
+          <button class="vend-btn suspender" onclick="eliminarUsuarioCompleto('${u.id}','${(u.email||'').replace(/'/g,'')}')" style="font-size:11px">🗑️ Eliminar</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function resetearCarrito(userId,email){
+  if(!confirm(`¿Resetear el carrito de ${email}?`))return;
+  await db.from('carritos').delete().eq('usuario_id',userId);
+  showAdminToast('✅ Carrito eliminado: '+email,'success');
+}
+
+async function resetearPedidos(userId,email){
+  if(!confirm(`¿Eliminar TODOS los pedidos de ${email}?\n\nEsta acción no se puede deshacer.`))return;
+  const pin=prompt('🔐 PIN de seguridad:');
+  if(pin!==adminPIN){alert('❌ PIN incorrecto');return;}
+  await db.from('pedidos').delete().eq('usuario_id',userId);
+  showAdminToast('✅ Pedidos eliminados: '+email,'success');
+}
+
+async function resetearVendedor(vendedorId,nombre){
+  if(!confirm(`¿Resetear el perfil de vendedor "${nombre}"?\n\nSe eliminarán: comisiones, productos y el registro de vendedor.`))return;
+  const pin=prompt('🔐 PIN de seguridad:');
+  if(pin!==adminPIN){alert('❌ PIN incorrecto');return;}
+  await db.from('comisiones').delete().eq('vendedor_id',vendedorId);
+  await db.from('productos').delete().eq('vendedor_id',vendedorId);
+  await db.from('vendedores').delete().eq('id',vendedorId);
+  allVendedores=allVendedores.filter(v=>v.id!==vendedorId);
+  renderVendedores();
+  renderVendedoresStats();
+  renderGestion();
+  showAdminToast('✅ Perfil de vendedor reseteado: '+nombre,'success');
+}
+
+async function eliminarUsuarioCompleto(userId,email){
+  if(!confirm(`¿ELIMINAR COMPLETAMENTE el usuario ${email}?\n\nSe eliminarán: carrito, pedidos, perfil de vendedor y datos del usuario.`))return;
+  const pin=prompt('🔐 PIN de seguridad:');
+  if(pin!==adminPIN){alert('❌ PIN incorrecto');return;}
+  // Eliminar vendedor si tiene
+  const vend=allVendedores.find(v=>v.usuario_id===userId);
+  if(vend){
+    await db.from('comisiones').delete().eq('vendedor_id',vend.id);
+    await db.from('productos').delete().eq('vendedor_id',vend.id);
+    await db.from('vendedores').delete().eq('id',vend.id);
+  }
+  await db.from('carritos').delete().eq('usuario_id',userId);
+  await db.from('pedidos').delete().eq('usuario_id',userId);
+  await db.from('usuarios').delete().eq('id',userId);
+  allUsuarios=allUsuarios.filter(u=>u.id!==userId);
+  allVendedores=allVendedores.filter(v=>v.usuario_id!==userId);
+  renderGestion();
+  renderVendedores();
+  showAdminToast('✅ Usuario eliminado: '+email,'success');
+}
+
+async function verPerfilUsuario(userId){
+  const u=allUsuarios.find(x=>x.id===userId);
+  if(!u)return;
+  const vend=allVendedores.find(v=>v.usuario_id===userId);
+  const{data:pedidos}=await db.from('pedidos').select('codigo,total,estado,created_at').eq('usuario_id',userId).order('created_at',{ascending:false}).limit(5);
+  let info=`👤 ${u.nombre||'Sin nombre'}\nEmail: ${u.email}\nRegistro: ${new Date(u.created_at).toLocaleDateString('es-EC')}`;
+  if(vend)info+=`\n\n🏪 Vendedor: ${vend.nombre_tienda} (${vend.estado})\nComisión: ${vend.comision_pct}%`;
+  if(pedidos&&pedidos.length)info+=`\n\n📦 Últimos pedidos:\n${pedidos.map(p=>`• ${p.codigo} - $${p.total} - ${p.estado}`).join('\n')}`;
+  alert(info);
+}
+
 function doLogout(){
   localStorage.removeItem(SESSION_KEY);
   localStorage.removeItem(ACTIVITY_KEY);
@@ -1239,6 +1369,7 @@ function showTab(tab,el){
   if(tab==='seguridad')updateSecurityInfo();
   if(tab==='configuracion')loadConfig();
   if(tab==='vendedores')loadVendedores();
+  if(tab==='gestion'){loadGestionUsuarios();}
 }
 
 async function loadAll(){await loadProducts();await loadPedidos();await loadConfig();await loadVisitas();await loadVendedores();renderDashboard();setTimeout(verificarCortesVendedores,3000);}
