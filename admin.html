@@ -1092,15 +1092,38 @@ async function cargarComisionesVendedor(vendedorId){
 }
 
 async function pagarComision(id){
-  if(!confirm('¿Marcar esta comisión como pagada?'))return;
-  await db.from('comisiones').update({estado:'pagado',fecha_pago:new Date().toISOString()}).eq('id',id);
-  if(vendedorActivo)cargarComisionesVendedor(vendedorActivo.id);
+  const pin=prompt('🔐 Ingresa el PIN para confirmar el pago:');
+  if(pin!==adminPIN){alert('❌ PIN incorrecto');return;}
+  const{error}=await db.from('comisiones').update({estado:'pagado',fecha_pago:new Date().toISOString()}).eq('id',id);
+  if(error){alert('Error: '+error.message);return;}
+  // Actualizar stats del vendedor
+  if(vendedorActivo){
+    cargarComisionesVendedor(vendedorActivo.id);
+    loadVendorStats_admin(vendedorActivo.id);
+  }
+  renderVendedoresStats();
 }
 
 async function perdonarComisionIndividual(id){
-  if(!confirm('¿Perdonar esta comisión?'))return;
-  await db.from('comisiones').update({estado:'perdonado'}).eq('id',id);
-  if(vendedorActivo)cargarComisionesVendedor(vendedorActivo.id);
+  const pin=prompt('🔐 Ingresa el PIN para perdonar esta comisión:');
+  if(pin!==adminPIN){alert('❌ PIN incorrecto');return;}
+  const{error}=await db.from('comisiones').update({estado:'perdonado'}).eq('id',id);
+  if(error){alert('Error: '+error.message);return;}
+  if(vendedorActivo){
+    cargarComisionesVendedor(vendedorActivo.id);
+    loadVendorStats_admin(vendedorActivo.id);
+  }
+  renderVendedoresStats();
+}
+
+async function loadVendorStats_admin(vendedorId){
+  // Recalcular y actualizar stats del vendedor en la tabla
+  const v=allVendedores.find(x=>x.id===vendedorId);
+  if(!v)return;
+  const{data:coms}=await db.from('comisiones').select('monto_venta,monto_comision,estado').eq('vendedor_id',vendedorId);
+  const totalVentas=coms?coms.reduce((a,c)=>a+parseFloat(c.monto_venta),0):0;
+  await db.from('vendedores').update({total_ventas:totalVentas}).eq('id',vendedorId);
+  v.total_ventas=totalVentas;
 }
 
 function doLogout(){
