@@ -1313,6 +1313,12 @@ const TRANSLATIONS={
   es:{
     nav_products:'Productos',nav_about:'Nosotros',nav_contact:'Contacto',
     nav_login:'Iniciar sesión',nav_register:'Registrarse',nav_mypedidos:'Mis pedidos',nav_logout:'Salir',
+    cart_title:'Tu Pedido',cart_sold_by:'Vendido por',cart_subtotal:'Subtotal',
+    cart_total:'Total general',cart_continue:'Continuar al pago',cart_cancel:'Cancelar',
+    cart_transfer_title:'Datos para transferencia bancaria',cart_bank:'Banco',
+    cart_type:'Tipo',cart_account:'N° Cuenta',cart_holder:'Titular',cart_id:'Cédula/RUC',
+    cart_amount:'Monto a transferir',cart_voucher:'Número de comprobante',
+    cart_whatsapp:'Contactar a Ruiz PSM por WhatsApp',cart_confirm:'Confirmar pedido',
     hero_btn_catalog:'Ver Catálogo',hero_btn_contact:'Contactar ahora',
     cats_title:'Categorías',cats_all:'Todos',
     prods_title:'Nuestros Productos',search_placeholder:'Buscar producto o referencia...',
@@ -1372,6 +1378,12 @@ const TRANSLATIONS={
   en:{
     nav_products:'Products',nav_about:'About Us',nav_contact:'Contact',
     nav_login:'Sign In',nav_register:'Sign Up',nav_mypedidos:'My Orders',nav_logout:'Sign Out',
+    cart_title:'Your Order',cart_sold_by:'Sold by',cart_subtotal:'Subtotal',
+    cart_total:'Grand total',cart_continue:'Continue to payment',cart_cancel:'Cancel',
+    cart_transfer_title:'Bank transfer details',cart_bank:'Bank',
+    cart_type:'Type',cart_account:'Account No.',cart_holder:'Holder',cart_id:'ID/Tax No.',
+    cart_amount:'Amount to transfer',cart_voucher:'Transfer voucher number',
+    cart_whatsapp:'Contact Ruiz PSM on WhatsApp',cart_confirm:'Confirm order',
     hero_btn_catalog:'View Catalog',hero_btn_contact:'Contact Now',
     cats_title:'Categories',cats_all:'All',
     prods_title:'Our Products',search_placeholder:'Search product or reference...',
@@ -2084,6 +2096,9 @@ async function mostrarDatosBancarios(){
   const telCodigo=document.getElementById('c-codigo')?.value||'+593';
   const telNum=document.getElementById('c-tel')?.value.replace(/[^0-9]/g,'');
   if(!nombre||!telNum||telNum.length<5){showToast('Ingresa tu nombre y teléfono primero','error');return;}
+  // Guardar datos para confirmarPedido
+  window._pedidoNombre=nombre;
+  window._pedidoTel=telCodigo+telNum;
   // Calcular total real del carrito
   const items=Object.entries(cart).filter(([,q])=>q>0);
   let totalReal=0;
@@ -2100,7 +2115,7 @@ async function mostrarDatosBancarios(){
     <div style="border-top:1px solid var(--steel);padding-top:1rem;margin-top:0.5rem">
       ${tieneBanco?`
       <div style="background:rgba(37,211,102,0.07);border:1px solid rgba(37,211,102,0.3);border-radius:8px;padding:1rem;margin-bottom:1rem">
-        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px">🏦 Datos para transferencia bancaria</div>
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px">🏦 <span data-t="cart_transfer_title">Datos para transferencia bancaria</span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
           <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase">Banco</div><div style="color:var(--white);font-weight:600">${cfg.banco_nombre}</div></div>
           <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase">Tipo</div><div style="color:var(--white);font-weight:600">${cfg.banco_tipo}</div></div>
@@ -2120,20 +2135,21 @@ async function mostrarDatosBancarios(){
       <!-- Botón WhatsApp Ruiz PSM -->
       <a href="https://wa.me/${waNum}?text=Hola Ruiz PSM, quiero coordinar el pago de mi pedido por $${fmtPrice(totalReal)}. Mi nombre es ${encodeURIComponent(nombre)}." target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--green);color:#fff;border:none;padding:11px;border-radius:6px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-decoration:none;margin-bottom:8px;box-sizing:border-box">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        Contactar a Ruiz PSM por WhatsApp
+        <span data-t="cart_whatsapp">Contactar a Ruiz PSM por WhatsApp</span>
       </a>
-      <button class="m-confirm" onclick="confirmarPedido()" style="width:100%;box-sizing:border-box">
-        ✅ Confirmar pedido — $${fmtPrice(totalReal)}
-      </button>
+      <div style="display:flex;gap:8px">
+        <button onclick="openCart()" style="background:transparent;border:1px solid var(--steel);color:var(--muted);padding:11px 16px;border-radius:6px;cursor:pointer;font-size:18px;flex-shrink:0">←</button>
+        <button class="m-confirm" onclick="confirmarPedido()" style="flex:1;box-sizing:border-box">
+          ✅ <span data-t="cart_confirm">Confirmar pedido</span> — $${fmtPrice(totalReal)}
+        </button>
+      </div>
     </div>`;
 }
 
 async function confirmarPedido(){
-  const nombre=document.getElementById('c-nombre').value.trim();
-  const telCodigo=document.getElementById('c-codigo')?document.getElementById('c-codigo').value:'';
-  const telNum=document.getElementById('c-tel').value.replace(/[^0-9]/g,'');
-  const tel=telCodigo&&telNum?telCodigo+telNum:telNum;
-  if(!nombre||telNum.length<5){showToast('Ingresa tu nombre y teléfono válido','error');return;}
+  const nombre=window._pedidoNombre||document.getElementById('c-nombre')?.value.trim()||'';
+  const tel=window._pedidoTel||(document.getElementById('c-codigo')?.value||'')+((document.getElementById('c-tel')?.value||'').replace(/[^0-9]/g,''));
+  if(!nombre||tel.length<8){showToast('Ingresa tu nombre y teléfono válido','error');return;}
   const items=Object.entries(cart).filter(([,q])=>q>0);if(!items.length)return;
   const btn=document.querySelector('.m-confirm');
   btn.innerHTML='Procesando...';btn.disabled=true;
