@@ -2925,26 +2925,35 @@ async function loadVendorFinanzas(){
   document.getElementById('vf-mes').textContent='$'+fmtPrice(mes);
   document.getElementById('vf-com-mes').textContent='$'+fmtPrice(comMes);
   document.getElementById('vf-neto-mes').textContent='$'+fmtPrice(mes-comMes);
-  // Agrupar por mes
+  // Agrupar por mes con estado correcto
   const porMes={};
   (coms||[]).forEach(c=>{
     const d=new Date(c.created_at);
     const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    if(!porMes[key])porMes[key]={ventas:0,comisiones:0,estado:'pendiente'};
+    const label=d.toLocaleDateString('es-EC',{month:'long',year:'numeric'});
+    if(!porMes[key])porMes[key]={label,ventas:0,comisiones:0,pendiente:0,pagado:0,perdonado:0};
     porMes[key].ventas+=parseFloat(c.monto_venta);
     porMes[key].comisiones+=parseFloat(c.monto_comision);
-    if(c.estado==='pagado')porMes[key].estado='pagado';
+    if(c.estado==='pendiente')porMes[key].pendiente+=parseFloat(c.monto_comision);
+    if(c.estado==='pagado')porMes[key].pagado+=parseFloat(c.monto_comision);
+    if(c.estado==='perdonado')porMes[key].perdonado+=parseFloat(c.monto_comision);
   });
   const tbody=document.getElementById('vendor-finanzas-list');
   const meses=Object.entries(porMes).sort((a,b)=>b[0].localeCompare(a[0]));
   if(!meses.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem">Sin movimientos aún</td></tr>';return;}
-  tbody.innerHTML=meses.map(([key,m])=>`<tr>
-    <td style="font-weight:600">${key}</td>
-    <td style="color:var(--gold)">$${fmtPrice(m.ventas)}</td>
-    <td style="color:var(--red)">$${fmtPrice(m.comisiones)}</td>
-    <td style="color:var(--green)">$${fmtPrice(m.ventas-m.comisiones)}</td>
-    <td><span class="vendor-badge ${m.estado}">${m.estado}</span></td>
-  </tr>`).join('');
+  tbody.innerHTML=meses.map(([key,m])=>{
+    const estilo=m.pendiente>0?'pendiente':'pagado';
+    const etiqueta=m.pendiente>0
+      ?`<span class="vendor-badge pendiente">⏳ $${fmtPrice(m.pendiente)} por pagar</span>`
+      :`<span class="vendor-badge pagado">✅ Al día</span>`;
+    return `<tr>
+      <td style="font-weight:600;text-transform:capitalize">${m.label}</td>
+      <td style="color:var(--gold)">$${fmtPrice(m.ventas)}</td>
+      <td style="color:var(--red)">$${fmtPrice(m.comisiones)}</td>
+      <td style="color:var(--green)">$${fmtPrice(m.ventas-m.comisiones)}</td>
+      <td>${etiqueta}</td>
+    </tr>`;
+  }).join('');
 }
 
 async function exportarFinanzasVendedor(){
