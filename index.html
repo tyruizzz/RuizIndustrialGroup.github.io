@@ -2522,7 +2522,13 @@ function validatePhoneField(numId){
 
 /* ===== VENDOR PAGO ===== */
 async function loadPagoTab(){
-  if(!vendorData)return;
+  if(!vendorData){
+    // Intentar cargar vendorData si no está disponible
+    if(!currentUser)return;
+    const{data}=await db.from('vendedores').select('*').eq('usuario_id',currentUser.id).maybeSingle();
+    if(!data)return;
+    vendorData=data;
+  }
   // Cargar deuda pendiente
   const{data:coms}=await db.from('comisiones').select('monto_comision').eq('vendedor_id',vendorData.id).eq('estado','pendiente');
   const deuda=coms?coms.reduce((a,c)=>a+parseFloat(c.monto_comision),0):0;
