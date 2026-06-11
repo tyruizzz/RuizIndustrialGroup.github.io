@@ -2519,10 +2519,11 @@ function validatePhoneField(numId){
 
 /* ===== VENDOR PAGO ===== */
 async function loadPagoTab(){
+  console.log('loadPagoTab iniciado, vendorData:', vendorData?.id);
   if(!vendorData){
-    // Intentar cargar vendorData si no está disponible
-    if(!currentUser)return;
+    if(!currentUser){console.log('No hay currentUser');return;}
     const{data}=await db.from('vendedores').select('*').eq('usuario_id',currentUser.id).maybeSingle();
+    console.log('vendorData cargado:', data?.id);
     if(!data)return;
     vendorData=data;
   }
