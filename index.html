@@ -2081,35 +2081,50 @@ function cotizarCarritoWA(){
 
 async function mostrarDatosBancarios(){
   const nombre=document.getElementById('c-nombre')?.value.trim();
+  const telCodigo=document.getElementById('c-codigo')?.value||'+593';
   const telNum=document.getElementById('c-tel')?.value.replace(/[^0-9]/g,'');
   if(!nombre||!telNum||telNum.length<5){showToast('Ingresa tu nombre y teléfono primero','error');return;}
-  // Cargar datos bancarios de config
-  const{data:cfg}=await db.from('configuracion').select('banco_nombre,banco_tipo,banco_cuenta,banco_titular,banco_cedula').eq('id','main').maybeSingle();
+  // Calcular total real del carrito
+  const items=Object.entries(cart).filter(([,q])=>q>0);
+  let totalReal=0;
+  items.forEach(([id,qty])=>{const p=products.find(x=>x.id===id);if(p)totalReal+=p.precio*qty;});
+  // Cargar datos bancarios y WA de config
+  const{data:cfg}=await db.from('configuracion').select('banco_nombre,banco_tipo,banco_cuenta,banco_titular,banco_cedula,whatsapp').eq('id','main').maybeSingle();
   const tieneBanco=cfg&&cfg.banco_cuenta;
+  const waNum=cfg?.whatsapp||'593969889751';
   const footer=document.getElementById('modal-footer');
+  // Actualizar total en el body
+  const totalEl=document.querySelector('.m-total');
+  if(totalEl)totalEl.innerHTML=`Total general: <strong style="color:var(--gold)">$${fmtPrice(totalReal)}</strong>`;
   footer.innerHTML=`
     <div style="border-top:1px solid var(--steel);padding-top:1rem;margin-top:0.5rem">
       ${tieneBanco?`
       <div style="background:rgba(37,211,102,0.07);border:1px solid rgba(37,211,102,0.3);border-radius:8px;padding:1rem;margin-bottom:1rem">
-        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px;display:flex;align-items:center;gap:6px">🏦 Datos para transferencia</div>
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px">🏦 Datos para transferencia bancaria</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
           <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase">Banco</div><div style="color:var(--white);font-weight:600">${cfg.banco_nombre}</div></div>
           <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase">Tipo</div><div style="color:var(--white);font-weight:600">${cfg.banco_tipo}</div></div>
-          <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase">N° Cuenta</div><div style="color:var(--gold);font-weight:700;font-size:14px">${cfg.banco_cuenta}</div></div>
+          <div style="grid-column:1/-1"><div style="color:var(--muted);font-size:10px;text-transform:uppercase">N° Cuenta</div><div style="color:var(--gold);font-weight:700;font-size:16px;letter-spacing:1px">${cfg.banco_cuenta}</div></div>
           <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase">Titular</div><div style="color:var(--white);font-weight:600">${cfg.banco_titular}</div></div>
-          <div style="grid-column:1/-1"><div style="color:var(--muted);font-size:10px;text-transform:uppercase">Cédula/RUC</div><div style="color:var(--white)">${cfg.banco_cedula}</div></div>
+          <div><div style="color:var(--muted);font-size:10px;text-transform:uppercase">Cédula/RUC</div><div style="color:var(--white)">${cfg.banco_cedula}</div></div>
+        </div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(37,211,102,0.2);font-size:12px;color:var(--muted)">
+          💰 Monto a transferir: <strong style="color:var(--gold);font-size:15px">$${fmtPrice(totalReal)}</strong>
         </div>
       </div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Después de transferir, ingresa el número de comprobante:</div>
-      <div class="fg" style="margin-bottom:1rem">
-        <input type="text" id="c-comprobante" placeholder="Número de comprobante de transferencia" style="width:100%;background:var(--dark);border:1px solid var(--gold);border-radius:6px;padding:10px;color:var(--white);font-size:13px;outline:none">
-      </div>`:'<div style="background:rgba(201,168,76,0.08);border:1px solid var(--gold);border-radius:8px;padding:1rem;margin-bottom:1rem;font-size:13px;color:var(--muted)">📱 Coordina el pago por WhatsApp con Ruiz PSM antes de confirmar.</div><input type="hidden" id="c-comprobante" value="">'}
-      <div style="display:flex;gap:8px">
-        <button class="m-close" onclick="openCart()">← Volver</button>
-        <button class="m-confirm" onclick="confirmarPedido()" style="flex:1">
-          ✅ Confirmar pedido
-        </button>
-      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Ingresa el número de comprobante después de transferir:</div>
+      <div style="margin-bottom:1rem">
+        <input type="text" id="c-comprobante" placeholder="Número de comprobante" style="width:100%;background:var(--dark);border:1px solid var(--gold);border-radius:6px;padding:10px;color:var(--white);font-size:13px;outline:none;box-sizing:border-box">
+      </div>`
+      :`<input type="hidden" id="c-comprobante" value="">`}
+      <!-- Botón WhatsApp Ruiz PSM -->
+      <a href="https://wa.me/${waNum}?text=Hola Ruiz PSM, quiero coordinar el pago de mi pedido por $${fmtPrice(totalReal)}. Mi nombre es ${encodeURIComponent(nombre)}." target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--green);color:#fff;border:none;padding:11px;border-radius:6px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-decoration:none;margin-bottom:8px;box-sizing:border-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Contactar a Ruiz PSM por WhatsApp
+      </a>
+      <button class="m-confirm" onclick="confirmarPedido()" style="width:100%;box-sizing:border-box">
+        ✅ Confirmar pedido — $${fmtPrice(totalReal)}
+      </button>
     </div>`;
 }
 
