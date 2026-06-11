@@ -1096,12 +1096,12 @@ async function pagarComision(id){
   if(pin!==adminPIN){alert('❌ PIN incorrecto');return;}
   const{error}=await db.from('comisiones').update({estado:'pagado',fecha_pago:new Date().toISOString()}).eq('id',id);
   if(error){alert('Error: '+error.message);return;}
-  // Actualizar stats del vendedor
   if(vendedorActivo){
-    cargarComisionesVendedor(vendedorActivo.id);
-    loadVendorStats_admin(vendedorActivo.id);
+    await cargarComisionesVendedor(vendedorActivo.id);
+    await loadVendorStats_admin(vendedorActivo.id);
   }
   renderVendedoresStats();
+  showAdminToast('✅ Comisión marcada como pagada correctamente','success');
 }
 
 async function perdonarComisionIndividual(id){
@@ -1124,6 +1124,17 @@ async function loadVendorStats_admin(vendedorId){
   const totalVentas=coms?coms.reduce((a,c)=>a+parseFloat(c.monto_venta),0):0;
   await db.from('vendedores').update({total_ventas:totalVentas}).eq('id',vendedorId);
   v.total_ventas=totalVentas;
+}
+
+function showAdminToast(msg,type){
+  let t=document.getElementById('admin-toast');
+  if(!t){t=document.createElement('div');t.id='admin-toast';t.style.cssText='position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;z-index:99999;transition:opacity 0.3s;font-family:"Barlow",sans-serif';document.body.appendChild(t);}
+  t.style.background=type==='success'?'var(--green)':'var(--red)';
+  t.style.color='#fff';
+  t.textContent=msg;
+  t.style.opacity='1';
+  t.style.display='block';
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.style.display='none',300);},3000);
 }
 
 function doLogout(){
