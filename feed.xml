@@ -1,27 +1,226 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
 <channel>
-<title>Ruiz PSM - Repuestos y Maquinaria Industrial Ecuador</title>
-<link>https://ruizpsm.com</link>
-<description>Proveedor de repuestos industriales, maquinaria y equipos en Ecuador.</description>
-<item>
-  <g:id>prod-001</g:id>
-  <g:title>Friction Lining Brakes Disc Fits Komatsu 500 WA 420-1WA-470WA-1</g:title>
-  <g:description>Disco de freno de friccion para Komatsu 500 WA. Referencia 420-1WA-470WA-1. Compatible con modelos: HD205-3, HD255-5, HD325-5, HD405-6, WA400-1, WA470-1, WA500-1, WA600-1, WD600-1H, WF600T-1. Disponible en Ecuador. Cotiza por WhatsApp.</g:description>
-  <g:link>https://ruizpsm.com</g:link>
-  <g:image_link>https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/prod_1293f7d1-2513-47ac-8e3e-c4076e0a09da_img0_1780847384775.png</g:image_link>
-  <g:price>48.00 USD</g:price>
-  <g:availability>in_stock</g:availability>
-  <g:condition>new</g:condition>
-  <g:brand>Komatsu</g:brand>
-  <g:mpn>420-1WA-470WA-1</g:mpn>
-  <g:google_product_category>Repuestos industriales</g:google_product_category>
-  <g:product_type>Repuestos</g:product_type>
-  <g:shipping>
-    <g:country>EC</g:country>
-    <g:service>Envio estandar</g:service>
-    <g:price>0 USD</g:price>
-  </g:shipping>
-</item>
+  <title>Ruiz PSM - Repuestos y Maquinaria Industrial Ecuador</title>
+  <link>https://ruizpsm.com</link>
+  <description>Proveedor de repuestos industriales, maquinaria y equipos en Ecuador.</description>
+  <item>
+    <g:id>fc69ce27-0884-4aaa-9213-d173d687ac78</g:id>
+    <g:title><![CDATA[Desenllantadora Eléctrica Portátil]]></g:title>
+    <g:description><![CDATA[Máquina desarrolladora de neumáticos para camiones | Para rin de 22.5 | Stock en Ecuador Marca: PSM. Modelo: KJ- 680. Disponible en Ecuador. Cotiza por WhatsApp al +593969889751.]]></g:description>
+    <g:link>https://ruizpsm.com/?producto=fc69ce27-0884-4aaa-9213-d173d687ac78</g:link>
+    <g:image_link>https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/prod_1788286532656_img0_1788286532656.png</g:image_link>
+    <g:price>1553.00 USD</g:price>
+    <g:availability>in_stock</g:availability>
+    <g:condition>new</g:condition>
+    <g:brand><![CDATA[PSM]]></g:brand>
+    <g:google_product_category>420</g:google_product_category>
+    <g:product_type><![CDATA[maquinaria]]></g:product_type>
+    
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:shipping>
+      <g:country>EC</g:country>
+      <g:service>Envío estándar</g:service>
+      <g:price>0 USD</g:price>
+    </g:shipping>
+    <g:shipping>
+      <g:country>US</g:country>
+      <g:service>Envío internacional</g:service>
+      <g:price>25 USD</g:price>
+    </g:shipping>
+  </item>
+  <item>
+    <g:id>14a2bc17-22ee-4973-b185-8812baeb1224</g:id>
+    <g:title><![CDATA[Motor Hidráulico Pistones Axiales]]></g:title>
+    <g:description><![CDATA[Producto aftermarket | Group P Fits Caterpillar  216B - 216B3 - 226B - 226B3 - 232B - 242B 242B3 Marca: Caterpillar. Ref: Número de Serie 2807854. Disponible en Ecuador. Cotiza por WhatsApp al +593969889751.]]></g:description>
+    <g:link>https://ruizpsm.com/?producto=14a2bc17-22ee-4973-b185-8812baeb1224</g:link>
+    <g:image_link>https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/prod_1788285001755_img0_1788285001755.jpeg</g:image_link>
+    <g:price>5400.00 USD</g:price>
+    <g:availability>in_stock</g:availability>
+    <g:condition>new</g:condition>
+    <g:brand><![CDATA[Caterpillar]]></g:brand>
+    <g:google_product_category>3546</g:google_product_category>
+    <g:product_type><![CDATA[repuestos]]></g:product_type>
+    <g:mpn><![CDATA[Número de Serie 2807854]]></g:mpn>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:shipping>
+      <g:country>EC</g:country>
+      <g:service>Envío estándar</g:service>
+      <g:price>0 USD</g:price>
+    </g:shipping>
+    <g:shipping>
+      <g:country>US</g:country>
+      <g:service>Envío internacional</g:service>
+      <g:price>25 USD</g:price>
+    </g:shipping>
+  </item>
+  <item>
+    <g:id>22fc8f39-16ab-49ab-b093-6ab4f368c4be</g:id>
+    <g:title><![CDATA[Perforadora de Pozo Profundo]]></g:title>
+    <g:description><![CDATA[150 metros de profundidad y 6” de diámetro - Stock en USA Marca: PSM. Modelo: LY-150. Disponible en Ecuador. Cotiza por WhatsApp al +593969889751.]]></g:description>
+    <g:link>https://ruizpsm.com/?producto=22fc8f39-16ab-49ab-b093-6ab4f368c4be</g:link>
+    <g:image_link>https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/prod_1784676194414_img0_1784676194414.png</g:image_link>
+    <g:price>7000.00 USD</g:price>
+    <g:availability>in_stock</g:availability>
+    <g:condition>new</g:condition>
+    <g:brand><![CDATA[PSM]]></g:brand>
+    <g:google_product_category>420</g:google_product_category>
+    <g:product_type><![CDATA[maquinaria]]></g:product_type>
+    
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:shipping>
+      <g:country>EC</g:country>
+      <g:service>Envío estándar</g:service>
+      <g:price>0 USD</g:price>
+    </g:shipping>
+    <g:shipping>
+      <g:country>US</g:country>
+      <g:service>Envío internacional</g:service>
+      <g:price>25 USD</g:price>
+    </g:shipping>
+  </item>
+  <item>
+    <g:id>fb9331a0-bf63-4347-adf7-49a19c688519</g:id>
+    <g:title><![CDATA[Sensor de presión de Cárter]]></g:title>
+    <g:description><![CDATA[Sensor de presión del cárter del motor para Cummins - ISB 6.7L - Ram 6.7 Marca: Foulayn. Ref: 4984575 4954400 904-7119. Disponible en Ecuador. Cotiza por WhatsApp al +593969889751.]]></g:description>
+    <g:link>https://ruizpsm.com/?producto=fb9331a0-bf63-4347-adf7-49a19c688519</g:link>
+    <g:image_link>https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/prod_1781741585376_img0_1781741585376.jpg</g:image_link>
+    <g:price>32.00 USD</g:price>
+    <g:availability>in_stock</g:availability>
+    <g:condition>new</g:condition>
+    <g:brand><![CDATA[Foulayn]]></g:brand>
+    <g:google_product_category>3546</g:google_product_category>
+    <g:product_type><![CDATA[repuestos]]></g:product_type>
+    <g:mpn><![CDATA[4984575 4954400 904-7119]]></g:mpn>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:shipping>
+      <g:country>EC</g:country>
+      <g:service>Envío estándar</g:service>
+      <g:price>0 USD</g:price>
+    </g:shipping>
+    <g:shipping>
+      <g:country>US</g:country>
+      <g:service>Envío internacional</g:service>
+      <g:price>25 USD</g:price>
+    </g:shipping>
+  </item>
+  <item>
+    <g:id>263b796c-4f98-42cf-b064-ff9052e68ef0</g:id>
+    <g:title><![CDATA[Eagle Shear]]></g:title>
+    <g:description><![CDATA[Para excavadora 320 Caterpillar, Komatsu, Jhon Deere
+- Stock en EE. UU Marca: PSM. Modelo: JCB JS220LC 4F. Disponible en Ecuador. Cotiza por WhatsApp al +593969889751.]]></g:description>
+    <g:link>https://ruizpsm.com/?producto=263b796c-4f98-42cf-b064-ff9052e68ef0</g:link>
+    <g:image_link>https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/prod_263b796c-4f98-42cf-b064-ff9052e68ef0_img0_1781399376714.jpg</g:image_link>
+    <g:price>32000.00 USD</g:price>
+    <g:availability>in_stock</g:availability>
+    <g:condition>new</g:condition>
+    <g:brand><![CDATA[PSM]]></g:brand>
+    <g:google_product_category>420</g:google_product_category>
+    <g:product_type><![CDATA[maquinaria]]></g:product_type>
+    
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:shipping>
+      <g:country>EC</g:country>
+      <g:service>Envío estándar</g:service>
+      <g:price>0 USD</g:price>
+    </g:shipping>
+    <g:shipping>
+      <g:country>US</g:country>
+      <g:service>Envío internacional</g:service>
+      <g:price>25 USD</g:price>
+    </g:shipping>
+  </item>
+  <item>
+    <g:id>ad3a52d3-b6e2-494a-afeb-f6ba159eb3a8</g:id>
+    <g:title><![CDATA[Weld-on Thumb]]></g:title>
+    <g:description><![CDATA[Para todo tipo de Excavadora CAT 320, 325, 330 - Komatsu pc 200, 220 -             
+
+Origen: Estados Unidos (Stock inmediato).
+
+Cobertura: Envíos internacionales garantizados a nivel mundial.
+
+Representante Autorizado en Ecuador: Ruiz Industrial Group. Marca: PSM. Disponible en Ecuador. Cotiza por WhatsApp al +593969889751.]]></g:description>
+    <g:link>https://ruizpsm.com/?producto=ad3a52d3-b6e2-494a-afeb-f6ba159eb3a8</g:link>
+    <g:image_link>https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/prod_ad3a52d3-b6e2-494a-afeb-f6ba159eb3a8_img0_1781202234154.jpeg</g:image_link>
+    <g:price>5000.00 USD</g:price>
+    <g:availability>in_stock</g:availability>
+    <g:condition>new</g:condition>
+    <g:brand><![CDATA[PSM]]></g:brand>
+    <g:google_product_category>420</g:google_product_category>
+    <g:product_type><![CDATA[maquinaria]]></g:product_type>
+    
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:shipping>
+      <g:country>EC</g:country>
+      <g:service>Envío estándar</g:service>
+      <g:price>0 USD</g:price>
+    </g:shipping>
+    <g:shipping>
+      <g:country>US</g:country>
+      <g:service>Envío internacional</g:service>
+      <g:price>25 USD</g:price>
+    </g:shipping>
+  </item>
+  <item>
+    <g:id>6d91bac1-e10b-43d2-8f13-938f4b784844</g:id>
+    <g:title><![CDATA[Torno Portátil Jiesheng JS-XS45]]></g:title>
+    <g:description><![CDATA[Incluye equipo de Soldadura MiG, ejes, cuchillas de cortes , sistema automático de corte y suelda
+
+- Envío a todo América Marca: Jiesheng. Modelo: JS-XS45. Ref: JS-XS45. Disponible en Ecuador. Cotiza por WhatsApp al +593969889751.]]></g:description>
+    <g:link>https://ruizpsm.com/?producto=6d91bac1-e10b-43d2-8f13-938f4b784844</g:link>
+    <g:image_link>https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/prod_6d91bac1-e10b-43d2-8f13-938f4b784844_img0_1781181229284.png</g:image_link>
+    <g:price>6000.00 USD</g:price>
+    <g:availability>in_stock</g:availability>
+    <g:condition>new</g:condition>
+    <g:brand><![CDATA[Jiesheng]]></g:brand>
+    <g:google_product_category>420</g:google_product_category>
+    <g:product_type><![CDATA[maquinaria]]></g:product_type>
+    <g:mpn><![CDATA[JS-XS45]]></g:mpn>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:shipping>
+      <g:country>EC</g:country>
+      <g:service>Envío estándar</g:service>
+      <g:price>0 USD</g:price>
+    </g:shipping>
+    <g:shipping>
+      <g:country>US</g:country>
+      <g:service>Envío internacional</g:service>
+      <g:price>25 USD</g:price>
+    </g:shipping>
+  </item>
+  <item>
+    <g:id>1293f7d1-2513-47ac-8e3e-c4076e0a09da</g:id>
+    <g:title><![CDATA[Friction Lining Brakes Disc Fits Komatsu 500 WA 420-1WA-470WA-1]]></g:title>
+    <g:description><![CDATA[Aptos para Komatsu Siguientes modelos:
+
+Camión: HD205-3, HD255-5, HD255-5EO, HD325-5, HD325-6, HD325-6W, HD325-7, HD325-7R, HD325-8, HD325-8E0, HD405-6, HD405-7, HD405-7R, HD405-8, HD405-8E0, HM350-1, HM350-1L, HM350-2, HM350-2R, HM400-1, HM400-1L, HM400-2, HM400-2R, HM400-3, HM400-3M0, HM400-3R, HM400-5, HM400-5, HM400-5E0
+
+Cargador: 558, WA400-1, WA420-1, WA470-1, WA500-1, WA500-1L, WA500-1LC, WA500-1LE, WA500-6, WA500-6R, WA500-7, WA500-8, WA500-8E0, WA600-1, WA600-1H, WA600-3, WA600-3D, WA600-3LK
+
+Bulldozer: WD600-1H, WD600-3
+
+Compactador: WF600T-1, WF650T-3 Marca: Komatsu. Modelo: 420-1WA-470WA-1. Ref: 420-1WA-470WA-1. Disponible en Ecuador. Cotiza por WhatsApp al +593969889751.]]></g:description>
+    <g:link>https://ruizpsm.com/?producto=1293f7d1-2513-47ac-8e3e-c4076e0a09da</g:link>
+    <g:image_link>https://iwbjzffwpijbeqyavtkd.supabase.co/storage/v1/object/public/productos/prod_1293f7d1-2513-47ac-8e3e-c4076e0a09da_img0_1780847384775.png</g:image_link>
+    <g:price>48.00 USD</g:price>
+    <g:availability>in_stock</g:availability>
+    <g:condition>new</g:condition>
+    <g:brand><![CDATA[Komatsu]]></g:brand>
+    <g:google_product_category>3546</g:google_product_category>
+    <g:product_type><![CDATA[repuestos]]></g:product_type>
+    <g:mpn><![CDATA[420-1WA-470WA-1]]></g:mpn>
+    <g:identifier_exists>no</g:identifier_exists>
+    <g:shipping>
+      <g:country>EC</g:country>
+      <g:service>Envío estándar</g:service>
+      <g:price>0 USD</g:price>
+    </g:shipping>
+    <g:shipping>
+      <g:country>US</g:country>
+      <g:service>Envío internacional</g:service>
+      <g:price>25 USD</g:price>
+    </g:shipping>
+  </item>
+
 </channel>
 </rss>
