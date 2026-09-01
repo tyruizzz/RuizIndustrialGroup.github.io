@@ -1,0 +1,35 @@
+name: Actualizar Feed XML
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Cada día a las 6am UTC (1am Ecuador)
+  workflow_dispatch:       # También se puede ejecutar manualmente
+
+jobs:
+  update-feed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v3
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar dependencias
+        run: npm install @supabase/supabase-js
+
+      - name: Generar feed.xml
+        run: node generate-feed.js
+        env:
+          SUPABASE_URL: https://iwbjzffwpijbeqyavtkd.supabase.co
+          SUPABASE_KEY: sb_publishable_6tONcb7KYIxWPyIW5OTP7w_pZuXiUzu
+
+      - name: Subir feed.xml actualizado
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add feed.xml
+          git diff --staged --quiet || git commit -m "Feed actualizado automáticamente"
+          git push
