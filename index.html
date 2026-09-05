@@ -217,10 +217,38 @@ section{padding:4rem 2rem}
 .search-wrap input{flex:1;background:transparent;border:none;outline:none;color:var(--light);font-size:15px;font-family:'Barlow',sans-serif}
 .search-wrap input::placeholder{color:var(--muted)}
 .prods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;max-width:1200px;margin:0 auto}
-.prod-card{background:var(--navy);border:1px solid var(--steel);border-radius:12px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s,border-color 0.3s;cursor:pointer;display:flex;flex-direction:column}
-.prod-card:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 16px 48px rgba(201,168,76,0.12);border-color:var(--gold)}
-.prod-card.out{opacity:0.6;cursor:default}
+.prod-card{background:var(--navy);border:1px solid var(--steel);border-radius:12px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:transform 0.28s ease,box-shadow 0.28s ease,border-color 0.28s ease;opacity:0;transform:translateY(20px)}
+.prod-card.visible{opacity:1;transform:translateY(0)}
+.prod-card:hover{transform:translateY(-5px);box-shadow:0 14px 40px rgba(201,168,76,0.14);border-color:var(--gold)}
+.prod-card.out{opacity:0.55;cursor:default}
 .prod-card.out:hover{transform:none;box-shadow:none;border-color:var(--steel)}
+.pc-img-wrap{width:100%;height:180px;background:#060810;display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid var(--steel);overflow:hidden}
+.pc-img-wrap img{width:100%;height:100%;object-fit:contain;padding:12px;transition:transform 0.3s}
+.prod-card:hover .pc-img-wrap img{transform:scale(1.04)}
+.pc-stock-badge{position:absolute;top:9px;right:9px;background:rgba(37,211,102,0.13);border:1px solid rgba(37,211,102,0.35);color:#25D366;font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:0.5px}
+.pc-stock-badge.out{background:rgba(226,75,74,0.13);border-color:rgba(226,75,74,0.35);color:var(--red)}
+.pc-cat-badge{position:absolute;top:9px;left:9px;background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.28);color:var(--gold);font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:0.7px;text-transform:uppercase}
+.pc-body{padding:13px}
+.pc-top-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.pc-label{font-size:9px;color:#3A5070;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:1px}
+.pc-val{font-size:12px;color:var(--muted);font-weight:500}
+.pc-val.gold{color:var(--gold);font-weight:700;font-size:13px}
+.pc-name{font-size:14px;font-weight:700;color:var(--white);line-height:1.3;margin:8px 0 6px}
+.pc-divider{height:1px;background:var(--steel);margin:8px 0}
+.pc-meta-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.pc-avail{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600}
+.pc-avail-dot{width:6px;height:6px;border-radius:50%;background:#25D366;flex-shrink:0}
+.pc-avail.out .pc-avail-dot{background:var(--red)}
+.pc-avail.out{color:var(--red)}
+.pc-avail:not(.out){color:#25D366}
+.pc-units{font-size:10px;color:var(--muted)}
+.pc-price-label{font-size:9px;color:#3A5070;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px}
+.pc-price{font-size:26px;font-weight:800;color:var(--gold);letter-spacing:-0.5px;line-height:1}
+.pc-price-usd{font-size:10px;color:var(--muted);font-weight:400}
+.pc-btn-add{width:100%;background:var(--gold);color:#0A0C10;border:none;padding:9px;border-radius:7px;font-size:11px;font-weight:800;cursor:pointer;letter-spacing:0.3px;transition:background 0.2s;margin-bottom:6px;margin-top:10px}
+.pc-btn-add:hover{background:var(--gold2)}
+.pc-btn-detail{width:100%;background:transparent;border:1px solid var(--steel);color:var(--muted);padding:8px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.pc-btn-detail:hover{border-color:var(--gold);color:var(--gold)}
 .img-slider{position:relative;width:100%;height:210px;overflow:hidden;background:#0A0C10}
 .img-slide{position:absolute;inset:0;opacity:0;transition:opacity 0.5s}
 .img-slide.active{opacity:1}
@@ -1832,32 +1860,46 @@ function renderProds(){
       :`<div class="img-slide active"><div class="img-placeholder">${PROD_PH[p.categoria]||PROD_PH.default}</div></div>`;
     const dotsHTML=imgs.length>1?`<div class="img-dots">${imgs.map((_,i)=>`<div class="img-dot${i===0?' active':''}" onclick="event.stopPropagation();goSlide('${p.id}',${i})"></div>`).join('')}</div>`:'';
     const counterHTML=imgs.length>1?`<div class="img-counter">1 / ${imgs.length}</div>`:'';
+    const specs=p.especificaciones||{};
+    const garantia=specs.garantia||'Consultar';
+    const marca=specs.marca||(p.vendedor_id?'Vendedor':'Ruiz PSM');
+    const tipo=specs.tipo||specs.material||'';
+    const mainImg=imgs.length>0
+      ?`<img src="${imgs[0]}" alt="${p.nombre}" onerror="this.style.display='none'">`
+      :`<div style="font-size:36px;opacity:0.15">${PROD_PH[p.categoria]||PROD_PH.default}</div>`;
     return `<div class="prod-card${out?' out':''}" id="card-${p.id}" onclick="${out?'':'openDetail(\''+p.id+'\')'}" onmouseenter="${imgs.length>1?'startSlider(\''+p.id+'\')':''}" onmouseleave="${imgs.length>1?'pauseSlider(\''+p.id+'\')':''}">
-      <div class="img-slider" id="slider-${p.id}">${sliderHTML}${dotsHTML}${counterHTML}</div>
-      <div class="prod-body">
-        <div class="prod-badges">
-          <span class="badge-cat">${p.categoria||''}</span>
-          ${p.destacado?'<span class="badge-dest">Destacado</span>':''}
-
+      <div class="pc-img-wrap" id="slider-${p.id}">
+        ${mainImg}${dotsHTML}${counterHTML}
+        <span class="pc-cat-badge">${p.categoria||'Producto'}</span>
+        <span class="pc-stock-badge${out?' out':''}">${out?'Sin stock':'En stock'}</span>
+        ${p.destacado?'<span style="position:absolute;bottom:9px;left:9px;background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">★ Destacado</span>':''}
+      </div>
+      <div class="pc-body">
+        <div class="pc-top-row">
+          <div><div class="pc-label">Marca</div><div class="pc-val gold">${marca}</div></div>
+          ${tipo?`<div style="text-align:right"><div class="pc-label">Tipo</div><div class="pc-val">${tipo}</div></div>`:''}
         </div>
-        <div class="prod-name">${p.nombre}</div>
-        ${p.referencia?`<div class="prod-ref">REF: ${p.referencia}</div>`:''}
-        <div class="prod-price">$${fmtPrice(p.precio)} <small>USD</small></div>
-        <div class="stk-top" style="margin-bottom:5px">
-          <span style="color:${out?'var(--red)':'var(--muted)'};font-size:11px">${out?'Sin stock':'En stock'}</span>
-          <span style="font-size:11px;color:var(--muted)">${p.stock} uds</span>
+        <div class="pc-name">${p.nombre}</div>
+        <div class="pc-divider"></div>
+        <div class="pc-meta-row">
+          ${p.referencia?`<div><div class="pc-label">Código</div><div class="pc-val">${p.referencia}</div></div>`:'<div></div>'}
+          <div style="text-align:right"><div class="pc-label">Garantía</div><div class="pc-val">${garantia}</div></div>
         </div>
-        <div class="stk-bar"><div class="stk-fill ${out?'s-low':'s-ok'}" style="width:${pct}%"></div></div>
+        <div class="pc-meta-row" style="margin-bottom:0">
+          <div class="pc-avail${out?' out':''}"><div class="pc-avail-dot"></div>${out?'Sin stock':'En stock'}</div>
+          <div class="pc-units">${p.stock} uds</div>
+        </div>
+        <div class="pc-price-label" style="margin-top:10px">Precio</div>
+        <div><span class="pc-price">$${fmtPrice(p.precio)}</span><span class="pc-price-usd"> USD</span></div>
         ${out
-          ?'<div class="out-tag" style="margin-top:10px">No disponible</div>'
-          :`<button class="view-btn" style="margin-top:10px" onclick="event.stopPropagation();openDetail('${p.id}')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              Ver detalles
-            </button>`
+          ?'<button class="pc-btn-add" disabled style="opacity:0.4;cursor:not-allowed;margin-top:10px">No disponible</button>'
+          :`<button class="pc-btn-add" onclick="event.stopPropagation();openDetail('${p.id}')">+ Añadir al carrito</button>`
         }
+        <button class="pc-btn-detail" onclick="event.stopPropagation();openDetail('${p.id}')">⊙ Ver detalles</button>
       </div>
     </div>`;
   }).join('');
+  setTimeout(()=>{document.querySelectorAll('.prod-card').forEach((el,i)=>{setTimeout(()=>el.classList.add('visible'),i*60);});},50);
   filtered.forEach(p=>{
     const imgs=getImgs(p);
     if(imgs.length>1)sliderIntervals[p.id]={imgs,idx:0,timer:null,paused:false};
